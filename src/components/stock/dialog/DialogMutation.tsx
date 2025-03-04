@@ -12,15 +12,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dataPayment } from "@/data/payment";
 import { useAtom } from "jotai";
 import React from "react";
 
 const DialogMutation = () => {
   const [dialog, setDialog] = useAtom(storeDialogStock);
+
   const closeDialog = () => {
     setDialog((prev) => ({
       ...prev,
       show: false,
+    }));
+  };
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setDialog((prev) => ({
+      ...prev,
+      data: {
+        ...prev.data!,
+        [name]: name === "price" ? parseFloat(value) || 0 : value,
+      },
+    }));
+  };
+
+  const onValueChange = (value: string, name: string) => {
+    setDialog((prev) => ({
+      ...prev,
+      data: {
+        ...prev.data!,
+        [name]: value,
+      },
     }));
   };
 
@@ -35,15 +59,21 @@ const DialogMutation = () => {
           <div className="flex items-center">
             <Label htmlFor="payment">Produk</Label>
           </div>
-          <Select>
+          <Select
+            onValueChange={(value) => onValueChange(value, "id")}
+            value={dialog.data?.id ?? ""}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Pilih Produk" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Produk</SelectLabel>
-                <SelectItem value="bri">BRI</SelectItem>
-                <SelectItem value="bca">BCA</SelectItem>
+                {dataPayment.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.name}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -56,6 +86,8 @@ const DialogMutation = () => {
             type="number"
             placeholder="Masukan Stock"
             required
+            onChange={onInputChange}
+            value={dialog.data?.stock ?? ""}
           />
         </div>
       </div>
