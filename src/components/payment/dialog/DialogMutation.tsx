@@ -8,10 +8,23 @@ import React from "react";
 
 const DialogMutation = () => {
   const [dialog, setDialog] = useAtom(storeDialogPayment);
+
   const closeDialog = () => {
     setDialog((prev) => ({
       ...prev,
       show: false,
+    }));
+  };
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setDialog((prev) => ({
+      ...prev,
+      data: {
+        ...prev.data!,
+        [name]: value,
+      },
     }));
   };
 
@@ -29,6 +42,8 @@ const DialogMutation = () => {
           type="text"
           placeholder="Masukan Nama"
           required
+          onChange={onInputChange}
+          value={dialog.data?.name ?? ""}
         />
       </div>
       <Button>Submit</Button>

@@ -1,8 +1,13 @@
-import { IDialog } from "@/store/dialog";
 import { atom } from "jotai";
 import { TypePayment } from "./types";
 
-const storeDialogPayment = atom<IDialog<TypePayment>>({
+export type IDialog = {
+  show: boolean;
+  type: "CREATE" | "UPDATE" | "DELETE";
+  data?: TypePayment | null;
+};
+
+const storeDialogPayment = atom<IDialog>({
   show: false,
   type: "CREATE",
   data: null,
