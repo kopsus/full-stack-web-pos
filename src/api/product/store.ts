@@ -1,8 +1,13 @@
-import { IDialog } from "@/store/dialog";
 import { atom } from "jotai";
 import { TypeProduct } from "./types";
 
-const storeDialogProduct = atom<IDialog<TypeProduct>>({
+export type IDialog = {
+  show: boolean;
+  type: "CREATE" | "UPDATE" | "DELETE";
+  data?: TypeProduct | null;
+};
+
+const storeDialogProduct = atom<IDialog>({
   show: false,
   type: "CREATE",
   data: null,

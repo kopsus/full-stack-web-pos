@@ -20,6 +20,18 @@ const DialogMutation = () => {
     setPreviewUrl("");
   };
 
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setDialog((prev) => ({
+      ...prev,
+      data: {
+        ...prev.data!,
+        [name]: name === "price" ? parseFloat(value) || 0 : value,
+      },
+    }));
+  };
+
   return (
     <DialogLayout
       show={dialog.type !== "DELETE" && dialog.show}
@@ -29,9 +41,9 @@ const DialogMutation = () => {
       <div className="flex flex-col gap-4">
         <div className="grid gap-2">
           <div className="w-40 h-40 mx-auto rounded-xl border bg-white shadow-1 overflow-hidden">
-            {previewUrl ? (
+            {previewUrl || dialog.data?.image ? (
               <Image
-                src={previewUrl}
+                src={previewUrl || dialog.data?.image || ""}
                 alt=""
                 width={0}
                 height={0}
@@ -56,6 +68,8 @@ const DialogMutation = () => {
             type="text"
             placeholder="Masukan Nama"
             required
+            onChange={onInputChange}
+            value={dialog.data?.name ?? ""}
           />
         </div>
         <div className="grid gap-2">
@@ -66,6 +80,8 @@ const DialogMutation = () => {
             type="number"
             placeholder="Masukan Harga"
             required
+            onChange={onInputChange}
+            value={dialog.data?.price ?? ""}
           />
         </div>
       </div>
