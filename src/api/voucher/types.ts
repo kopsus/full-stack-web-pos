@@ -5,5 +5,5 @@ export type TypeVoucher = {
   minimum_price: number;
   maximum_price: number;
   end_date: string;
-  usage_count: number;
+  max_usage: number;
 };

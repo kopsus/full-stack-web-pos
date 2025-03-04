@@ -32,7 +32,7 @@ export const ColumnsVoucher: ColumnDef<TypeVoucher>[] = [
     },
   },
   {
-    accessorKey: "usage_count",
+    accessorKey: "max_usage",
     header: "Max Usage",
   },
   {

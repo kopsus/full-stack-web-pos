@@ -8,10 +8,23 @@ import React from "react";
 
 const DialogMutation = () => {
   const [dialog, setDialog] = useAtom(storeDialogVoucher);
+
   const closeDialog = () => {
     setDialog((prev) => ({
       ...prev,
       show: false,
+    }));
+  };
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setDialog((prev) => ({
+      ...prev,
+      data: {
+        ...prev.data!,
+        [name]: value,
+      },
     }));
   };
 
@@ -30,6 +43,8 @@ const DialogMutation = () => {
             type="text"
             placeholder="Masukan Nama Voucher"
             required
+            onChange={onInputChange}
+            value={dialog.data?.name ?? ""}
           />
         </div>
         <div className="grid gap-2">
@@ -40,6 +55,8 @@ const DialogMutation = () => {
             type="number"
             placeholder="Masukan Percentage"
             required
+            onChange={onInputChange}
+            value={dialog.data?.percentage ?? ""}
           />
         </div>
         <div className="grid gap-2">
@@ -50,6 +67,8 @@ const DialogMutation = () => {
             type="number"
             placeholder="Masukan Minimum Price"
             required
+            onChange={onInputChange}
+            value={dialog.data?.minimum_price ?? ""}
           />
         </div>
         <div className="grid gap-2">
@@ -60,6 +79,8 @@ const DialogMutation = () => {
             type="number"
             placeholder="Masukan Maximum Price"
             required
+            onChange={onInputChange}
+            value={dialog.data?.maximum_price ?? ""}
           />
         </div>
         <div className="grid gap-2">
@@ -70,6 +91,8 @@ const DialogMutation = () => {
             type="number"
             placeholder="Masukan Max Usage"
             required
+            onChange={onInputChange}
+            value={dialog.data?.max_usage ?? ""}
           />
         </div>
         <div className="grid gap-2">
@@ -80,6 +103,8 @@ const DialogMutation = () => {
             type="date"
             placeholder="Masukan Voucher End"
             required
+            onChange={onInputChange}
+            value={dialog.data?.end_date ?? ""}
             className="block"
           />
         </div>
