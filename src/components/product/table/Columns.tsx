@@ -40,8 +40,7 @@ export const ColumnsProduct: ColumnDef<TypeProduct>[] = [
     header: "Action",
     cell: ({ row }: { row: { original: TypeProduct } }) => {
       const item = row.original;
-      const itemId = row.original.id;
-      return <TableAction item={item} itemId={itemId} />;
+      return <TableAction item={item} />;
     },
   },
 ];

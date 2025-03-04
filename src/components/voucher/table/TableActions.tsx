@@ -16,17 +16,16 @@ import { TypeVoucher } from "@/api/voucher/types";
 
 interface ITableRowActions {
   item: TypeVoucher;
-  itemId: string;
 }
 
-export function TableAction({ itemId, item }: ITableRowActions) {
+export function TableAction({ item }: ITableRowActions) {
   const setDialog = useSetAtom(storeDialogVoucher);
 
   const handleDelete = () => {
     setDialog({
       type: "DELETE",
       show: true,
-      data: itemId,
+      data: item,
     });
   };
 

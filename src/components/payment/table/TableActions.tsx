@@ -16,17 +16,16 @@ import { TypePayment } from "@/api/payment/types";
 
 interface ITableRowActions {
   item: TypePayment;
-  itemId: string;
 }
 
-export function TableAction({ itemId, item }: ITableRowActions) {
+export function TableAction({ item }: ITableRowActions) {
   const setDialog = useSetAtom(storeDialogPayment);
 
   const handleDelete = () => {
     setDialog({
       type: "DELETE",
       show: true,
-      data: itemId,
+      data: item,
     });
   };
 

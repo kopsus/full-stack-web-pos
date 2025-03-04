@@ -16,17 +16,16 @@ import { TypeProduct } from "@/api/product/types";
 
 interface ITableRowActions {
   item: TypeProduct;
-  itemId: string;
 }
 
-export function TableAction({ itemId, item }: ITableRowActions) {
+export function TableAction({ item }: ITableRowActions) {
   const setDialog = useSetAtom(storeDialogProduct);
 
   const handleDelete = () => {
     setDialog({
       type: "DELETE",
       show: true,
-      data: itemId,
+      data: item,
     });
   };
 

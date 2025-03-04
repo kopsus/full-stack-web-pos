@@ -15,8 +15,7 @@ export const ColumnsPayment: ColumnDef<TypePayment>[] = [
     header: "Action",
     cell: ({ row }: { row: { original: TypePayment } }) => {
       const item = row.original;
-      const itemId = row.original.id;
-      return <TableAction item={item} itemId={itemId} />;
+      return <TableAction item={item} />;
     },
   },
 ];
