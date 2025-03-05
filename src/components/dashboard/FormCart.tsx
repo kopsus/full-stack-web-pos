@@ -15,60 +15,80 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { TypeProduct } from "@/api/product/types";
 
-const FormCart = () => {
+interface IFormCart {
+  cartItems: TypeProduct[];
+  updateQuantity: (id: string, amount: number) => void;
+}
+
+const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.price * (item.quantity || 0),
+    0
+  );
+  const tax = subtotal * 0.1;
+  const total = subtotal + tax;
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-2xl">Rincian Order</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-20 h-20 rounded-lg overflow-hidden">
-                <Image
-                  src="https://asset.kompas.com/crops/U6YxhTLF-vrjgM8PN3RYTHlIxfM=/84x60:882x592/1200x800/data/photo/2021/11/17/61949959e07d3.jpg"
-                  alt="menu"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
+        <form className="flex flex-col gap-8">
+          <div className="flex flex-col gap-2">
+            {cartItems.map((item) => (
+              <div key={item.id} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-20 h-20 rounded-lg overflow-hidden">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                    />
+                  </div>
+                  <div className="text-sm flex flex-col gap-3">
+                    <p className="line-clamp-1 font-bold">{item.name}</p>
+                    <p>{formatIDR(item.price * item.quantity!)}</p>
+                    <div className="flex items-center gap-2">
+                      <MinusCircle
+                        className="cursor-pointer"
+                        onClick={() => updateQuantity(item.id, -1)}
+                      />
+                      <p>{item.quantity}</p>
+                      <PlusCircle
+                        className="cursor-pointer"
+                        onClick={() => updateQuantity(item.id, 1)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <Trash
+                  className="cursor-pointer"
+                  onClick={() => updateQuantity(item.id, -item.quantity!)}
+                  color="red"
                 />
               </div>
-              <div className="text-sm flex flex-col gap-3">
-                <div>
-                  <p className="line-clamp-1">Nasi Goreng</p>
-                  <p>{formatIDR(12000)}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MinusCircle className="cursor-pointer" />
-                  <p>0</p>
-                  <PlusCircle className="cursor-pointer" />
-                </div>
-              </div>
-            </div>
-            <Trash
-              fill="red"
-              color="red"
-              size={16}
-              className="cursor-pointer"
-            />
+            ))}
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between text-sm">
               <p>Subtotal</p>
-              <p className="font-semibold">{formatIDR(12000)}</p>
+              <p className="font-semibold">{formatIDR(subtotal)}</p>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <p>Tax</p>
-              <p className="font-semibold">10%</p>
+              <p>Tax (10%)</p>
+              <p className="font-semibold">{formatIDR(tax)}</p>
             </div>
             <div className="flex items-center justify-between text-sm">
               <p>Total</p>
-              <p className="font-semibold text-red-600">{formatIDR(15000)}</p>
+              <p className="font-semibold text-red-600">{formatIDR(total)}</p>
             </div>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <div className="grid gap-2">
               <Label htmlFor="name">Nama</Label>
               <Input
@@ -112,7 +132,7 @@ const FormCart = () => {
           <Button type="submit" className="w-full">
             Submit
           </Button>
-        </div>
+        </form>
       </CardContent>
     </Card>
   );
