@@ -43,7 +43,7 @@ const DialogMutation = () => {
           placeholder="Masukan Nama"
           required
           onChange={onInputChange}
-          value={dialog.data?.name ?? ""}
+          value={dialog.data?.label ?? ""}
         />
       </div>
       <Button>Submit</Button>
