@@ -70,8 +70,8 @@ const DialogMutation = () => {
               <SelectGroup>
                 <SelectLabel>Produk</SelectLabel>
                 {dataPayment.map((item) => (
-                  <SelectItem key={item.id} value={item.id}>
-                    {item.name}
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
                   </SelectItem>
                 ))}
               </SelectGroup>

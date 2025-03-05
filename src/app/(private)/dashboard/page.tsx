@@ -40,8 +40,8 @@ const Dashboard = () => {
   return (
     <>
       <PageHeader title="Dashboard" />
-      <div className="p-4 grid lg:grid-cols-3 gap-5">
-        <div className="col-span-2 flex flex-col gap-10">
+      <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="col-span-1 lg:col-span-2 flex flex-col gap-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:items-center gap-4">
             <CardState />
           </div>

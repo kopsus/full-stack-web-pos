@@ -16,6 +16,8 @@ import {
   SelectValue,
 } from "../ui/select";
 import { TypeProduct } from "@/api/product/types";
+import { dataSalesType } from "@/data/sales-type";
+import { dataPayment } from "@/data/payment";
 
 interface IFormCart {
   cartItems: TypeProduct[];
@@ -31,7 +33,7 @@ const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
   const total = subtotal + tax;
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-2xl">Rincian Order</CardTitle>
       </CardHeader>
@@ -101,15 +103,23 @@ const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="date">Tanggal</Label>
+                <Label htmlFor="sales_type">Tipe Penjualan</Label>
               </div>
-              <Input
-                id="date"
-                name="date"
-                type="date"
-                required
-                className="block"
-              />
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih Tipe Penjualan" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Tipe Penjualan</SelectLabel>
+                    {dataSalesType.map((item, index) => (
+                      <SelectItem key={index} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
@@ -122,8 +132,11 @@ const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Metode Pembayaran</SelectLabel>
-                    <SelectItem value="bri">BRI</SelectItem>
-                    <SelectItem value="bca">BCA</SelectItem>
+                    {dataPayment.map((item, index) => (
+                      <SelectItem key={index} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>

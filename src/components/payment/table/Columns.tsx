@@ -6,7 +6,7 @@ import { TableAction } from "./TableActions";
 
 export const ColumnsPayment: ColumnDef<TypePayment>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "label",
     header: "Nama",
   },
 

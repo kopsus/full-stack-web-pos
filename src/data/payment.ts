@@ -2,23 +2,27 @@ import { TypePayment } from "@/api/payment/types";
 
 export const dataPayment: TypePayment[] = [
   {
-    id: "1",
-    name: "BCA",
+    label: "Cash",
+    value: "cash",
   },
   {
-    id: "2",
-    name: "BRI",
+    label: "BCA",
+    value: "bca",
   },
   {
-    id: "3",
-    name: "MANDIRI",
+    label: "BRI",
+    value: "bri",
   },
   {
-    id: "4",
-    name: "BNI",
+    label: "MANDIRI",
+    value: "mandiri",
   },
   {
-    id: "5",
-    name: "QRIS",
+    label: "BNI",
+    value: "bni",
+  },
+  {
+    label: "QRIS",
+    value: "qris",
   },
 ];

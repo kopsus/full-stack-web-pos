@@ -17,13 +17,14 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  // SidebarHeader,
-  // SidebarMenu,
-  // SidebarMenuButton,
-  // SidebarMenuItem,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+import Image from "next/image";
 
 const items = [
   {
@@ -76,23 +77,23 @@ const items = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
-      {/* <SidebarHeader>
+      <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-red-500 text-sidebar-primary-foreground">
-                  <Bug className="size-5" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Bug Tracker</span>
-                  <span className="truncate text-xs">Ver. Alpha</span>
-                </div>
-              </a>
+              <div className="h-auto">
+                <Image
+                  src="/logo.svg"
+                  alt="logo"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                />
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarHeader> */}
+      </SidebarHeader>
       <SidebarContent>
         <NavMain items={items} />
       </SidebarContent>
