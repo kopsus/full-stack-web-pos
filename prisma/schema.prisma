@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum EnumRole {
+  cashier
+  admin
+}
+
+model User {
+  id        String  @id @default(cuid())
+  username  String  @unique
+  password  String?
+  role      EnumRole
+
+  // relasi ke transaksi
+  transaksi Transaksi[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+}
+
+model Product {
+  id                String  @id @default(cuid())
+  name              String
+  category          String
+  price             Int
+  image             String
+
+  // relasi
+  category_product  Category[]
+  stock             Stock[]
+  transaksi         Transaksi[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now())
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String
+
+  // foreign key ke product
+  product_id  String
+  product     Product  @relation(fields: [product_id], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}
+
+model Stock {
+  id        String  @id @default(cuid())
+  stock     Int
+
+  // foreign key ke product
+  product_id  String
+  product     Product  @relation(fields: [product_id], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}
+
+model Payment {
+  id          String    @id @default(cuid())
+  name        String
+
+  // relasi ke Transaksi
+  transaksi   Transaksi[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}
+
+model Transaksi {
+  id            String  @id @default(cuid())
+  customer_name String
+  total_amount  Int
+
+  // foreign key ke user
+  user_id  String
+  user     User  @relation(fields: [user_id], references: [id])
+
+  // foreign key ke product
+  product_id  String
+  product     Product  @relation(fields: [product_id], references: [id])
+
+  // foreign key ke payment
+  payment_id  String
+  payment     Payment @relation(fields: [payment_id], references: [id])
+
+  // foreign key ke Topping
+  topping_id  String?
+  topping     Topping? @relation(fields: [topping_id], references: [id])
+
+  // foreign key ke voucher
+  voucher_id  String?
+  voucher     Voucher? @relation(fields: [voucher_id], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}
+
+model Topping {
+  id          String  @id @default(cuid())
+  name        String
+  price       Int
+
+  // relasi ke transaksi
+  transaksi   Transaksi[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+
+}
+
+model Voucher {
+  id            String  @id @default(cuid())
+  name          String
+  percentage    Int
+  minimum_price Int
+  maximum_price Int
+  max_usage     Int
+  voucher_end   DateTime
+
+  // relasi ke transaksi
+  transaksi     Transaksi[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
+}
