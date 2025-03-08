@@ -1,6 +1,5 @@
 "use client";
 
-import { storeDialogUser } from "@/api/user/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { dataRole } from "@/data/user";
+import { storeDialogUser } from "@/types/user";
 import { useAtom } from "jotai";
 import React from "react";
 
@@ -58,22 +57,22 @@ const DialogMutation = () => {
     >
       <div className="flex flex-col gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Username</Label>
           <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Masukan Email"
+            id="username"
+            name="username"
+            type="text"
+            placeholder="Masukan Username"
             required
             onChange={onInputChange}
-            value={dialog.data?.email ?? ""}
+            value={dialog.data?.username ?? ""}
           />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="role">Role</Label>
           <Select
             onValueChange={(value) => onValueChange(value, "roleId")}
-            value={dialog.data?.roleId ?? ""}
+            value={dialog.data?.role ?? ""}
           >
             <SelectTrigger>
               <SelectValue placeholder="Pilih Role" />
@@ -81,11 +80,8 @@ const DialogMutation = () => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Role</SelectLabel>
-                {dataRole.map((item) => (
-                  <SelectItem key={item.id} value={item?.id}>
-                    {item.name}
-                  </SelectItem>
-                ))}
+                <SelectItem value="cashier">Cashier</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>

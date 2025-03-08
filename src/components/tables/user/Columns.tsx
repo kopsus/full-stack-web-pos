@@ -1,19 +1,19 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TypeUser } from "@/api/user/types";
+import { TypeUser } from "@/types/user";
 import { TableAction } from "./TableActions";
 
 export const ColumnsUser: ColumnDef<TypeUser>[] = [
   {
-    accessorKey: "email",
+    accessorKey: "username",
     header: "Email",
   },
   {
     accessorKey: "role",
     header: "Role",
     cell: ({ row }) => {
-      const role = row.original.role.name;
+      const role = row.original.role;
 
       return <p>{role}</p>;
     },

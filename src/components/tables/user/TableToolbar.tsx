@@ -13,9 +13,9 @@ export function TableToolbar<TData>({ table }: ITableToolbar<TData>) {
         type="text"
         placeholder="Cari Nama"
         className="w-[200px] md:w-[250px] border outline-none"
-        value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+        value={(table.getColumn("username")?.getFilterValue() as string) ?? ""}
         onChange={(event) =>
-          table.getColumn("email")?.setFilterValue(event.target.value)
+          table.getColumn("username")?.setFilterValue(event.target.value)
         }
       />
     </div>
