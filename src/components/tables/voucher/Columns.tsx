@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TypeVoucher } from "@/api/voucher/types";
+import { TypeVoucher } from "@/types/voucher";
 import { TableAction } from "./TableActions";
 import { formatDate, formatIDR } from "@/lib/format";
 
@@ -36,10 +36,10 @@ export const ColumnsVoucher: ColumnDef<TypeVoucher>[] = [
     header: "Max Usage",
   },
   {
-    accessorKey: "end_date",
+    accessorKey: "voucher_end",
     header: "Voucher End",
     cell: ({ row }) => {
-      return <p>{formatDate(row.getValue("end_date"))}</p>;
+      return <p>{formatDate(row.getValue("voucher_end"))}</p>;
     },
   },
   {

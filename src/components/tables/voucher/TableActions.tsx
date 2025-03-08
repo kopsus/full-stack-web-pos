@@ -10,9 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { storeDialogVoucher } from "@/api/voucher/store";
 import { useSetAtom } from "jotai";
-import { TypeVoucher } from "@/api/voucher/types";
+import { storeDialogVoucher, TypeVoucher } from "@/types/voucher";
 
 interface ITableRowActions {
   item: TypeVoucher;

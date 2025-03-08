@@ -1,10 +1,10 @@
 "use client";
 
-import { storeDialogVoucher } from "@/api/voucher/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { storeDialogVoucher } from "@/types/voucher";
 import { useAtom } from "jotai";
 import React from "react";
 
@@ -101,12 +101,16 @@ const DialogMutation = () => {
           <Label htmlFor="end_date">Voucher End</Label>
           <Input
             id="end_date"
-            name="end_date"
+            name="voucher_end"
             type="date"
             placeholder="Masukan Voucher End"
             required
             onChange={onInputChange}
-            value={dialog.data?.end_date ?? ""}
+            value={
+              dialog.data?.voucher_end
+                ? new Date(dialog.data.voucher_end).toISOString().split("T")[0]
+                : ""
+            }
             className="block"
           />
         </div>

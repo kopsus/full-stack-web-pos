@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TableToolbar } from "./TableToolbar";
 import { useSetAtom } from "jotai";
-import { storeDialogVoucher } from "@/api/voucher/store";
+import { storeDialogVoucher } from "@/types/voucher";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

@@ -1,8 +1,8 @@
 "use client";
 
-import { storeDialogVoucher } from "@/api/voucher/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
+import { storeDialogVoucher } from "@/types/voucher";
 import { useAtom } from "jotai";
 import React from "react";
 

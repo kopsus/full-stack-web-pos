@@ -33,11 +33,6 @@ const items = [
     icon: Home,
   },
   {
-    title: "Stock",
-    url: "/stock",
-    icon: Boxes,
-  },
-  {
     title: "History",
     url: "/history",
     icon: History,

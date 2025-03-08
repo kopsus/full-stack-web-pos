@@ -17,14 +17,16 @@ import {
 } from "../../ui/select";
 import { TypeProduct } from "@/api/product/types";
 import { dataSalesType } from "@/data/sales-type";
-import { dataPayment } from "@/data/payment";
+import prisma from "@/lib/prisma";
 
 interface IFormCart {
   cartItems: TypeProduct[];
   updateQuantity: (id: string, amount: number) => void;
 }
 
-const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
+const FormCart = async ({ cartItems, updateQuantity }: IFormCart) => {
+  const payments = await prisma.payment.findMany();
+
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * (item.quantity || 0),
     0
@@ -132,9 +134,9 @@ const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Metode Pembayaran</SelectLabel>
-                    {dataPayment.map((item, index) => (
-                      <SelectItem key={index} value={item.value}>
-                        {item.label}
+                    {payments.map((item, index) => (
+                      <SelectItem key={index} value={item.id}>
+                        {item.name}
                       </SelectItem>
                     ))}
                   </SelectGroup>
