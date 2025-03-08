@@ -4,31 +4,66 @@ import { storeDialogCategory } from "@/api/category/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { createCategory, updateCategory } from "@/lib/actions/category";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  CategorySchema,
+  categorySchema,
+} from "@/lib/formValidationSchemas/category";
 import { useAtom } from "jotai";
 import React from "react";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 
 const DialogMutation = () => {
   const [dialog, setDialog] = useAtom(storeDialogCategory);
 
   const closeDialog = () => {
-    setDialog((prev) => ({
-      ...prev,
-      show: false,
-    }));
+    setDialog((prev) => ({ ...prev, show: false, data: null }));
   };
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const form = useForm<CategorySchema>({
+    resolver: zodResolver(categorySchema),
+  });
 
-    setDialog((prev) => ({
-      ...prev,
-      data: {
-        ...prev.data!,
-        [name]: value,
-      },
-    }));
-  };
+  React.useEffect(() => {
+    if (dialog.type === "CREATE") {
+      form.reset({ name: "" });
+    } else if (dialog.type === "UPDATE" && dialog.data) {
+      form.reset({
+        name: dialog.data.name,
+      });
+    }
+  }, [dialog.type, dialog.data, form]);
+
+  const isSubmitting = form.formState.isSubmitting;
+
+  async function onSubmit(values: CategorySchema) {
+    try {
+      let result;
+      if (dialog.type === "UPDATE" && dialog.data?.id) {
+        result = await updateCategory({ id: dialog.data.id, ...values });
+      } else {
+        result = await createCategory(values);
+      }
+
+      if (result.success) {
+        alert(result.success.message);
+        closeDialog();
+      } else {
+        alert(result.error.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan");
+    }
+  }
 
   return (
     <DialogLayout
@@ -38,19 +73,30 @@ const DialogMutation = () => {
         dialog.type === "CREATE" ? "Tambah Category" : "Edit Category"
       }`}
     >
-      <div className="grid gap-2">
-        <Label htmlFor="name">Nama</Label>
-        <Input
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Masukan Nama"
-          required
-          onChange={onInputChange}
-          value={dialog.data?.name ?? ""}
-        />
-      </div>
-      <Button>Submit</Button>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-5 flex flex-col"
+        >
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 text-left">
+                  Nama Category
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Masukan nama category" />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Button disabled={isSubmitting}>
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
+          </Button>
+        </form>
+      </Form>
     </DialogLayout>
   );
 };

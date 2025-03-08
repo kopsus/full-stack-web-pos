@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { TypeCategory } from "./types";
+import { TypeCategory } from "@/types/category";
 
 export type IDialog = {
   show: boolean;

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TypeCategory } from "@/api/category/types";
+import { TypeCategory } from "@/types/category";
 import { TableAction } from "./TableActions";
 
 export const ColumnsCategory: ColumnDef<TypeCategory>[] = [
@@ -9,7 +9,6 @@ export const ColumnsCategory: ColumnDef<TypeCategory>[] = [
     accessorKey: "name",
     header: "Nama",
   },
-
   {
     accessorKey: "Action",
     header: "Action",

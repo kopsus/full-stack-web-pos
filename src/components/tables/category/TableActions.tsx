@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { storeDialogCategory } from "@/api/category/store";
 import { useSetAtom } from "jotai";
-import { TypeCategory } from "@/api/category/types";
+import { TypeCategory } from "@/types/category";
 
 interface ITableRowActions {
   item: TypeCategory;

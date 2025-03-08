@@ -25,45 +25,33 @@ model User {
   updatedAt DateTime  @default(now())
 }
 
+model Category {
+  id          String  @id @default(cuid())
+  name        String  @unique
+
+  // Relasi ke Product
+  products    Product[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}
+
 model Product {
   id                String  @id @default(cuid())
   name              String
   price             Int
+  quantity          Int
   image             String
 
-  // Relasi ke kategori & stok
-  category_product  Category[]
-  stock             Stock[]
+  // Foreign key ke Category
+  category_id       String
+  category          Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
 
   // Relasi many-to-many ke transaksi
   transaksi         TransaksiProduct[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @default(now())
-}
-
-model Category {
-  id          String  @id @default(cuid())
-  name        String
-
-  // Foreign key ke product
-  product_id  String
-  product     Product  @relation(fields: [product_id], references: [id])
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
-}
-
-model Stock {
-  id          String  @id @default(cuid())
-  stock       Int
-
-  // Foreign key ke product
-  product_id  String
-  product     Product  @relation(fields: [product_id], references: [id])
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
 }
 
 model Payment {
@@ -78,25 +66,28 @@ model Payment {
 }
 
 model Transaksi {
-  id            String  @id @default(cuid())
-  customer_name String
-  total_amount  Int
+  id                String  @id @default(cuid())
+  customer_name     String
+  total_amount      Int
 
   // Foreign key ke user
-  user_id  String
-  user     User  @relation(fields: [user_id], references: [id])
+  user_id           String
+  user              User  @relation(fields: [user_id], references: [id])
 
   // Foreign key ke payment
-  payment_id  String
-  payment     Payment @relation(fields: [payment_id], references: [id])
+  payment_id        String
+  payment           Payment @relation(fields: [payment_id], references: [id])
+
+  // Relasi one-to-one ke voucher
+  voucher_id        String? @unique
+  voucher           Voucher? @relation(fields: [voucher_id], references: [id])
 
   // Relasi many-to-many ke produk, topping, dan voucher
   transaksi_product TransaksiProduct[]
   transaksi_topping TransaksiTopping[]
-  transaksi_voucher TransaksiVoucher[]
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now())
 }
 
 model TransaksiProduct {
@@ -154,24 +145,9 @@ model Voucher {
   max_usage     Int
   voucher_end   DateTime
 
-  // Relasi many-to-many ke transaksi
-  transaksi_voucher TransaksiVoucher[]
+  // Relasi one-to-one ke transaksi
+  transaksi     Transaksi?
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now())
-}
-
-model TransaksiVoucher {
-  id           String  @id @default(cuid())
-
-  // Foreign key ke transaksi
-  transaksi_id String
-  transaksi    Transaksi @relation(fields: [transaksi_id], references: [id])
-
-  // Foreign key ke voucher
-  voucher_id   String
-  voucher      Voucher @relation(fields: [voucher_id], references: [id])
-
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @default(now())
 }

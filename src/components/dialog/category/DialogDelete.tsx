@@ -3,6 +3,7 @@
 import { storeDialogCategory } from "@/api/category/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
+import { deleteCategory } from "@/lib/actions/category";
 import { useAtom } from "jotai";
 import React from "react";
 
@@ -15,6 +16,18 @@ const DialogDelete = () => {
     }));
   };
 
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await deleteCategory(dialog.data?.id!);
+
+    if (res.success) {
+      alert(res.success.message);
+      closeDialog();
+    } else {
+      alert(res.error.message);
+    }
+  };
+
   return (
     <DialogLayout
       show={dialog.type === "DELETE" && dialog.show}
@@ -25,7 +38,7 @@ const DialogDelete = () => {
         <Button variant={"outline"} onClick={closeDialog}>
           Cancel
         </Button>
-        <Button variant={"destructive"} onClick={closeDialog}>
+        <Button variant={"destructive"} onClick={handleDelete}>
           Delete
         </Button>
       </div>
