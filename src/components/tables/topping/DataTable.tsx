@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pagination } from "../../_global/table/pagination";
+import { Pagination } from "../pagination";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TableToolbar } from "./TableToolbar";

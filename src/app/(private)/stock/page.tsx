@@ -2,12 +2,12 @@
 
 import { storeDialogStock } from "@/api/stock/store";
 import PageHeader from "@/components/page-header";
-import { DataTable } from "@/components/stock/table/DataTable";
+import { DataTable } from "@/components/tables/stock/DataTable";
 import { dataStock } from "@/data/stock";
 import { useSetAtom } from "jotai";
 import React from "react";
 import DialogMutation from "@/components/dialog/stock/DialogMutation";
-import { ColumnsStock } from "@/components/stock/table/Columns";
+import { ColumnsStock } from "@/components/tables/stock/Columns";
 
 const Stock = () => {
   const setDialog = useSetAtom(storeDialogStock);

@@ -3,7 +3,7 @@
 import { TypeProduct } from "@/api/product/types";
 import CardMenu from "@/components/_global/CardMenu";
 import CardState from "@/components/_global/CardState";
-import FormCart from "@/components/dashboard/FormCart";
+import FormCart from "@/components/forms/dashboard/FormCart";
 import PageHeader from "@/components/page-header";
 import { dataProduct } from "@/data/product";
 import React from "react";

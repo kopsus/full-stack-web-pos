@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pagination } from "../../_global/table/pagination";
+import { Pagination } from "../pagination";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TableToolbar } from "./TableToolbar";
@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 overflow-x-auto p-4">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-4xl font-bold ">{title}</h2>
+        <h2 className="text-4xl font-bold">{title}</h2>
         <Button className="text-white" onClick={onClick}>
           Tambah {title}
         </Button>

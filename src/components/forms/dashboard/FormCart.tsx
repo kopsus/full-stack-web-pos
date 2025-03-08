@@ -1,8 +1,8 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Label } from "../../ui/label";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 import Image from "next/image";
 import { formatIDR } from "@/lib/format";
 import { MinusCircle, PlusCircle, Trash } from "lucide-react";
@@ -14,7 +14,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../ui/select";
 import { TypeProduct } from "@/api/product/types";
 import { dataSalesType } from "@/data/sales-type";
 import { dataPayment } from "@/data/payment";

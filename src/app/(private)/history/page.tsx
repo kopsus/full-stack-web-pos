@@ -1,7 +1,7 @@
 "use client";
 
-import { DataTable } from "@/components/history/table/DataTable";
-import { ColumnsHistory } from "@/components/history/table/Columns";
+import { DataTable } from "@/components/tables/history/DataTable";
+import { ColumnsHistory } from "@/components/tables/history/Columns";
 import PageHeader from "@/components/page-header";
 import { dataHistory } from "@/data/history";
 import React from "react";

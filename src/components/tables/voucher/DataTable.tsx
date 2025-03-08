@@ -24,7 +24,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pagination } from "../../_global/table/pagination";
+import { Pagination } from "../pagination";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TableToolbar } from "./TableToolbar";
 
@@ -32,12 +33,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   title: string;
+  onClick: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   title,
+  onClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -65,6 +68,9 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4 overflow-x-auto p-4">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-4xl font-bold">{title}</h2>
+        <Button className="text-white" onClick={onClick}>
+          Tambah {title}
+        </Button>
       </div>
       <Card className="p-5 space-y-4">
         <TableToolbar table={table} />
@@ -72,11 +78,13 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, idx) => {
                   return (
                     <TableHead
                       key={header.id}
-                      className="bg-primary text-white"
+                      className={`${
+                        idx === headerGroup.headers.length - 1 && "text-right"
+                      } bg-primary text-white`}
                     >
                       {header.isPlaceholder
                         ? null
