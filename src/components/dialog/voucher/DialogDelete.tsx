@@ -1,3 +1,5 @@
+"use client";
+
 import { storeDialogVoucher } from "@/api/voucher/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";

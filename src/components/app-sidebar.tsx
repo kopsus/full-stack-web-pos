@@ -1,8 +1,8 @@
 "use client";
 
 import {
+  Box,
   Boxes,
-  // Bug,
   CircleDollarSign,
   History,
   Home,
@@ -56,6 +56,11 @@ const items = [
     title: "Voucher",
     url: "/voucher",
     icon: TicketPercent,
+  },
+  {
+    title: "Category",
+    url: "/category",
+    icon: Box,
   },
   {
     title: "Product",
