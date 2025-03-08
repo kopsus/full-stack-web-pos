@@ -1,10 +1,10 @@
 "use client";
 
-import { storeDialogTopping } from "@/api/topping/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { storeDialogTopping } from "@/types/topping";
 import { useAtom } from "jotai";
 import React from "react";
 

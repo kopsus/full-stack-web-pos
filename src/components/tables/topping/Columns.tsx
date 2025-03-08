@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TypeTopping } from "@/api/topping/types";
+import { TypeTopping } from "@/types/topping";
 import { TableAction } from "./TableActions";
 import { formatIDR } from "@/lib/format";
 

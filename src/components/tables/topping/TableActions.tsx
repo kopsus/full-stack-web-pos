@@ -10,9 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { storeDialogTopping } from "@/api/topping/store";
 import { useSetAtom } from "jotai";
-import { TypeTopping } from "@/api/topping/types";
+import { storeDialogTopping, TypeTopping } from "@/types/topping";
 
 interface ITableRowActions {
   item: TypeTopping;

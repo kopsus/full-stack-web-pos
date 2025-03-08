@@ -1,5 +1,4 @@
 import { atom } from "jotai";
-import { TypeTopping } from "./types";
 
 export type IDialog = {
   show: boolean;
@@ -7,10 +6,14 @@ export type IDialog = {
   data?: TypeTopping | null;
 };
 
-const storeDialogTopping = atom<IDialog>({
+export const storeDialogTopping = atom<IDialog>({
   show: false,
   type: "CREATE",
   data: null,
 });
 
-export { storeDialogTopping };
+export type TypeTopping = {
+  id: string;
+  name?: string;
+  price?: number;
+};
