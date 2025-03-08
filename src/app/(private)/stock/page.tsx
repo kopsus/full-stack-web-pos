@@ -6,7 +6,7 @@ import { DataTable } from "@/components/stock/table/DataTable";
 import { dataStock } from "@/data/stock";
 import { useSetAtom } from "jotai";
 import React from "react";
-import DialogMutation from "@/components/stock/dialog/DialogMutation";
+import DialogMutation from "@/components/dialog/stock/DialogMutation";
 import { ColumnsStock } from "@/components/stock/table/Columns";
 
 const Stock = () => {

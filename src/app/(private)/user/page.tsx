@@ -2,8 +2,8 @@
 
 import { storeDialogUser } from "@/api/user/store";
 import PageHeader from "@/components/page-header";
-import DialogDelete from "@/components/user/dialog/DialogDelete";
-import DialogMutation from "@/components/user/dialog/DialogMutation";
+import DialogDelete from "@/components/dialog/user/DialogDelete";
+import DialogMutation from "@/components/dialog/user/DialogMutation";
 import { ColumnsUser } from "@/components/user/table/Columns";
 import { DataTable } from "@/components/user/table/DataTable";
 import { dataUser } from "@/data/user";

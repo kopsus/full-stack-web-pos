@@ -2,8 +2,8 @@
 
 import { storeDialogVoucher } from "@/api/voucher/store";
 import PageHeader from "@/components/page-header";
-import DialogDelete from "@/components/voucher/dialog/DialogDelete";
-import DialogMutation from "@/components/voucher/dialog/DialogMutation";
+import DialogDelete from "@/components/dialog/voucher/DialogDelete";
+import DialogMutation from "@/components/dialog/voucher/DialogMutation";
 import { ColumnsVoucher } from "@/components/voucher/table/Columns";
 import { DataTable } from "@/components/voucher/table/DataTable";
 import { dataVoucher } from "@/data/voucher";

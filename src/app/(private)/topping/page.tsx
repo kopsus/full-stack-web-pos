@@ -2,8 +2,8 @@
 
 import { storeDialogTopping } from "@/api/topping/store";
 import PageHeader from "@/components/page-header";
-import DialogDelete from "@/components/topping/dialog/DialogDelete";
-import DialogMutation from "@/components/topping/dialog/DialogMutation";
+import DialogDelete from "@/components/dialog/topping/DialogDelete";
+import DialogMutation from "@/components/dialog/topping/DialogMutation";
 import { ColumnsTopping } from "@/components/topping/table/Columns";
 import { DataTable } from "@/components/topping/table/DataTable";
 import { dataTopping } from "@/data/topping";

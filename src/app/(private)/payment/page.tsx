@@ -2,8 +2,8 @@
 
 import { storeDialogPayment } from "@/api/payment/store";
 import PageHeader from "@/components/page-header";
-import DialogDelete from "@/components/payment/dialog/DialogDelete";
-import DialogMutation from "@/components/payment/dialog/DialogMutation";
+import DialogDelete from "@/components/dialog/payment/DialogDelete";
+import DialogMutation from "@/components/dialog/payment/DialogMutation";
 import { ColumnsPayment } from "@/components/payment/table/Columns";
 import { DataTable } from "@/components/payment/table/DataTable";
 import { dataPayment } from "@/data/payment";
