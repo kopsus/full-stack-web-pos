@@ -1,3 +1,5 @@
+"use client";
+
 import { storeDialogStock } from "@/api/stock/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";

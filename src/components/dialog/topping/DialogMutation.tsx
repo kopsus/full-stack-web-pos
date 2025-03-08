@@ -1,3 +1,5 @@
+"use client";
+
 import { storeDialogTopping } from "@/api/topping/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";

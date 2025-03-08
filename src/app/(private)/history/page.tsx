@@ -1,12 +1,10 @@
-"use client";
-
 import { DataTable } from "@/components/tables/history/DataTable";
 import { ColumnsHistory } from "@/components/tables/history/Columns";
 import PageHeader from "@/components/page-header";
 import { dataHistory } from "@/data/history";
 import React from "react";
 
-const History = () => {
+const page = () => {
   return (
     <>
       <PageHeader title="History" />
@@ -15,4 +13,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default page;
