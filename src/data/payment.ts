@@ -1,4 +1,4 @@
-import { TypePayment } from "@/api/payment/types";
+import { TypePayment } from "@/types/payment";
 
 export const dataPayment: TypePayment[] = [
   {

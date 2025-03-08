@@ -1,15 +1,14 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TypePayment } from "@/api/payment/types";
+import { TypePayment } from "@/types/payment";
 import { TableAction } from "./TableActions";
 
 export const ColumnsPayment: ColumnDef<TypePayment>[] = [
   {
-    accessorKey: "label",
+    accessorKey: "name",
     header: "Nama",
   },
-
   {
     accessorKey: "Action",
     header: "Action",

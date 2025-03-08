@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import React from "react";
 
 const useImagePreview = () => {
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [previewUrl, setPreviewUrl] = React.useState<string>("");
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -13,7 +13,7 @@ const useImagePreview = () => {
   };
 
   // Cleanup URL saat komponen unmount
-  useEffect(() => {
+  React.useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     };

@@ -1,10 +1,10 @@
 "use client";
 
-import { storeDialogPayment } from "@/api/payment/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { storeDialogPayment } from "@/types/payment";
 import { useAtom } from "jotai";
 import React from "react";
 
@@ -45,7 +45,7 @@ const DialogMutation = () => {
           placeholder="Masukan Nama"
           required
           onChange={onInputChange}
-          value={dialog.data?.label ?? ""}
+          value={dialog.data?.name ?? ""}
         />
       </div>
       <Button>Submit</Button>

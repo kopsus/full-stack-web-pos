@@ -3,15 +3,17 @@ import DialogDelete from "@/components/dialog/payment/DialogDelete";
 import DialogMutation from "@/components/dialog/payment/DialogMutation";
 import { ColumnsPayment } from "@/components/tables/payment/Columns";
 import { DataTable } from "@/components/tables/payment/DataTable";
-import { dataPayment } from "@/data/payment";
 
 import React from "react";
+import prisma from "@/lib/prisma";
 
-const page = () => {
+const page = async () => {
+  const payments = await prisma.payment.findMany();
+
   return (
     <>
       <PageHeader title="Payment" />
-      <DataTable title="Payment" data={dataPayment} columns={ColumnsPayment} />
+      <DataTable title="Payment" data={payments} columns={ColumnsPayment} />
       <DialogMutation />
       <DialogDelete />
     </>

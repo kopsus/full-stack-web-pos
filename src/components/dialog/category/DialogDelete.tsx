@@ -1,9 +1,9 @@
 "use client";
 
-import { storeDialogCategory } from "@/api/category/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
 import { deleteCategory } from "@/lib/actions/category";
+import { storeDialogCategory } from "@/types/category";
 import { useAtom } from "jotai";
 import React from "react";
 

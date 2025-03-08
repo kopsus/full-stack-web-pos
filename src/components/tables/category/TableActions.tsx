@@ -10,9 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { storeDialogCategory } from "@/api/category/store";
 import { useSetAtom } from "jotai";
-import { TypeCategory } from "@/types/category";
+import { storeDialogCategory, TypeCategory } from "@/types/category";
 
 interface ITableRowActions {
   item: TypeCategory;

@@ -29,8 +29,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TableToolbar } from "./TableToolbar";
 
-import { storeDialogPayment } from "@/api/payment/store";
 import { useSetAtom } from "jotai";
+import { storeDialogPayment } from "@/types/payment";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

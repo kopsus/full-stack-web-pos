@@ -1,6 +1,5 @@
 "use client";
 
-import { storeDialogCategory } from "@/api/category/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +19,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { storeDialogCategory } from "@/types/category";
 
 const DialogMutation = () => {
   const [dialog, setDialog] = useAtom(storeDialogCategory);

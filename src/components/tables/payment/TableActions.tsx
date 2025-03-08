@@ -10,9 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { storeDialogPayment } from "@/api/payment/store";
 import { useSetAtom } from "jotai";
-import { TypePayment } from "@/api/payment/types";
+import { storeDialogPayment, TypePayment } from "@/types/payment";
 
 interface ITableRowActions {
   item: TypePayment;

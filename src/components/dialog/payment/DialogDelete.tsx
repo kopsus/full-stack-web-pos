@@ -1,8 +1,8 @@
 "use client";
 
-import { storeDialogPayment } from "@/api/payment/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
+import { storeDialogPayment } from "@/types/payment";
 import { useAtom } from "jotai";
 import React from "react";
 
