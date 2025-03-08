@@ -15,10 +15,10 @@ enum EnumRole {
 model User {
   id        String  @id @default(cuid())
   username  String  @unique
-  password  String?
+  password  String
   role      EnumRole
 
-  // relasi ke transaksi
+  // Relasi ke transaksi
   transaksi Transaksi[]
 
   createdAt DateTime  @default(now())
@@ -28,14 +28,15 @@ model User {
 model Product {
   id                String  @id @default(cuid())
   name              String
-  category          String
   price             Int
   image             String
 
-  // relasi
+  // Relasi ke kategori & stok
   category_product  Category[]
   stock             Stock[]
-  transaksi         Transaksi[]
+
+  // Relasi many-to-many ke transaksi
+  transaksi         TransaksiProduct[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @default(now())
@@ -45,7 +46,7 @@ model Category {
   id          String  @id @default(cuid())
   name        String
 
-  // foreign key ke product
+  // Foreign key ke product
   product_id  String
   product     Product  @relation(fields: [product_id], references: [id])
 
@@ -54,10 +55,10 @@ model Category {
 }
 
 model Stock {
-  id        String  @id @default(cuid())
-  stock     Int
+  id          String  @id @default(cuid())
+  stock       Int
 
-  // foreign key ke product
+  // Foreign key ke product
   product_id  String
   product     Product  @relation(fields: [product_id], references: [id])
 
@@ -66,10 +67,10 @@ model Stock {
 }
 
 model Payment {
-  id          String    @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
 
-  // relasi ke Transaksi
+  // Relasi ke Transaksi
   transaksi   Transaksi[]
 
   createdAt   DateTime  @default(now())
@@ -81,28 +82,38 @@ model Transaksi {
   customer_name String
   total_amount  Int
 
-  // foreign key ke user
+  // Foreign key ke user
   user_id  String
   user     User  @relation(fields: [user_id], references: [id])
 
-  // foreign key ke product
-  product_id  String
-  product     Product  @relation(fields: [product_id], references: [id])
-
-  // foreign key ke payment
+  // Foreign key ke payment
   payment_id  String
   payment     Payment @relation(fields: [payment_id], references: [id])
 
-  // foreign key ke Topping
-  topping_id  String?
-  topping     Topping? @relation(fields: [topping_id], references: [id])
-
-  // foreign key ke voucher
-  voucher_id  String?
-  voucher     Voucher? @relation(fields: [voucher_id], references: [id])
+  // Relasi many-to-many ke produk, topping, dan voucher
+  transaksi_product TransaksiProduct[]
+  transaksi_topping TransaksiTopping[]
+  transaksi_voucher TransaksiVoucher[]
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
+}
+
+model TransaksiProduct {
+  id           String  @id @default(cuid())
+
+  // Foreign key ke transaksi
+  transaksi_id String
+  transaksi    Transaksi @relation(fields: [transaksi_id], references: [id])
+
+  // Foreign key ke product
+  product_id   String
+  product      Product @relation(fields: [product_id], references: [id])
+
+  quantity     Int
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
 }
 
 model Topping {
@@ -110,12 +121,28 @@ model Topping {
   name        String
   price       Int
 
-  // relasi ke transaksi
-  transaksi   Transaksi[]
+  // Relasi many-to-many ke transaksi
+  transaksi_topping TransaksiTopping[]
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
+}
 
+model TransaksiTopping {
+  id           String  @id @default(cuid())
+
+  // Foreign key ke transaksi
+  transaksi_id String
+  transaksi    Transaksi @relation(fields: [transaksi_id], references: [id])
+
+  // Foreign key ke topping
+  topping_id   String
+  topping      Topping @relation(fields: [topping_id], references: [id])
+
+  quantity     Int
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
 }
 
 model Voucher {
@@ -127,9 +154,24 @@ model Voucher {
   max_usage     Int
   voucher_end   DateTime
 
-  // relasi ke transaksi
-  transaksi     Transaksi[]
+  // Relasi many-to-many ke transaksi
+  transaksi_voucher TransaksiVoucher[]
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now())
+}
+
+model TransaksiVoucher {
+  id           String  @id @default(cuid())
+
+  // Foreign key ke transaksi
+  transaksi_id String
+  transaksi    Transaksi @relation(fields: [transaksi_id], references: [id])
+
+  // Foreign key ke voucher
+  voucher_id   String
+  voucher      Voucher @relation(fields: [voucher_id], references: [id])
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
 }
