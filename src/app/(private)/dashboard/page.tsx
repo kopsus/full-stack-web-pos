@@ -1,6 +1,6 @@
 "use client";
 
-import { TypeProduct } from "@/api/product/types";
+import { TypeProduct } from "@/types/product";
 import CardMenu from "@/components/_global/CardMenu";
 import CardState from "@/components/_global/CardState";
 import FormCart from "@/components/forms/dashboard/FormCart";

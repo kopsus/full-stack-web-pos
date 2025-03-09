@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TypeProduct } from "@/api/product/types";
+import { TypeProduct } from "@/types/product";
 import { TableAction } from "./TableActions";
 import { formatIDR } from "@/lib/format";
 import Image from "next/image";

@@ -1,8 +1,8 @@
 "use client";
 
-import { storeDialogProduct } from "@/api/product/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
+import { storeDialogProduct } from "@/types/product";
 import { useAtom } from "jotai";
 import React from "react";
 

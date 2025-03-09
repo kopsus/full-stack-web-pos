@@ -30,6 +30,7 @@ const DialogMutation = () => {
 
   const form = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
+    defaultValues: { name: "" },
   });
 
   React.useEffect(() => {

@@ -1,11 +1,11 @@
 "use client";
 
-import { storeDialogProduct } from "@/api/product/store";
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useImagePreview from "@/hooks/useImagePreview";
+import { storeDialogProduct } from "@/types/product";
 import { useAtom } from "jotai";
 import Image from "next/image";
 import React from "react";

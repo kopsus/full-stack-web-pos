@@ -15,18 +15,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import { TypeProduct } from "@/api/product/types";
-import { dataSalesType } from "@/data/sales-type";
-import prisma from "@/lib/prisma";
+import { TypeProduct } from "@/types/product";
 
 interface IFormCart {
   cartItems: TypeProduct[];
   updateQuantity: (id: string, amount: number) => void;
 }
 
-const FormCart = async ({ cartItems, updateQuantity }: IFormCart) => {
-  const payments = await prisma.payment.findMany();
-
+const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * (item.quantity || 0),
     0
@@ -114,11 +110,8 @@ const FormCart = async ({ cartItems, updateQuantity }: IFormCart) => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Tipe Penjualan</SelectLabel>
-                    {dataSalesType.map((item, index) => (
-                      <SelectItem key={index} value={item.value}>
-                        {item.label}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="DO">DO</SelectItem>
+                    <SelectItem value="dine-in">Dine In</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -134,11 +127,9 @@ const FormCart = async ({ cartItems, updateQuantity }: IFormCart) => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Metode Pembayaran</SelectLabel>
-                    {payments.map((item, index) => (
-                      <SelectItem key={index} value={item.id}>
-                        {item.name}
-                      </SelectItem>
-                    ))}
+
+                    <SelectItem value="cash">Cash</SelectItem>
+                    <SelectItem value="bca">BCA</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

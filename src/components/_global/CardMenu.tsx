@@ -3,7 +3,7 @@ import { Card } from "../ui/card";
 import Image from "next/image";
 import { formatIDR } from "@/lib/format";
 import { Button } from "../ui/button";
-import { TypeProduct } from "@/api/product/types";
+import { TypeProduct } from "@/types/product";
 
 interface ICardMenu {
   id: string;
