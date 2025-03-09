@@ -1,100 +1,99 @@
 "use server";
 
-import { CategorySchema } from "@/lib/formValidationSchemas/category";
+import { PaymentSchema } from "@/lib/formValidationSchemas/payment";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { responServerAction } from "./responseServerAction";
 
-export const createCategory = async (data: CategorySchema) => {
+export const createPayment = async (data: PaymentSchema) => {
   try {
-    const existingCategory = await prisma.category.findFirst({
+    const existingPayment = await prisma.payment.findFirst({
       where: {
         name: data.name,
         NOT: { id: data.id },
       },
     });
 
-    if (existingCategory) {
+    if (existingPayment) {
       return responServerAction({
         statusError: true,
-        messageError: `Nama kategori ${existingCategory.name} sudah digunakan. Silakan gunakan nama lain.`,
+        messageError: `Pembayaran ${existingPayment.name} sudah tersedia. Silakan gunakan pembayaran lain.`,
       });
     }
 
-    await prisma.category.create({
+    await prisma.payment.create({
       data: {
         name: data.name,
       },
     });
 
-    revalidatePath("/category");
+    revalidatePath("/payment");
     return responServerAction({
       statusSuccess: true,
-      messageSuccess: "Berhasil membuat Category",
+      messageSuccess: "Berhasil membuat Payment",
     });
   } catch (error) {
     console.error(error);
-
     return responServerAction({
       statusError: true,
-      messageError: "Gagal membuat Category",
+      messageError: "Gagal membuat Payment",
     });
   }
 };
 
-export const updateCategory = async (data: CategorySchema & { id: string }) => {
+export const updatePayment = async (data: PaymentSchema & { id: string }) => {
   try {
-    const existingCategory = await prisma.category.findFirst({
+    const existingPayment = await prisma.payment.findFirst({
       where: {
         name: data.name,
         NOT: { id: data.id },
       },
     });
 
-    if (existingCategory) {
+    if (existingPayment) {
       return responServerAction({
         statusError: true,
-        messageError: `Nama kategori ${existingCategory.name} sudah digunakan. Silakan gunakan nama lain.`,
+        messageError: `Pembayaran ${existingPayment.name} sudah tersedia. Silakan gunakan pembayaran lain.`,
       });
     }
 
-    await prisma.category.update({
+    await prisma.payment.update({
       where: { id: data.id },
       data: {
         name: data.name,
       },
     });
 
-    revalidatePath("/category");
+    revalidatePath("/payment");
     return responServerAction({
       statusSuccess: true,
-      messageSuccess: "Berhasil mengupdate Category",
+      messageSuccess: "Berhasil mengupdate Payment",
     });
   } catch (error) {
     console.error(error);
     return responServerAction({
       statusError: true,
-      messageError: "Gagal mengupdate Category",
+      messageError: "Gagal mengupdate Payment",
     });
   }
 };
 
-export const deleteCategory = async (id: string) => {
+export const deletePayment = async (id: string) => {
   try {
-    await prisma.category.delete({
+    await prisma.payment.delete({
       where: { id },
     });
 
-    revalidatePath("/category");
+    revalidatePath("/payment");
     return responServerAction({
       statusSuccess: true,
-      messageSuccess: "Berhasil menghapus Category",
+      messageSuccess: "Berhasil menghapus Payment",
     });
   } catch (error) {
     console.error(error);
     return responServerAction({
       statusError: true,
-      messageError: "Gagal menghapus Category",
+      messageError: "Gagal menghapus Payment",
     });
   }
 };

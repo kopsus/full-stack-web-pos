@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { TypeCategory } from "./category";
 
 export type IDialog = {
   show: boolean;
@@ -18,4 +19,6 @@ export type TypeProduct = {
   name: string;
   price: number;
   quantity?: number;
+  category_id?: string;
+  category?: TypeCategory[];
 };

@@ -12,13 +12,6 @@ export const ColumnsProduct: ColumnDef<TypeProduct>[] = [
     header: "Nama",
   },
   {
-    accessorKey: "price",
-    header: "Price",
-    cell: ({ row }) => {
-      return <p>{formatIDR(row.getValue("price"))}</p>;
-    },
-  },
-  {
     accessorKey: "image",
     header: "Image",
     cell: ({ row }) => {
@@ -34,6 +27,17 @@ export const ColumnsProduct: ColumnDef<TypeProduct>[] = [
         </div>
       );
     },
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }) => {
+      return <p>{formatIDR(row.getValue("price"))}</p>;
+    },
+  },
+  {
+    accessorKey: "quantity",
+    header: "Stock",
   },
   {
     accessorKey: "Action",

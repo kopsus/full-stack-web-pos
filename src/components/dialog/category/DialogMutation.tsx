@@ -20,6 +20,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { storeDialogCategory } from "@/types/category";
+import { toast } from "react-toastify";
 
 const DialogMutation = () => {
   const [dialog, setDialog] = useAtom(storeDialogCategory);
@@ -54,15 +55,15 @@ const DialogMutation = () => {
         result = await createCategory(values);
       }
 
-      if (result.success) {
-        alert(result.success.message);
+      if (result.success.status) {
+        toast.success(result.success.message);
         closeDialog();
       } else {
-        alert(result.error.message);
+        toast.error(result.error.message);
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan");
+      toast.error("Terjadi kesalahan");
     }
   }
 
@@ -88,7 +89,11 @@ const DialogMutation = () => {
                   Nama Category
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Masukan nama category" />
+                  <Input
+                    {...field}
+                    required
+                    placeholder="Masukan nama category"
+                  />
                 </FormControl>
               </FormItem>
             )}

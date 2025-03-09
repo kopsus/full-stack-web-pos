@@ -6,6 +6,7 @@ import { deleteCategory } from "@/lib/actions/category";
 import { storeDialogCategory } from "@/types/category";
 import { useAtom } from "jotai";
 import React from "react";
+import { toast } from "react-toastify";
 
 const DialogDelete = () => {
   const [dialog, setDialog] = useAtom(storeDialogCategory);
@@ -21,10 +22,10 @@ const DialogDelete = () => {
     const res = await deleteCategory(dialog.data?.id!);
 
     if (res.success) {
-      alert(res.success.message);
+      toast.success(res.success.message);
       closeDialog();
     } else {
-      alert(res.error.message);
+      toast.error(res.error.message);
     }
   };
 
