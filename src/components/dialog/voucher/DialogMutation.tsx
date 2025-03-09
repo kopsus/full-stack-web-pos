@@ -2,33 +2,91 @@
 
 import DialogLayout from "@/components/_global/DialogLayout";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { createVoucher, updateVoucher } from "@/lib/actions/voucher";
+import {
+  voucherSchema,
+  VoucherSchema,
+} from "@/lib/formValidationSchemas/voucher";
 import { storeDialogVoucher } from "@/types/voucher";
+import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
 import { useAtom } from "jotai";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const DialogMutation = () => {
   const [dialog, setDialog] = useAtom(storeDialogVoucher);
 
   const closeDialog = () => {
-    setDialog((prev) => ({
-      ...prev,
-      show: false,
-    }));
+    setDialog((prev) => ({ ...prev, show: false, data: null }));
   };
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const form = useForm<VoucherSchema>({
+    resolver: zodResolver(voucherSchema),
+    defaultValues: {
+      name: "",
+      percentage: 0,
+      max_usage: 0,
+      minimum_price: 0,
+      maximum_price: 0,
+      voucher_end: null,
+    },
+  });
 
-    setDialog((prev) => ({
-      ...prev,
-      data: {
-        ...prev.data!,
-        [name]: value,
-      },
-    }));
-  };
+  React.useEffect(() => {
+    if (dialog.type === "CREATE") {
+      form.reset({
+        name: "",
+        percentage: 0,
+        max_usage: 0,
+        minimum_price: 0,
+        maximum_price: 0,
+        voucher_end: null,
+      });
+    } else if (dialog.type === "UPDATE" && dialog.data) {
+      form.reset({
+        name: dialog.data.name,
+        percentage: dialog.data.percentage,
+        minimum_price: dialog.data.minimum_price,
+        maximum_price: dialog.data.maximum_price,
+        max_usage: dialog.data.max_usage,
+        voucher_end: dialog.data.voucher_end,
+      });
+    }
+  }, [dialog.type, dialog.data, form]);
+
+  const isSubmitting = form.formState.isSubmitting;
+
+  async function onSubmit(values: VoucherSchema) {
+    try {
+      let result;
+      if (dialog.type === "UPDATE" && dialog.data?.id) {
+        result = await updateVoucher({ id: dialog.data.id, ...values });
+      } else {
+        result = await createVoucher(values);
+      }
+
+      if (result.success.status) {
+        toast.success(result.success.message);
+        closeDialog();
+      } else {
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Terjadi kesalahan");
+    }
+  }
 
   return (
     <DialogLayout
@@ -36,86 +94,124 @@ const DialogMutation = () => {
       onHide={closeDialog}
       title={`${dialog.type === "CREATE" ? "Tambah Voucher" : "Edit Voucher"}`}
     >
-      <div className="flex flex-col gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="name">Nama Voucher</Label>
-          <Input
-            id="name"
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-3 flex flex-col"
+        >
+          <FormField
+            control={form.control}
             name="name"
-            type="text"
-            placeholder="Masukan Nama Voucher"
-            required
-            onChange={onInputChange}
-            value={dialog.data?.name ?? ""}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nama Voucher</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    required
+                    placeholder="Masukan nama voucher"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="percentage">Percentage</Label>
-          <Input
-            id="percentage"
+          <FormField
+            control={form.control}
             name="percentage"
-            type="number"
-            placeholder="Masukan Percentage"
-            required
-            onChange={onInputChange}
-            value={dialog.data?.percentage ?? ""}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Percentage</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    required
+                    placeholder="Masukan percentage"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="minimum_price">Minimum Price</Label>
-          <Input
-            id="minimum_price"
+          <FormField
+            control={form.control}
             name="minimum_price"
-            type="number"
-            placeholder="Masukan Minimum Price"
-            required
-            onChange={onInputChange}
-            value={dialog.data?.minimum_price ?? ""}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Minimum Price</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    required
+                    type="number"
+                    placeholder="Masukan Minimum Price"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="maximum_price">Maximum Price</Label>
-          <Input
-            id="maximum_price"
+          <FormField
+            control={form.control}
             name="maximum_price"
-            type="number"
-            placeholder="Masukan Maximum Price"
-            required
-            onChange={onInputChange}
-            value={dialog.data?.maximum_price ?? ""}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Maximum Price</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    required
+                    type="number"
+                    placeholder="Masukan Maximum Price"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="max_usage">Max Usage</Label>
-          <Input
-            id="max_usage"
+          <FormField
+            control={form.control}
             name="max_usage"
-            type="number"
-            placeholder="Masukan Max Usage"
-            required
-            onChange={onInputChange}
-            value={dialog.data?.max_usage ?? ""}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Maksimal Digunakan</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    required
+                    type="number"
+                    placeholder="Masukan max usage"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="end_date">Voucher End</Label>
-          <Input
-            id="end_date"
+          <FormField
+            control={form.control}
             name="voucher_end"
-            type="date"
-            placeholder="Masukan Voucher End"
-            required
-            onChange={onInputChange}
-            value={
-              dialog.data?.voucher_end
-                ? new Date(dialog.data.voucher_end).toISOString().split("T")[0]
-                : ""
-            }
-            className="block"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700">
+                  Berakhir Voucher
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    {...field}
+                    value={dayjs(field.value).format("YYYY-MM-DD")}
+                    onChange={(e) => field.onChange(new Date(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-      </div>
-      <Button>Submit</Button>
+          <Button disabled={isSubmitting}>
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
+          </Button>
+        </form>
+      </Form>
     </DialogLayout>
   );
 };
