@@ -16,11 +16,23 @@ export const storeDialogHistory = atom<IDialog>({
   data: null,
 });
 
+export type TypeTransaction = {
+  id: string;
+  customer_name: string;
+  total_amount: number;
+  sales_type: "DO" | "DineIn";
+  user_id: string;
+  payment_id: string;
+  voucher_id: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type TypeTransaksi = {
   id: string;
   customer_name: string;
   total_amount: number;
-  sales_type: string;
+  sales_type: "DO" | "DineIn";
   user_id: string;
   payment_id: string;
   voucher_id: string | null;

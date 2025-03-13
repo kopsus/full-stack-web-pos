@@ -27,8 +27,6 @@ export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
     header: "Discount",
     cell: ({ row }) => {
       const discount = row.original.voucher?.discount;
-      console.log("discount", discount);
-
       return discount ? <p>{discount}%</p> : <p>Tidak Ada</p>;
     },
   },

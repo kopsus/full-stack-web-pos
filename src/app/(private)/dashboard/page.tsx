@@ -7,6 +7,7 @@ const page = async () => {
   const products = await prisma.product.findMany();
   const payments = await prisma.payment.findMany();
   // const toppings = await prisma.topping.findMany();
+  const transactions = await prisma.transaksi.findMany();
 
   return (
     <>
@@ -14,6 +15,7 @@ const page = async () => {
       <Dashboard
         dataProduct={products}
         dataPayment={payments}
+        dataTransaction={transactions}
         // dataTopping={toppings}
       />
     </>

@@ -6,13 +6,19 @@ import CardMenu from "@/components/_global/CardMenu";
 import CardState from "@/components/_global/CardState";
 import FormCart from "@/components/forms/dashboard/FormCart";
 import { TypePayment } from "@/types/payment";
+import { TypeTransaction } from "@/types/transaction";
 
 interface IDashboard {
   dataProduct: TypeProduct[];
   dataPayment: TypePayment[];
+  dataTransaction: TypeTransaction[];
 }
 
-const Dashboard = ({ dataProduct, dataPayment }: IDashboard) => {
+const Dashboard = ({
+  dataProduct,
+  dataPayment,
+  dataTransaction,
+}: IDashboard) => {
   const [cartItems, setCartItems] = React.useState<TypeProduct[]>([]);
 
   const addToCart = (product: TypeProduct) => {
@@ -45,7 +51,10 @@ const Dashboard = ({ dataProduct, dataPayment }: IDashboard) => {
     <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="col-span-1 lg:col-span-2 flex flex-col gap-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:items-center gap-4">
-          <CardState />
+          <CardState
+            dataTransaction={dataTransaction}
+            dataProduct={dataProduct}
+          />
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
           {dataProduct.map((item, index) => (
