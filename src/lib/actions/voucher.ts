@@ -7,28 +7,29 @@ import { responServerAction } from "./responseServerAction";
 
 export const createVoucher = async (data: VoucherSchema) => {
   try {
-    const existingVoucher = await prisma.voucher.findFirst({
-      where: {
-        name: data.name,
-        NOT: { id: data.id },
-      },
-    });
+    // const existingVoucher = await prisma.voucher.findFirst({
+    //   where: {
+    //     name: data.name,
+    //     NOT: { id: data.id },
+    //   },
+    // });
 
-    if (existingVoucher) {
-      return responServerAction({
-        statusError: true,
-        messageError: `Nama Voucher ${existingVoucher.name} sudah digunakan. Silakan gunakan nama lain.`,
-      });
-    }
+    // if (existingVoucher) {
+    //   return responServerAction({
+    //     statusError: true,
+    //     messageError: `Nama Voucher ${existingVoucher.name} sudah digunakan. Silakan gunakan nama lain.`,
+    //   });
+    // }
 
     await prisma.voucher.create({
       data: {
-        name: data.name,
-        percentage: data.percentage,
-        max_usage: data.max_usage,
-        minimum_price: data.minimum_price,
-        maximum_price: data.maximum_price,
-        voucher_end: data.voucher_end!,
+        discount: data.discount,
+        // name: data.name,
+        // percentage: data.percentage,
+        // max_usage: data.max_usage,
+        // minimum_price: data.minimum_price,
+        // maximum_price: data.maximum_price,
+        // voucher_end: data.voucher_end!,
       },
     });
 
@@ -49,29 +50,30 @@ export const createVoucher = async (data: VoucherSchema) => {
 
 export const updateVoucher = async (data: VoucherSchema & { id: string }) => {
   try {
-    const existingVoucher = await prisma.voucher.findFirst({
-      where: {
-        name: data.name,
-        NOT: { id: data.id },
-      },
-    });
+    // const existingVoucher = await prisma.voucher.findFirst({
+    //   where: {
+    //     name: data.name,
+    //     NOT: { id: data.id },
+    //   },
+    // });
 
-    if (existingVoucher) {
-      return responServerAction({
-        statusError: true,
-        messageError: `Nama Voucher ${existingVoucher.name} sudah digunakan. Silakan gunakan nama lain.`,
-      });
-    }
+    // if (existingVoucher) {
+    //   return responServerAction({
+    //     statusError: true,
+    //     messageError: `Nama Voucher ${existingVoucher.name} sudah digunakan. Silakan gunakan nama lain.`,
+    //   });
+    // }
 
     await prisma.voucher.update({
       where: { id: data.id },
       data: {
-        name: data.name,
-        percentage: data.percentage,
-        max_usage: data.max_usage,
-        minimum_price: data.minimum_price,
-        maximum_price: data.maximum_price,
-        voucher_end: data.voucher_end!,
+        discount: data.discount,
+        // name: data.name,
+        // percentage: data.percentage,
+        // max_usage: data.max_usage,
+        // minimum_price: data.minimum_price,
+        // maximum_price: data.maximum_price,
+        // voucher_end: data.voucher_end!,
       },
     });
 

@@ -43,6 +43,13 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [selectedOrderId, setSelectedOrderId] = React.useState<string | null>(
+    null
+  );
+
+  const handleRowClick = (orderId: string) => {
+    setSelectedOrderId(selectedOrderId === orderId ? null : orderId);
+  };
 
   const table = useReactTable({
     data,
@@ -92,21 +99,36 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={`${row.id}-${cell.id}`} className="py-5">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const history = row.original as { id: string };
+                return (
+                  <React.Fragment key={row.id}>
+                    <TableRow
+                      data-state={row.getIsSelected() && "selected"}
+                      onClick={() => handleRowClick(history.id)}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={`${row.id}-${cell.id}`}
+                          className="py-5"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                    {selectedOrderId === history.id && (
+                      <TableRow>
+                        <TableCell colSpan={columns.length}>
+                          <p>asu</p>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </React.Fragment>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell

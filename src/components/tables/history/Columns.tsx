@@ -1,31 +1,49 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TypeHistory } from "@/api/history/types";
-import { formatIDR } from "@/lib/format";
+import { TypeTransaksi } from "@/types/transaction";
+import { formatDate, formatIDR } from "@/lib/format";
 
-export const ColumnsHistory: ColumnDef<TypeHistory>[] = [
+export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "customer_name",
     header: "Nama",
   },
   {
-    accessorKey: "produk",
-    header: "Produk",
-  },
-  {
-    accessorKey: "payment",
-    header: "Pembayaran",
-  },
-  {
-    accessorKey: "total",
-    header: "Total",
+    header: "Cashier",
     cell: ({ row }) => {
-      return <p>{formatIDR(row.getValue("total"))}</p>;
+      const cashier = row.original.user.username;
+      return <p>{cashier}</p>;
     },
   },
   {
-    accessorKey: "date",
+    header: "Pembayaran",
+    cell: ({ row }) => {
+      const payment = row.original.payment.name;
+      return <p>{payment}</p>;
+    },
+  },
+  {
+    header: "Discount",
+    cell: ({ row }) => {
+      const discount = row.original.voucher?.discount;
+      console.log("discount", discount);
+
+      return discount ? <p>{discount}%</p> : <p>Tidak Ada</p>;
+    },
+  },
+  {
+    accessorKey: "total_amount",
+    header: "Total",
+    cell: ({ row }) => {
+      return <p>{formatIDR(row.getValue("total_amount"))}</p>;
+    },
+  },
+  {
+    accessorKey: "updatedAt",
     header: "Tanggal",
+    cell: ({ row }) => {
+      return <p>{formatDate(row.getValue("updatedAt"))}</p>;
+    },
   },
 ];

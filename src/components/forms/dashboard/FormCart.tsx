@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { Label } from "../../ui/label";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import Image from "next/image";
@@ -9,20 +8,42 @@ import { MinusCircle, PlusCircle, Trash } from "lucide-react";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
 import { TypeProduct } from "@/types/product";
+import { TypePayment } from "@/types/payment";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import {
+  transactionSchema,
+  TransactionSchema,
+} from "@/lib/formValidationSchemas/transaction";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createTransaction } from "@/lib/actions/transaction";
+import { toast } from "react-toastify";
 
 interface IFormCart {
   cartItems: TypeProduct[];
   updateQuantity: (id: string, amount: number) => void;
+  dataPayment: TypePayment[];
+  setCartItems: React.Dispatch<React.SetStateAction<TypeProduct[]>>;
 }
 
-const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
+const FormCart = ({
+  cartItems,
+  updateQuantity,
+  dataPayment,
+  setCartItems,
+}: IFormCart) => {
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * (item.quantity || 0),
     0
@@ -30,115 +51,218 @@ const FormCart = ({ cartItems, updateQuantity }: IFormCart) => {
   const tax = subtotal * 0.1;
   const total = subtotal + tax;
 
+  // Setup form
+  const form = useForm<TransactionSchema>({
+    resolver: zodResolver(transactionSchema),
+    defaultValues: {
+      customer_name: "",
+      sales_type: "DO",
+      user_id: "cm872bpwk0000wxpkjbi702mw",
+      payment_id: "",
+      voucher_id: null,
+      transaksi_product: cartItems.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity || 1,
+      })),
+      total_amount: total,
+    },
+    mode: "onSubmit",
+  });
+
+  React.useEffect(() => {
+    form.setValue(
+      "transaksi_product",
+      cartItems.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity || 1,
+      }))
+    );
+  }, [cartItems, form]);
+
+  React.useEffect(() => {
+    form.setValue("total_amount", total);
+  }, [form, total]);
+
+  const isSubmitting = form.formState.isSubmitting;
+
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
+  async function onSubmit() {
+    const values = form.getValues();
+
+    try {
+      const result = await createTransaction(values);
+
+      if (result.success) {
+        toast.success(result.success.message);
+
+        // Reset form
+        form.reset({
+          customer_name: "",
+          sales_type: "DO",
+          user_id: "cm872bpwk0000wxpkjbi702mw",
+          payment_id: "",
+          voucher_id: "",
+          transaksi_product: [],
+          total_amount: 0,
+        });
+
+        clearCart();
+      } else if (result.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Error saat membuat transaksi:", error);
+    }
+  }
+
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-2xl">Rincian Order</CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="flex flex-col gap-8">
-          <div className="flex flex-col gap-2">
-            {cartItems.map((item) => (
-              <div key={item.id} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-20 h-20 rounded-lg overflow-hidden">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      width={0}
-                      height={0}
-                      sizes="100vw"
-                    />
-                  </div>
-                  <div className="text-sm flex flex-col gap-3">
-                    <p className="line-clamp-1 font-bold">{item.name}</p>
-                    <p>{formatIDR(item.price * item.quantity!)}</p>
-                    <div className="flex items-center gap-2">
-                      <MinusCircle
-                        className="cursor-pointer"
-                        onClick={() => updateQuantity(item.id, -1)}
-                      />
-                      <p>{item.quantity}</p>
-                      <PlusCircle
-                        className="cursor-pointer"
-                        onClick={() => updateQuantity(item.id, 1)}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-8"
+          >
+            <div className="flex flex-col gap-4">
+              {cartItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 h-20 rounded-lg overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        width={0}
+                        height={0}
+                        sizes="100vw"
                       />
                     </div>
+                    <div className="text-sm flex flex-col gap-3">
+                      <p className="line-clamp-1 font-bold">{item.name}</p>
+                      <p>{formatIDR(item.price * (item.quantity || 1))}</p>
+                      <div className="flex items-center gap-2">
+                        <MinusCircle
+                          className="cursor-pointer"
+                          onClick={() => updateQuantity(item.id, -1)}
+                        />
+                        <p>{item.quantity}</p>
+                        <PlusCircle
+                          className="cursor-pointer"
+                          onClick={() => updateQuantity(item.id, 1)}
+                        />
+                      </div>
+                    </div>
                   </div>
+                  <Trash
+                    className="cursor-pointer"
+                    onClick={() => updateQuantity(item.id, -item.quantity!)}
+                    color="red"
+                  />
                 </div>
-                <Trash
-                  className="cursor-pointer"
-                  onClick={() => updateQuantity(item.id, -item.quantity!)}
-                  color="red"
-                />
+              ))}
+            </div>
+
+            {/* Total */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between text-sm">
+                <p>Subtotal</p>
+                <p className="font-semibold">{formatIDR(subtotal)}</p>
               </div>
-            ))}
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between text-sm">
-              <p>Subtotal</p>
-              <p className="font-semibold">{formatIDR(subtotal)}</p>
+              <div className="flex items-center justify-between text-sm">
+                <p>Tax (10%)</p>
+                <p className="font-semibold">{formatIDR(tax)}</p>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <p>Total</p>
+                <p className="font-semibold text-red-600">{formatIDR(total)}</p>
+              </div>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <p>Tax (10%)</p>
-              <p className="font-semibold">{formatIDR(tax)}</p>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <p>Total</p>
-              <p className="font-semibold text-red-600">{formatIDR(total)}</p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Nama</Label>
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Masukan nama pembeli"
-                required
+
+            <div className="flex flex-col gap-2">
+              {/* Customer Name */}
+              <FormField
+                control={form.control}
+                name="customer_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nama</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Masukan nama pembeli" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Sales Type */}
+              <FormField
+                control={form.control}
+                name="sales_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipe Penjualan</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih Tipe Penjualan" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="DO">DO</SelectItem>
+                        <SelectItem value="DineIn">Dine In</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Payment Method */}
+              <FormField
+                control={form.control}
+                name="payment_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Metode Pembayaran</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih Metode Pembayaran" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {dataPayment.map((item) => (
+                          <SelectItem key={item.id} value={item.id}>
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="sales_type">Tipe Penjualan</Label>
-              </div>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Tipe Penjualan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Tipe Penjualan</SelectLabel>
-                    <SelectItem value="DO">DO</SelectItem>
-                    <SelectItem value="dine-in">Dine In</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="payment">Metode Pembayaran</Label>
-              </div>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Metode Pembayaran" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Metode Pembayaran</SelectLabel>
 
-                    <SelectItem value="cash">Cash</SelectItem>
-                    <SelectItem value="bca">BCA</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <Button type="submit" className="w-full">
-            Submit
-          </Button>
-        </form>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Loading..." : "Simpan"}
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );

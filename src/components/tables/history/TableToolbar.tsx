@@ -11,11 +11,13 @@ export function TableToolbar<TData>({ table }: ITableToolbar<TData>) {
     <div className="flex items-center justify-end">
       <Input
         type="text"
-        placeholder="Cari Product"
+        placeholder="Cari Berdasarkan Nama"
         className="w-[200px] md:w-[250px] border outline-none"
-        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+        value={
+          (table.getColumn("customer_name")?.getFilterValue() as string) ?? ""
+        }
         onChange={(event) =>
-          table.getColumn("name")?.setFilterValue(event.target.value)
+          table.getColumn("customer_name")?.setFilterValue(event.target.value)
         }
       />
     </div>

@@ -18,7 +18,6 @@ model User {
   password  String
   role      EnumRole
 
-  // Relasi ke transaksi
   transaksi Transaksi[]
 
   createdAt DateTime  @default(now())
@@ -26,85 +25,91 @@ model User {
 }
 
 model Category {
-  id          String  @id @default(cuid())
-  name        String  @unique
+  id        String  @id @default(cuid())
+  name      String  @unique
 
-  // Relasi ke Product
-  products    Product[]
+  products  Product[]
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
-}
-
-model Product {
-  id                String  @id @default(cuid())
-  name              String  @unique
-  price             Int
-  quantity          Int
-  image             String
-
-  // Foreign key ke Category
-  category_id       String
-  category          Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
-
-  // Relasi many-to-many ke transaksi
-  transaksi         TransaksiProduct[]
-
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
 }
 
 model Payment {
-  id          String  @id @default(cuid())
-  name        String  @unique
+  id        String  @id @default(cuid())
+  name      String  @unique
 
-  // Relasi ke Transaksi
-  transaksi   Transaksi[]
+  transaksi Transaksi[]
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+}
+
+enum EnumSalesType {
+  DO
+  DineIn
 }
 
 model Transaksi {
   id                String  @id @default(cuid())
   customer_name     String
   total_amount      Int
+  sales_type        EnumSalesType @default(DO)
 
-  // Foreign key ke user
   user_id           String
-  user              User  @relation(fields: [user_id], references: [id])
+  user              User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  // Foreign key ke payment
   payment_id        String
-  payment           Payment @relation(fields: [payment_id], references: [id])
+  payment           Payment @relation(fields: [payment_id], references: [id], onDelete: Cascade)
 
-  // Relasi one-to-one ke voucher
-  voucher_id        String? @unique
+  voucher_id        String? 
   voucher           Voucher? @relation(fields: [voucher_id], references: [id])
 
-  // Relasi many-to-many ke produk, topping, dan voucher
   transaksi_product TransaksiProduct[]
-  transaksi_topping TransaksiTopping[]
 
   createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model TransaksiProduct {
   id           String  @id @default(cuid())
 
-  // Foreign key ke transaksi
   transaksi_id String
-  transaksi    Transaksi @relation(fields: [transaksi_id], references: [id])
+  transaksi    Transaksi @relation(fields: [transaksi_id], references: [id], onDelete: Cascade)
 
-  // Foreign key ke product
   product_id   String
-  product      Product @relation(fields: [product_id], references: [id])
+  product      Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
   quantity     Int
+  subtotal     Int  // (quantity * price)
 
   createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Product {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  price       Int
+  quantity    Int
+  image       String
+
+  category_id String
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+  transaksi   TransaksiProduct[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Voucher {
+  id          String  @id @default(cuid())
+  discount    Int
+
+  transaksi   Transaksi[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Topping {
@@ -118,13 +123,12 @@ model Topping {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
 }
-
 model TransaksiTopping {
   id           String  @id @default(cuid())
 
   // Foreign key ke transaksi
-  transaksi_id String
-  transaksi    Transaksi @relation(fields: [transaksi_id], references: [id])
+  // transaksi_id String
+  // transaksi    Transaksi @relation(fields: [transaksi_id], references: [id])
 
   // Foreign key ke topping
   topping_id   String
@@ -134,20 +138,4 @@ model TransaksiTopping {
 
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @default(now())
-}
-
-model Voucher {
-  id            String  @id @default(cuid())
-  name          String  @unique
-  percentage    Int
-  minimum_price Int
-  maximum_price Int
-  max_usage     Int
-  voucher_end   DateTime
-
-  // Relasi one-to-one ke transaksi
-  transaksi     Transaksi?
-
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now())
 }
