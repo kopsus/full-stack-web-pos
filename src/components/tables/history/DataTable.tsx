@@ -27,6 +27,8 @@ import {
 import { Pagination } from "../pagination";
 import { Card } from "@/components/ui/card";
 import { TableToolbar } from "./TableToolbar";
+import DetailHistory from "./DetailHistory";
+import { TypeTransaksi } from "@/types/transaction";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -121,8 +123,8 @@ export function DataTable<TData, TValue>({
                     </TableRow>
                     {selectedOrderId === history.id && (
                       <TableRow>
-                        <TableCell colSpan={columns.length}>
-                          <p>asu</p>
+                        <TableCell colSpan={columns.length} className="p-0">
+                          <DetailHistory history={history as TypeTransaksi} />
                         </TableCell>
                       </TableRow>
                     )}
