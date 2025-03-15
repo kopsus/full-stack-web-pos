@@ -1,18 +1,3 @@
-"use client";
-
-import {
-  Box,
-  Boxes,
-  CircleDollarSign,
-  History,
-  Home,
-  PackagePlus,
-  Replace,
-  ShoppingBasket,
-  TicketPercent,
-  Users,
-} from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -25,58 +10,43 @@ import {
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import Image from "next/image";
+import { decrypt } from "@/lib/actions/session";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
 
-const items = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: Home,
-  },
-  {
-    title: "History",
-    url: "/history",
-    icon: History,
-  },
-  {
-    title: "Shift",
-    url: "/shift",
-    icon: Replace,
-  },
-  {
-    title: "Payment",
-    url: "/payment",
-    icon: CircleDollarSign,
-  },
-  {
-    title: "Voucher",
-    url: "/voucher",
-    icon: TicketPercent,
-  },
-  {
-    title: "Category",
-    url: "/category",
-    icon: Box,
-  },
-  {
-    title: "Product",
-    url: "/product",
-    icon: ShoppingBasket,
-  },
-  {
-    title: "Topping",
-    url: "/topping",
-    icon: PackagePlus,
-  },
-  {
-    title: "User",
-    url: "/user",
-    icon: Users,
-  },
-];
+export async function AppSidebar() {
+  const cookie = (await cookies()).get("session")?.value;
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // Cek apakah sesi tersedia
+  if (!cookie) {
+    redirect("/");
+  }
+
+  const session = await decrypt(cookie);
+  if (!session) {
+    redirect("/");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.id as string,
+    },
+    select: {
+      id: true,
+      username: true,
+      role: true, // Pastikan role diambil
+    },
+  });
+
+  if (!user) {
+    redirect("/");
+  }
+
+  const role = session.role as string;
+
   return (
-    <Sidebar {...props}>
+    <Sidebar>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -95,10 +65,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={items} />
+        <NavMain role={role} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavUser dataUser={user} />
       </SidebarFooter>
     </Sidebar>
   );

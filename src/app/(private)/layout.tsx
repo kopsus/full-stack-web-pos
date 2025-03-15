@@ -1,10 +1,14 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <SidebarProvider>
-      <AppSidebar collapsible="icon" />
+      <AppSidebar />
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );

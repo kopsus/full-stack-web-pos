@@ -17,8 +17,8 @@ export type TypeRole = "cashier" | "admin";
 export type TypeUser = {
   id: string;
   username: string;
-  password: string;
+  password?: string;
   role: TypeRole;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

@@ -16,14 +16,18 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useRouter } from "next/navigation";
+import logout from "@/lib/actions/logout";
+import { TypeUser } from "@/types/user";
 
-export function NavUser() {
+interface INavUser {
+  dataUser: TypeUser;
+}
+
+export function NavUser({ dataUser }: INavUser) {
   const { isMobile } = useSidebar();
-  const router = useRouter();
 
   const handleLogout = async () => {
-    router.push("/");
+    await logout();
   };
 
   return (
@@ -36,8 +40,10 @@ export function NavUser() {
               className="bg-slate-100 hover:bg-slate-200 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">Tegar Setio</span>
-                <span className="truncate text-xs">Kasir</span>
+                <span className="truncate font-semibold">
+                  {dataUser.username}
+                </span>
+                <span className="truncate text-xs">{dataUser.role}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -51,8 +57,10 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Tegar Setio</span>
-                  <span className="truncate text-xs">Kasir</span>
+                  <span className="truncate font-semibold">
+                    {dataUser.username}
+                  </span>
+                  <span className="truncate text-xs">{dataUser.role}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
