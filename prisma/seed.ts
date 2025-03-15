@@ -69,9 +69,11 @@ async function main() {
     [
       {
         discount: 20,
+        name: "ramadhan",
       },
       {
         discount: 50,
+        name: "new year",
       },
     ].map((voucher) => prisma.voucher.create({ data: voucher }))
   );

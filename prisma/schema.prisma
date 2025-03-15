@@ -105,7 +105,7 @@ model Product {
 model Voucher {
   id          String  @id @default(cuid())
   discount    Int
-  name        String?
+  name        String
 
   transaksi   Transaksi[]
 
