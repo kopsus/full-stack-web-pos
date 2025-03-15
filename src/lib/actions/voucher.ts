@@ -24,6 +24,7 @@ export const createVoucher = async (data: VoucherSchema) => {
     await prisma.voucher.create({
       data: {
         discount: data.discount,
+        name: data.name,
         // name: data.name,
         // percentage: data.percentage,
         // max_usage: data.max_usage,
@@ -68,6 +69,7 @@ export const updateVoucher = async (data: VoucherSchema & { id: string }) => {
       where: { id: data.id },
       data: {
         discount: data.discount,
+        name: data.name,
         // name: data.name,
         // percentage: data.percentage,
         // max_usage: data.max_usage,
