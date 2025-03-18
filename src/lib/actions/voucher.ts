@@ -7,19 +7,19 @@ import { responServerAction } from "./responseServerAction";
 
 export const createVoucher = async (data: VoucherSchema) => {
   try {
-    // const existingVoucher = await prisma.voucher.findFirst({
-    //   where: {
-    //     name: data.name,
-    //     NOT: { id: data.id },
-    //   },
-    // });
+    const existingVoucher = await prisma.voucher.findFirst({
+      where: {
+        name: data.name,
+        NOT: { id: data.id },
+      },
+    });
 
-    // if (existingVoucher) {
-    //   return responServerAction({
-    //     statusError: true,
-    //     messageError: `Nama Voucher ${existingVoucher.name} sudah digunakan. Silakan gunakan nama lain.`,
-    //   });
-    // }
+    if (existingVoucher) {
+      return responServerAction({
+        statusError: true,
+        messageError: `Nama Voucher ${existingVoucher.name} sudah digunakan. Silakan gunakan nama lain.`,
+      });
+    }
 
     await prisma.voucher.create({
       data: {
@@ -51,19 +51,19 @@ export const createVoucher = async (data: VoucherSchema) => {
 
 export const updateVoucher = async (data: VoucherSchema & { id: string }) => {
   try {
-    // const existingVoucher = await prisma.voucher.findFirst({
-    //   where: {
-    //     name: data.name,
-    //     NOT: { id: data.id },
-    //   },
-    // });
+    const existingVoucher = await prisma.voucher.findFirst({
+      where: {
+        name: data.name,
+        NOT: { id: data.id },
+      },
+    });
 
-    // if (existingVoucher) {
-    //   return responServerAction({
-    //     statusError: true,
-    //     messageError: `Nama Voucher ${existingVoucher.name} sudah digunakan. Silakan gunakan nama lain.`,
-    //   });
-    // }
+    if (existingVoucher) {
+      return responServerAction({
+        statusError: true,
+        messageError: `Nama Voucher ${existingVoucher.name} sudah digunakan. Silakan gunakan nama lain.`,
+      });
+    }
 
     await prisma.voucher.update({
       where: { id: data.id },

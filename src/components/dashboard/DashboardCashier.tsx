@@ -12,12 +12,14 @@ interface IDashboard {
   dataProduct: TypeProduct[];
   dataPayment: TypePayment[];
   dataTransaction: TypeTransaction[];
+  userId: string;
 }
 
 const Dashboard = ({
   dataProduct,
   dataPayment,
   dataTransaction,
+  userId,
 }: IDashboard) => {
   const [cartItems, setCartItems] = React.useState<TypeProduct[]>([]);
 
@@ -68,6 +70,7 @@ const Dashboard = ({
           updateQuantity={updateQuantity}
           dataPayment={dataPayment}
           setCartItems={setCartItems}
+          userId={userId}
         />
       </div>
     </div>

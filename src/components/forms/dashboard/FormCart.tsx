@@ -36,6 +36,7 @@ interface IFormCart {
   updateQuantity: (id: string, amount: number) => void;
   dataPayment: TypePayment[];
   setCartItems: React.Dispatch<React.SetStateAction<TypeProduct[]>>;
+  userId: string;
 }
 
 const FormCart = ({
@@ -43,6 +44,7 @@ const FormCart = ({
   updateQuantity,
   dataPayment,
   setCartItems,
+  userId,
 }: IFormCart) => {
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * (item.quantity || 0),
@@ -57,7 +59,7 @@ const FormCart = ({
     defaultValues: {
       customer_name: "",
       sales_type: "DO",
-      user_id: "cm872bpwk0000wxpkjbi702mw",
+      user_id: userId,
       payment_id: "",
       voucher_id: null,
       transaksi_product: cartItems.map((item) => ({
@@ -91,6 +93,7 @@ const FormCart = ({
 
   async function onSubmit() {
     const values = form.getValues();
+    console.log("Data yang dikirim:", values);
 
     try {
       const result = await createTransaction(values);

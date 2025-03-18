@@ -7,7 +7,7 @@ import { formatDate, formatIDR } from "@/lib/format";
 export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
   {
     accessorKey: "customer_name",
-    header: "Nama",
+    header: "Nama Customer",
   },
   {
     header: "Cashier",

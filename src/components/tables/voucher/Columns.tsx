@@ -13,6 +13,10 @@ export const ColumnsVoucher: ColumnDef<TypeVoucher>[] = [
       return <p>{row.getValue("discount")}%</p>;
     },
   },
+  {
+    accessorKey: "name",
+    header: "Nama Vouvher",
+  },
   // {
   //   accessorKey: "percentage",
   //   header: "Percentage",

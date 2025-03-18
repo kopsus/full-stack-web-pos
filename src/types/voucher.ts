@@ -15,12 +15,7 @@ export const storeDialogVoucher = atom<IDialog>({
 export type TypeVoucher = {
   id: string;
   discount: number;
-  name: string | null;
-  // percentage: number;
-  // minimum_price: number;
-  // maximum_price: number;
-  // voucher_end: Date;
-  // max_usage: number;
+  name: string;
   createdAt: Date;
   updatedAt: Date;
 };
