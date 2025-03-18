@@ -1,89 +1,105 @@
 "use client";
 
 import { TypeTransaction } from "@/types/transaction";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
+import CardState from "../_global/CardState";
+import { TypeProduct } from "@/types/product";
 
 interface IDashboardAdmin {
   dataTransaction: TypeTransaction[];
+  dataProduct: TypeProduct[];
 }
 
-export function DashboardAdmin({ dataTransaction }: IDashboardAdmin) {
-  console.log("data transaction", dataTransaction);
-
-  const data = [
-    {
-      name: "Jan",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Feb",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Mar",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Apr",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "May",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Jun",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Jul",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Aug",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Sep",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Oct",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Nov",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Dec",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
+export function DashboardAdmin({
+  dataTransaction,
+  dataProduct,
+}: IDashboardAdmin) {
+  // 1. Buat mapping nama bulan
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
+
+  // 2. Inisialisasi objek untuk menyimpan total transaksi per bulan
+  const monthlyTotals: Record<string, number> = months.reduce(
+    (acc, month) => ({ ...acc, [month]: 0 }),
+    {}
+  );
+
+  // 3. Proses data transaksi
+  dataTransaction.forEach((transaction) => {
+    if (transaction.createdAt) {
+      const monthIndex = new Date(transaction.createdAt).getMonth(); // Ambil index bulan
+      const monthName = months[monthIndex]; // Konversi ke nama bulan
+      monthlyTotals[monthName] += transaction.total_amount; // Tambahkan total_amount
+    }
+  });
+
+  // 4. Konversi ke array untuk chart & tentukan warna berdasarkan perbedaan bulan sebelumnya
+  const data = months.map((month, index) => {
+    const total = monthlyTotals[month];
+    const prevTotal = index > 0 ? monthlyTotals[months[index - 1]] : 0;
+    return {
+      name: month,
+      total,
+      color: total >= prevTotal ? "#22c55e" : "#ef4444", // Hijau jika naik, merah jika turun
+    };
+  });
+
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
-        <XAxis
-          dataKey="name"
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
+    <div className="p-4 space-y-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:items-center gap-4">
+        <CardState
+          dataTransaction={dataTransaction}
+          dataProduct={dataProduct}
         />
-        <YAxis
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          tickFormatter={(value) => `$${value}`}
-        />
-        <Bar
-          dataKey="total"
-          fill="currentColor"
-          radius={[4, 4, 0, 0]}
-          className="fill-primary"
-        />
-      </BarChart>
-    </ResponsiveContainer>
+      </div>
+      <ResponsiveContainer width="100%" height={350}>
+        <BarChart data={data}>
+          <XAxis
+            dataKey="name"
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+          />
+          <YAxis
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value) => `$${value}`}
+          />
+          <Bar
+            dataKey="total"
+            radius={[4, 4, 0, 0]}
+            barSize={30}
+            fill="currentColor"
+            className="transition-all duration-300"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

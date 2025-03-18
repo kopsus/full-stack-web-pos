@@ -7,19 +7,20 @@ import CardState from "@/components/_global/CardState";
 import FormCart from "@/components/forms/dashboard/FormCart";
 import { TypePayment } from "@/types/payment";
 import { TypeTransaction } from "@/types/transaction";
+import { TypeUser } from "@/types/user";
 
 interface IDashboard {
   dataProduct: TypeProduct[];
   dataPayment: TypePayment[];
   dataTransaction: TypeTransaction[];
-  userId: string;
+  dataUser: TypeUser;
 }
 
 const Dashboard = ({
   dataProduct,
   dataPayment,
   dataTransaction,
-  userId,
+  dataUser,
 }: IDashboard) => {
   const [cartItems, setCartItems] = React.useState<TypeProduct[]>([]);
 
@@ -70,7 +71,7 @@ const Dashboard = ({
           updateQuantity={updateQuantity}
           dataPayment={dataPayment}
           setCartItems={setCartItems}
-          userId={userId}
+          dataUser={dataUser}
         />
       </div>
     </div>

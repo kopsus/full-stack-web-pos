@@ -30,13 +30,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTransaction } from "@/lib/actions/transaction";
 import { toast } from "react-toastify";
+import { TypeUser } from "@/types/user";
 
 interface IFormCart {
   cartItems: TypeProduct[];
   updateQuantity: (id: string, amount: number) => void;
   dataPayment: TypePayment[];
   setCartItems: React.Dispatch<React.SetStateAction<TypeProduct[]>>;
-  userId: string;
+  dataUser: TypeUser;
 }
 
 const FormCart = ({
@@ -44,7 +45,7 @@ const FormCart = ({
   updateQuantity,
   dataPayment,
   setCartItems,
-  userId,
+  dataUser,
 }: IFormCart) => {
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * (item.quantity || 0),
@@ -59,7 +60,7 @@ const FormCart = ({
     defaultValues: {
       customer_name: "",
       sales_type: "DO",
-      user_id: userId,
+      user_id: dataUser.id,
       payment_id: "",
       voucher_id: null,
       transaksi_product: cartItems.map((item) => ({

@@ -12,18 +12,26 @@ const page = async () => {
   const transactions = await prisma.transaksi.findMany();
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
-  const userId = session?.id as string;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session?.id as string,
+    },
+  });
 
   return (
     <>
       <PageHeader title="Dashboard" />
-      <DashboardCashier
-        dataProduct={products}
-        dataPayment={payments}
-        dataTransaction={transactions}
-        userId={userId}
-      />
-      {/* <DashboardAdmin dataTransaction={transactions} /> */}
+      {user?.role === "admin" ? (
+        <DashboardAdmin dataTransaction={transactions} dataProduct={products} />
+      ) : (
+        <DashboardCashier
+          dataProduct={products}
+          dataPayment={payments}
+          dataTransaction={transactions}
+          dataUser={user!}
+        />
+      )}
     </>
   );
 };
