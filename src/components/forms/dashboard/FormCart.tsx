@@ -67,18 +67,34 @@ const FormCart = ({
 }: IFormCart) => {
   const [selectedVoucher, setSelectedVoucher] =
     React.useState<TypeVoucher | null>(null);
-  const [selectedTopping, setSelectedTopping] =
-    React.useState<TypeTopping | null>(null);
+  const [selectedToppings, setSelectedToppings] = React.useState<TypeTopping[]>(
+    []
+  );
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * (item.quantity || 0),
     0
   );
+
+  const toppingSubtotal = selectedToppings.reduce((acc, topping) => {
+    const toppingData = dataTopping.find((t) => t.id === topping.id);
+    return toppingData
+      ? acc + (topping.quantity || 0) * (toppingData.price || 0)
+      : acc;
+  }, 0);
+
+  // Hitung diskon berdasarkan (Subtotal Produk + Subtotal Topping)
+  const subtotalBeforeTax = subtotal + toppingSubtotal;
   const discount = selectedVoucher
-    ? (subtotal * selectedVoucher.discount) / 100
+    ? (subtotalBeforeTax * selectedVoucher.discount) / 100
     : 0;
-  const tax = (subtotal - discount) * 0.1;
-  const total = subtotal - discount + tax;
+
+  // Pajak 10% setelah dikurangi diskon
+  const subtotalAfterDiscount = subtotalBeforeTax - discount;
+  const tax = subtotalAfterDiscount * 0.1;
+
+  // Total akhir
+  const total = subtotalAfterDiscount + tax;
 
   // Setup form
   const form = useForm<TransactionSchema>({
@@ -92,6 +108,10 @@ const FormCart = ({
       transaksi_product: cartItems.map((item) => ({
         product_id: item.id,
         quantity: item.quantity || 1,
+      })),
+      transaksi_topping: selectedToppings.map((t) => ({
+        topping_id: t.id,
+        quantity: t.quantity,
       })),
       total_amount: total,
     },
@@ -112,6 +132,35 @@ const FormCart = ({
     form.setValue("total_amount", total);
   }, [form, total]);
 
+  const handleToppingChange = (toppingId: string, action: "add" | "remove") => {
+    setSelectedToppings((prev) => {
+      const existingTopping = prev.find((t) => t.id === toppingId);
+      if (action === "add") {
+        return existingTopping
+          ? prev.map((t) =>
+              t.id === toppingId ? { ...t, quantity: t.quantity! + 1 } : t
+            )
+          : [...prev, { id: toppingId, quantity: 1 }];
+      } else {
+        return existingTopping && existingTopping.quantity! > 1
+          ? prev.map((t) =>
+              t.id === toppingId ? { ...t, quantity: t.quantity! - 1 } : t
+            )
+          : prev.filter((t) => t.id !== toppingId);
+      }
+    });
+  };
+
+  React.useEffect(() => {
+    form.setValue(
+      "transaksi_topping",
+      selectedToppings.map((item) => ({
+        topping_id: item.id,
+        quantity: item.quantity || 1,
+      }))
+    );
+  }, [form, selectedToppings]);
+
   React.useEffect(() => {
     form.setValue("voucher_id", selectedVoucher ? selectedVoucher.id : null);
   }, [selectedVoucher, form]);
@@ -121,12 +170,12 @@ const FormCart = ({
   const clearCart = () => {
     setCartItems([]);
     setSelectedVoucher(null);
-    setSelectedTopping(null);
+    setSelectedToppings([]);
   };
 
   async function onSubmit() {
     const values = form.getValues();
-    console.log("Payload Transaksi:", values);
+    console.log("form values", values);
 
     try {
       const result = await createTransaction(values);
@@ -138,10 +187,11 @@ const FormCart = ({
         form.reset({
           customer_name: "",
           sales_type: "DO",
-          user_id: "cm872bpwk0000wxpkjbi702mw",
+          user_id: "",
           payment_id: "",
           voucher_id: "",
           transaksi_product: [],
+          transaksi_topping: [],
           total_amount: 0,
         });
 
@@ -206,111 +256,162 @@ const FormCart = ({
               ))}
             </div>
 
-            <Dialog>
-              <DialogTrigger
-                disabled={subtotal === 0}
-                className="text-sm p-2 cursor-pointer flex items-center justify-between rounded-lg border"
-              >
-                {selectedVoucher
-                  ? `Voucher: ${selectedVoucher.name}`
-                  : "Pilih Voucher"}
-                <ChevronRight />
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogTitle>Pilih Voucher</DialogTitle>
-                <div className="space-y-4">
-                  {dataVoucher.map((voucher) => {
-                    const isValid = subtotal >= voucher.minimum_price;
-                    const isSelected = selectedVoucher?.id === voucher.id;
-
-                    return (
-                      <Card
-                        key={voucher.id}
-                        onClick={() => isValid && setSelectedVoucher(voucher)}
-                        className={`p-4 text-sm rounded-lg cursor-pointer transition-all border-2 
-                        ${
-                          isValid
-                            ? "hover:border-green-500 hover:bg-green-100"
-                            : "opacity-50 cursor-not-allowed"
-                        } 
-                        ${
-                          isSelected
-                            ? "border-green-500 bg-green-100"
-                            : "border-gray-200"
-                        }`}
-                      >
-                        <p className="font-medium">Nama: {voucher.name}</p>
-                        <p>Diskon: {voucher.discount}%</p>
-                        <p>Min. Belanja: {voucher.minimum_price}</p>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <div className="flex flex-col gap-2">
-              <Dialog>
-                <DialogTrigger
-                  disabled={subtotal === 0}
-                  className="text-sm p-2 cursor-pointer flex items-center justify-between rounded-lg border"
-                >
-                  {selectedVoucher
-                    ? `Voucher: ${selectedVoucher.name}`
-                    : "Pilih Voucher"}
-                  <ChevronRight />
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogTitle>Pilih Voucher</DialogTitle>
-                  <div className="space-y-4">
-                    {dataVoucher.map((voucher) => {
-                      const isValid = subtotal >= voucher.minimum_price;
-                      const isSelected = selectedVoucher?.id === voucher.id;
-
-                      return (
-                        <Card
-                          key={voucher.id}
-                          onClick={() => isValid && setSelectedVoucher(voucher)}
-                          className={`p-4 text-sm rounded-lg cursor-pointer transition-all border-2 
-                        ${
-                          isValid
-                            ? "hover:border-green-500 hover:bg-green-100"
-                            : "opacity-50 cursor-not-allowed"
-                        } 
-                        ${
-                          isSelected
-                            ? "border-green-500 bg-green-100"
-                            : "border-gray-200"
-                        }`}
-                        >
-                          <p className="font-medium">Nama: {voucher.name}</p>
-                          <p>Diskon: {voucher.discount}%</p>
-                          <p>Min. Belanja: {voucher.minimum_price}</p>
-                        </Card>
-                      );
-                    })}
+            <div className="space-y-3">
+              <div className="flex flex-col gap-2">
+                <Dialog>
+                  <DialogTrigger
+                    disabled={subtotal === 0}
+                    className="text-sm p-2 cursor-pointer flex items-center justify-between rounded-lg border"
+                  >
+                    Tambah Topping
+                    <ChevronRight />
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogTitle>Pilih Topping</DialogTitle>
+                    <div className="grid grid-cols-2 gap-4">
+                      {dataTopping.map((topping) => {
+                        const selected = selectedToppings.find(
+                          (t) => t.id === topping.id
+                        );
+                        return (
+                          <Card
+                            key={topping.id}
+                            className="p-4 text-sm rounded-lg border shadow-md"
+                          >
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <p className="font-semibold">{topping.name}</p>
+                                <p className="text-gray-500">
+                                  {formatIDR(topping.price!)}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <MinusCircle
+                                  className={`cursor-pointer ${
+                                    selected ? "text-black" : "text-gray-300"
+                                  }`}
+                                  onClick={() =>
+                                    handleToppingChange(topping.id, "remove")
+                                  }
+                                />
+                                <p>{selected ? selected.quantity : 0}</p>
+                                <PlusCircle
+                                  className="cursor-pointer text-black"
+                                  onClick={() =>
+                                    handleToppingChange(topping.id, "add")
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                {selectedToppings.length > 0 && (
+                  <div className="p-2 border rounded-lg">
+                    <h3 className="text-sm font-semibold">
+                      Topping yang Dipilih:
+                    </h3>
+                    <ul className="mt-2">
+                      {selectedToppings.map((topping) => {
+                        const toppingData = dataTopping.find(
+                          (t) => t.id === topping.id
+                        );
+                        return (
+                          <li
+                            key={topping.id}
+                            className="flex justify-between text-sm border-b py-2"
+                          >
+                            <span>
+                              {toppingData?.name} x {topping.quantity}
+                            </span>
+                            <span>
+                              {formatIDR(
+                                toppingData?.price! * topping.quantity!
+                              )}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </div>
-                </DialogContent>
-              </Dialog>
-              {selectedVoucher && (
-                <div className="flex items-center justify-between p-3 bg-green-100 rounded-lg border border-green-500 text-xs font-bold">
-                  <p>
-                    Voucher {selectedVoucher.name} - {selectedVoucher.discount}%
-                  </p>
-                  <XCircle
-                    className="cursor-pointer text-red-500"
-                    onClick={() => setSelectedVoucher(null)}
-                  />
-                </div>
-              )}
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Dialog>
+                  <DialogTrigger
+                    disabled={subtotal === 0}
+                    className="text-sm p-2 cursor-pointer flex items-center justify-between rounded-lg border"
+                  >
+                    {selectedVoucher
+                      ? `Voucher: ${selectedVoucher.name}`
+                      : "Pilih Voucher"}
+                    <ChevronRight />
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogTitle>Pilih Voucher</DialogTitle>
+                    <div className="space-y-4">
+                      {dataVoucher.map((voucher) => {
+                        const isValid = subtotal >= voucher.minimum_price;
+                        const isSelected = selectedVoucher?.id === voucher.id;
+
+                        return (
+                          <Card
+                            key={voucher.id}
+                            onClick={() =>
+                              isValid && setSelectedVoucher(voucher)
+                            }
+                            className={`p-4 text-sm rounded-lg cursor-pointer transition-all border-2 
+                        ${
+                          isValid
+                            ? "hover:border-green-500 hover:bg-green-100"
+                            : "opacity-50 cursor-not-allowed"
+                        } 
+                        ${
+                          isSelected
+                            ? "border-green-500 bg-green-100"
+                            : "border-gray-200"
+                        }`}
+                          >
+                            <p className="font-medium">Nama: {voucher.name}</p>
+                            <p>Diskon: {voucher.discount}%</p>
+                            <p>Min. Belanja: {voucher.minimum_price}</p>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                {selectedVoucher && (
+                  <div className="flex items-center justify-between p-3 bg-green-100 rounded-lg border border-green-500 text-xs font-bold">
+                    <p>
+                      Voucher {selectedVoucher.name} -{" "}
+                      {selectedVoucher.discount}%
+                    </p>
+                    <XCircle
+                      className="cursor-pointer text-red-500"
+                      onClick={() => setSelectedVoucher(null)}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Total */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between text-sm">
-                <p>Subtotal</p>
+                <p>Subtotal Produk</p>
                 <p className="font-semibold">{formatIDR(subtotal)}</p>
               </div>
+              {selectedToppings.length > 0 && (
+                <div className="flex items-center justify-between text-sm">
+                  <p>Subtotal Topping</p>
+                  <p className="font-semibold">{formatIDR(toppingSubtotal)}</p>
+                </div>
+              )}
               <div className="flex items-center justify-between text-sm">
                 <p>Tax (10%)</p>
                 <p className="font-semibold">{formatIDR(tax)}</p>

@@ -16,4 +16,6 @@ export type TypeTopping = {
   id: string;
   name?: string;
   price?: number;
+  quantity?: number;
+  category_id?: string;
 };

@@ -5,6 +5,20 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { responServerAction } from "./responseServerAction";
 
+export const getVoucherDiscount = async (
+  tx: any,
+  voucherId?: string
+): Promise<number> => {
+  if (!voucherId) return 0; // Jika tidak ada voucher, diskon 0%
+
+  const voucher = await tx.voucher.findUnique({
+    where: { id: voucherId },
+    select: { discount: true }, // Ambil hanya nilai diskon
+  });
+
+  return voucher?.discount ?? 0; // Jika voucher ditemukan, kembalikan nilai diskon
+};
+
 export const createVoucher = async (data: VoucherSchema) => {
   try {
     const existingVoucher = await prisma.voucher.findFirst({

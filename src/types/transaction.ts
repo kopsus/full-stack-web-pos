@@ -3,6 +3,7 @@ import { TypeUser } from "./user";
 import { TypePayment } from "./payment";
 import { TypeVoucher } from "./voucher";
 import { TypeProduct } from "./product";
+import { TypeTopping } from "./topping";
 
 export type IDialog = {
   show: boolean;
@@ -42,7 +43,7 @@ export type TypeTransaksi = {
   payment: TypePayment;
   voucher: TypeVoucher | null;
   transaksi_product: TypeTransaksiProduct[];
-  // transaksi_topping: TypeTransaksiTopping[];
+  transaksi_topping: TypeTransaksiTopping[];
 };
 
 export type TypeTransaksiProduct = {
@@ -56,8 +57,9 @@ export type TypeTransaksiProduct = {
 
 export type TypeTransaksiTopping = {
   id: string;
-  topping_id: string;
   transaksi_id: string;
-  product: TypeProduct;
+  topping_id: string;
+  topping: TypeTopping;
   quantity: number;
+  subtotal: number;
 };

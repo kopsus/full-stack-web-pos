@@ -18,8 +18,18 @@ const page = async () => {
           product: true,
         },
       },
+      transaksi_topping: {
+        include: {
+          topping: true,
+        },
+      },
     },
   });
+
+  console.log(
+    "Data transaksi",
+    transactions.map((item) => item.transaksi_topping)
+  );
 
   return (
     <>

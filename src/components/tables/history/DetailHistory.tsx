@@ -70,12 +70,47 @@ const DetailHistory = ({ history }: { history: TypeTransaksi }) => {
         </table>
       </div>
 
+      {/* daftar topping */}
+      <div className="mt-4">
+        <p className="font-semibold mb-2">🛒 Topping yang ditambahkan:</p>
+        <table className="w-full border-collapse border border-gray-200">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border p-2 text-left">Produk</th>
+              <th className="border p-2 text-center">Jumlah</th>
+              <th className="border p-2 text-right">Harga Satuan</th>
+              <th className="border p-2 text-right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {history.transaksi_topping.map((item) => (
+              <tr key={item.id} className="border">
+                <td className="border p-2">{item.topping.name}</td>
+                <td className="border p-2 text-center">{item.quantity}</td>
+                <td className="border p-2 text-right">
+                  {formatIDR(item.subtotal / item.quantity)}
+                </td>
+                <td className="border p-2 text-right">
+                  {formatIDR(item.subtotal)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       {/* Ringkasan Pembayaran */}
       <div className="mt-6 p-4 bg-gray-100 rounded-lg">
         <p className="font-semibold">💰 Ringkasan Pembayaran</p>
         <div className="flex justify-between">
-          <span>Subtotal:</span>
+          <span>Subtotal Produk:</span>
           {history.transaksi_product.map((item) => (
+            <span key={item.id}>{item.subtotal}</span>
+          ))}
+        </div>
+        <div className="flex justify-between">
+          <span>Subtotal Topping:</span>
+          {history.transaksi_topping.map((item) => (
             <span key={item.id}>{item.subtotal}</span>
           ))}
         </div>

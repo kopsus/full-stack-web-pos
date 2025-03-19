@@ -17,7 +17,7 @@ export const transactionSchema = z.object({
   transaksi_product: z
     .array(
       z.object({
-        product_id: z.string(),
+        product_id: z.string().min(1, "Product ID is required!"),
         quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
       })
     )
@@ -25,11 +25,12 @@ export const transactionSchema = z.object({
   transaksi_topping: z
     .array(
       z.object({
-        topping_id: z.string(),
+        topping_id: z.string().min(1, "Topping ID is required!"),
         quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
       })
     )
-    .optional(),
+    .optional()
+    .default([]),
 });
 
 export type TransactionSchema = z.infer<typeof transactionSchema>;
