@@ -175,7 +175,6 @@ const FormCart = ({
 
   async function onSubmit() {
     const values = form.getValues();
-    console.log("form values", values);
 
     try {
       const result = await createTransaction(values);

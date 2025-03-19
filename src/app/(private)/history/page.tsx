@@ -26,11 +26,6 @@ const page = async () => {
     },
   });
 
-  console.log(
-    "Data transaksi",
-    transactions.map((item) => item.transaksi_topping)
-  );
-
   return (
     <>
       <PageHeader title="History" />
