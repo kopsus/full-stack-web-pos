@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Voucher` MODIFY `voucher_end` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
