@@ -1,4 +1,4 @@
-import { PrismaClient, EnumRole, EnumSalesType } from "@prisma/client";
+import { PrismaClient, EnumRole } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -73,6 +73,7 @@ async function main() {
         minimum_price: 10000,
         maximum_price: 30000,
         max_usage: 10,
+        voucher_end: new Date("2025-04-30T23:59:59Z"),
       },
       {
         discount: 50,
@@ -80,6 +81,7 @@ async function main() {
         minimum_price: 10000,
         maximum_price: 30000,
         max_usage: 10,
+        voucher_end: new Date("2025-04-30T23:59:59Z"),
       },
     ].map((voucher) => prisma.voucher.create({ data: voucher }))
   );

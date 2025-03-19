@@ -81,6 +81,10 @@ CREATE TABLE `Voucher` (
     `id` VARCHAR(191) NOT NULL,
     `discount` INTEGER NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `minimum_price` INTEGER NOT NULL DEFAULT 0,
+    `maximum_price` INTEGER NOT NULL DEFAULT 0,
+    `max_usage` INTEGER NOT NULL DEFAULT 0,
+    `voucher_end` DATETIME(3) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -102,10 +106,12 @@ CREATE TABLE `Topping` (
 -- CreateTable
 CREATE TABLE `TransaksiTopping` (
     `id` VARCHAR(191) NOT NULL,
+    `transaksi_id` VARCHAR(191) NOT NULL,
     `topping_id` VARCHAR(191) NOT NULL,
     `quantity` INTEGER NOT NULL,
+    `subtotal` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -129,4 +135,7 @@ ALTER TABLE `TransaksiProduct` ADD CONSTRAINT `TransaksiProduct_product_id_fkey`
 ALTER TABLE `Product` ADD CONSTRAINT `Product_category_id_fkey` FOREIGN KEY (`category_id`) REFERENCES `Category`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `TransaksiTopping` ADD CONSTRAINT `TransaksiTopping_topping_id_fkey` FOREIGN KEY (`topping_id`) REFERENCES `Topping`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `TransaksiTopping` ADD CONSTRAINT `TransaksiTopping_transaksi_id_fkey` FOREIGN KEY (`transaksi_id`) REFERENCES `Transaksi`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `TransaksiTopping` ADD CONSTRAINT `TransaksiTopping_topping_id_fkey` FOREIGN KEY (`topping_id`) REFERENCES `Topping`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
