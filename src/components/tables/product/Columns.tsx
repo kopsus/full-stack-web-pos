@@ -38,6 +38,10 @@ export const ColumnsProduct: ColumnDef<TypeProduct>[] = [
   {
     accessorKey: "quantity",
     header: "Stock",
+    cell: ({ row }) => {
+      const stock = row.getValue("quantity") as number;
+      return <p className={`${stock <= 20 && "text-red-600"}`}>{stock}</p>;
+    },
   },
   {
     accessorKey: "Action",

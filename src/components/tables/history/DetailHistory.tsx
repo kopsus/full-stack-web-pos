@@ -3,51 +3,96 @@ import { TypeTransaksi } from "@/types/transaction";
 import React from "react";
 
 const DetailHistory = ({ history }: { history: TypeTransaksi }) => {
-  console.log("histrory", history);
-
   return (
-    <div className="flex justify-between bg-slate-50 p-4">
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col">
-          <p className="font-bold">Nama Customer</p>
-          {history.customer_name}
+    <div className="border rounded-lg shadow-lg p-6 bg-white">
+      {/* Header Transaksi */}
+      <div className="mb-4">
+        <h2 className="text-xl font-bold">Detail Transaksi</h2>
+        <p className="text-gray-600">
+          📅 {formatDate(history.updatedAt.toISOString())}
+        </p>
+      </div>
+
+      {/* Informasi Umum */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <p className="font-semibold">🆔 ID Transaksi:</p>
+          <p>{history.id}</p>
         </div>
-        <div className="flex flex-col">
-          <p className="font-bold">Nama Kasir</p>
-          {history.user.username}
+        <div>
+          <p className="font-semibold">👤 Customer:</p>
+          <p>{history.customer_name}</p>
         </div>
-        <div className="flex flex-col">
-          <p className="font-bold">Pembayaran</p>
-          {history.payment.name}
+        <div>
+          <p className="font-semibold">👨‍💼 Kasir:</p>
+          <p>{history.user.username}</p>
         </div>
+        <div>
+          <p className="font-semibold">💳 Pembayaran:</p>
+          <p>{history.payment.name}</p>
+        </div>
+        {history.voucher && (
+          <div>
+            <p className="font-semibold">🎟️ Voucher:</p>
+            <p>
+              {history.voucher.name} (Diskon {history.voucher.discount} %)
+            </p>
+          </div>
+        )}
       </div>
-      <div className="flex flex-col gap-2">
-        <p className="font-bold">Menu</p>
-        {history.transaksi_product.map((item) => (
-          <ul key={item.id} className="list-disc list-inside">
-            <li>{item.product.name}</li>
-          </ul>
-        ))}
+
+      {/* Daftar Produk */}
+      <div className="mt-4">
+        <p className="font-semibold mb-2">🛒 Produk yang Dibeli:</p>
+        <table className="w-full border-collapse border border-gray-200">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border p-2 text-left">Produk</th>
+              <th className="border p-2 text-center">Jumlah</th>
+              <th className="border p-2 text-right">Harga Satuan</th>
+              <th className="border p-2 text-right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {history.transaksi_product.map((item) => (
+              <tr key={item.id} className="border">
+                <td className="border p-2">{item.product.name}</td>
+                <td className="border p-2 text-center">{item.quantity}</td>
+                <td className="border p-2 text-right">
+                  {formatIDR(item.subtotal / item.quantity)}
+                </td>
+                <td className="border p-2 text-right">
+                  {formatIDR(item.subtotal)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <div className="flex flex-col gap-2">
-        <p className="font-bold">Quantity</p>
-        {history.transaksi_product.map((item) => (
-          <p key={item.id}>{item.product.quantity}</p>
-        ))}
-      </div>
-      <div className="flex flex-col gap-2">
-        <p className="font-bold">Subtotal</p>
-        {history.transaksi_product.map((item) => (
-          <p key={item.id}>{formatIDR(item.subtotal)}</p>
-        ))}
-      </div>
-      <div className="flex flex-col gap-2">
-        <p className="font-bold">Total</p>
-        {formatIDR(history.total_amount)}
-      </div>
-      <div className="flex flex-col gap-2">
-        <p className="font-bold">Tanggal Transaksi</p>
-        {formatDate(history.updatedAt.toISOString())}
+
+      {/* Ringkasan Pembayaran */}
+      <div className="mt-6 p-4 bg-gray-100 rounded-lg">
+        <p className="font-semibold">💰 Ringkasan Pembayaran</p>
+        <div className="flex justify-between">
+          <span>Subtotal:</span>
+          {history.transaksi_product.map((item) => (
+            <span key={item.id}>{item.subtotal}</span>
+          ))}
+        </div>
+        <div className="flex items-center justify-between">
+          <p>Tax</p>
+          <p>+ 10 %</p>
+        </div>
+        {history.voucher && (
+          <div className="flex justify-between">
+            <span>Diskon:</span>
+            <span>- {formatIDR(history.voucher.discount)} %</span>
+          </div>
+        )}
+        <div className="flex justify-between font-bold text-lg mt-2">
+          <span>✅ Total:</span>
+          <span>{formatIDR(history.total_amount)}</span>
+        </div>
       </div>
     </div>
   );

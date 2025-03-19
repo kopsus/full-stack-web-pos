@@ -10,6 +10,9 @@ const page = async () => {
   const products = await prisma.product.findMany();
   const payments = await prisma.payment.findMany();
   const transactions = await prisma.transaksi.findMany();
+  const voucher = await prisma.voucher.findMany();
+  const topping = await prisma.topping.findMany();
+
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
 
@@ -30,6 +33,8 @@ const page = async () => {
           dataPayment={payments}
           dataTransaction={transactions}
           dataUser={user!}
+          dataVoucher={voucher}
+          dataTopping={topping}
         />
       )}
     </>

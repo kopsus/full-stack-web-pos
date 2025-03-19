@@ -25,12 +25,10 @@ export const createVoucher = async (data: VoucherSchema) => {
       data: {
         discount: data.discount,
         name: data.name,
-        // name: data.name,
-        // percentage: data.percentage,
-        // max_usage: data.max_usage,
-        // minimum_price: data.minimum_price,
-        // maximum_price: data.maximum_price,
-        // voucher_end: data.voucher_end!,
+        max_usage: data.max_usage,
+        minimum_price: data.minimum_price,
+        maximum_price: data.maximum_price,
+        voucher_end: data.voucher_end,
       },
     });
 
@@ -70,12 +68,10 @@ export const updateVoucher = async (data: VoucherSchema & { id: string }) => {
       data: {
         discount: data.discount,
         name: data.name,
-        // name: data.name,
-        // percentage: data.percentage,
-        // max_usage: data.max_usage,
-        // minimum_price: data.minimum_price,
-        // maximum_price: data.maximum_price,
-        // voucher_end: data.voucher_end!,
+        max_usage: data.max_usage,
+        minimum_price: data.minimum_price,
+        maximum_price: data.maximum_price,
+        voucher_end: data.voucher_end,
       },
     });
 

@@ -8,12 +8,16 @@ import FormCart from "@/components/forms/dashboard/FormCart";
 import { TypePayment } from "@/types/payment";
 import { TypeTransaction } from "@/types/transaction";
 import { TypeUser } from "@/types/user";
+import { TypeVoucher } from "@/types/voucher";
+import { TypeTopping } from "@/types/topping";
 
 interface IDashboard {
   dataProduct: TypeProduct[];
   dataPayment: TypePayment[];
   dataTransaction: TypeTransaction[];
   dataUser: TypeUser;
+  dataVoucher: TypeVoucher[];
+  dataTopping: TypeTopping[];
 }
 
 const Dashboard = ({
@@ -21,6 +25,8 @@ const Dashboard = ({
   dataPayment,
   dataTransaction,
   dataUser,
+  dataVoucher,
+  dataTopping,
 }: IDashboard) => {
   const [cartItems, setCartItems] = React.useState<TypeProduct[]>([]);
 
@@ -72,6 +78,8 @@ const Dashboard = ({
           dataPayment={dataPayment}
           setCartItems={setCartItems}
           dataUser={dataUser}
+          dataVoucher={dataVoucher}
+          dataTopping={dataTopping}
         />
       </div>
     </div>

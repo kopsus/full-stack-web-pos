@@ -17,38 +17,31 @@ export const ColumnsVoucher: ColumnDef<TypeVoucher>[] = [
     accessorKey: "name",
     header: "Nama Vouvher",
   },
-  // {
-  //   accessorKey: "percentage",
-  //   header: "Percentage",
-  //   cell: ({ row }) => {
-  //     return <p>{row.getValue("percentage")}%</p>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "minimum_price",
-  //   header: "Minimum Price",
-  //   cell: ({ row }) => {
-  //     return <p>{formatIDR(row.getValue("minimum_price"))}</p>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "maximum_price",
-  //   header: "Maximum Price",
-  //   cell: ({ row }) => {
-  //     return <p>{formatIDR(row.getValue("maximum_price"))}</p>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "max_usage",
-  //   header: "Max Usage",
-  // },
-  // {
-  //   accessorKey: "voucher_end",
-  //   header: "Voucher End",
-  //   cell: ({ row }) => {
-  //     return <p>{formatDate(row.getValue("voucher_end"))}</p>;
-  //   },
-  // },
+  {
+    accessorKey: "minimum_price",
+    header: "Minimum Price",
+    cell: ({ row }) => {
+      return <p>{formatIDR(row.getValue("minimum_price"))}</p>;
+    },
+  },
+  {
+    accessorKey: "maximum_price",
+    header: "Maximum Price",
+    cell: ({ row }) => {
+      return <p>{formatIDR(row.getValue("maximum_price"))}</p>;
+    },
+  },
+  {
+    accessorKey: "max_usage",
+    header: "Max Usage",
+  },
+  {
+    accessorKey: "voucher_end",
+    header: "Voucher End",
+    cell: ({ row }) => {
+      return <p>{formatDate(row.getValue("voucher_end"))}</p>;
+    },
+  },
   {
     accessorKey: "Action",
     header: "Action",

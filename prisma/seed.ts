@@ -70,10 +70,16 @@ async function main() {
       {
         discount: 20,
         name: "ramadhan",
+        minimum_price: 10000,
+        maximum_price: 30000,
+        max_usage: 10,
       },
       {
         discount: 50,
         name: "new year",
+        minimum_price: 10000,
+        maximum_price: 30000,
+        max_usage: 10,
       },
     ].map((voucher) => prisma.voucher.create({ data: voucher }))
   );

@@ -4,7 +4,13 @@ import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import Image from "next/image";
 import { formatIDR } from "@/lib/format";
-import { MinusCircle, PlusCircle, Trash } from "lucide-react";
+import {
+  ChevronRight,
+  MinusCircle,
+  PlusCircle,
+  Trash,
+  XCircle,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -31,6 +37,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createTransaction } from "@/lib/actions/transaction";
 import { toast } from "react-toastify";
 import { TypeUser } from "@/types/user";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { TypeVoucher } from "@/types/voucher";
+import { TypeTopping } from "@/types/topping";
 
 interface IFormCart {
   cartItems: TypeProduct[];
@@ -38,6 +52,8 @@ interface IFormCart {
   dataPayment: TypePayment[];
   setCartItems: React.Dispatch<React.SetStateAction<TypeProduct[]>>;
   dataUser: TypeUser;
+  dataVoucher: TypeVoucher[];
+  dataTopping: TypeTopping[];
 }
 
 const FormCart = ({
@@ -46,13 +62,23 @@ const FormCart = ({
   dataPayment,
   setCartItems,
   dataUser,
+  dataVoucher,
+  dataTopping,
 }: IFormCart) => {
+  const [selectedVoucher, setSelectedVoucher] =
+    React.useState<TypeVoucher | null>(null);
+  const [selectedTopping, setSelectedTopping] =
+    React.useState<TypeTopping | null>(null);
+
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * (item.quantity || 0),
     0
   );
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  const discount = selectedVoucher
+    ? (subtotal * selectedVoucher.discount) / 100
+    : 0;
+  const tax = (subtotal - discount) * 0.1;
+  const total = subtotal - discount + tax;
 
   // Setup form
   const form = useForm<TransactionSchema>({
@@ -86,20 +112,26 @@ const FormCart = ({
     form.setValue("total_amount", total);
   }, [form, total]);
 
+  React.useEffect(() => {
+    form.setValue("voucher_id", selectedVoucher ? selectedVoucher.id : null);
+  }, [selectedVoucher, form]);
+
   const isSubmitting = form.formState.isSubmitting;
 
   const clearCart = () => {
     setCartItems([]);
+    setSelectedVoucher(null);
+    setSelectedTopping(null);
   };
 
   async function onSubmit() {
     const values = form.getValues();
-    console.log("Data yang dikirim:", values);
+    console.log("Payload Transaksi:", values);
 
     try {
       const result = await createTransaction(values);
 
-      if (result.success) {
+      if (result.success.status) {
         toast.success(result.success.message);
 
         // Reset form
@@ -172,6 +204,105 @@ const FormCart = ({
                   />
                 </div>
               ))}
+            </div>
+
+            <Dialog>
+              <DialogTrigger
+                disabled={subtotal === 0}
+                className="text-sm p-2 cursor-pointer flex items-center justify-between rounded-lg border"
+              >
+                {selectedVoucher
+                  ? `Voucher: ${selectedVoucher.name}`
+                  : "Pilih Voucher"}
+                <ChevronRight />
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogTitle>Pilih Voucher</DialogTitle>
+                <div className="space-y-4">
+                  {dataVoucher.map((voucher) => {
+                    const isValid = subtotal >= voucher.minimum_price;
+                    const isSelected = selectedVoucher?.id === voucher.id;
+
+                    return (
+                      <Card
+                        key={voucher.id}
+                        onClick={() => isValid && setSelectedVoucher(voucher)}
+                        className={`p-4 text-sm rounded-lg cursor-pointer transition-all border-2 
+                        ${
+                          isValid
+                            ? "hover:border-green-500 hover:bg-green-100"
+                            : "opacity-50 cursor-not-allowed"
+                        } 
+                        ${
+                          isSelected
+                            ? "border-green-500 bg-green-100"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        <p className="font-medium">Nama: {voucher.name}</p>
+                        <p>Diskon: {voucher.discount}%</p>
+                        <p>Min. Belanja: {voucher.minimum_price}</p>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <div className="flex flex-col gap-2">
+              <Dialog>
+                <DialogTrigger
+                  disabled={subtotal === 0}
+                  className="text-sm p-2 cursor-pointer flex items-center justify-between rounded-lg border"
+                >
+                  {selectedVoucher
+                    ? `Voucher: ${selectedVoucher.name}`
+                    : "Pilih Voucher"}
+                  <ChevronRight />
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogTitle>Pilih Voucher</DialogTitle>
+                  <div className="space-y-4">
+                    {dataVoucher.map((voucher) => {
+                      const isValid = subtotal >= voucher.minimum_price;
+                      const isSelected = selectedVoucher?.id === voucher.id;
+
+                      return (
+                        <Card
+                          key={voucher.id}
+                          onClick={() => isValid && setSelectedVoucher(voucher)}
+                          className={`p-4 text-sm rounded-lg cursor-pointer transition-all border-2 
+                        ${
+                          isValid
+                            ? "hover:border-green-500 hover:bg-green-100"
+                            : "opacity-50 cursor-not-allowed"
+                        } 
+                        ${
+                          isSelected
+                            ? "border-green-500 bg-green-100"
+                            : "border-gray-200"
+                        }`}
+                        >
+                          <p className="font-medium">Nama: {voucher.name}</p>
+                          <p>Diskon: {voucher.discount}%</p>
+                          <p>Min. Belanja: {voucher.minimum_price}</p>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </DialogContent>
+              </Dialog>
+              {selectedVoucher && (
+                <div className="flex items-center justify-between p-3 bg-green-100 rounded-lg border border-green-500 text-xs font-bold">
+                  <p>
+                    Voucher {selectedVoucher.name} - {selectedVoucher.discount}%
+                  </p>
+                  <XCircle
+                    className="cursor-pointer text-red-500"
+                    onClick={() => setSelectedVoucher(null)}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Total */}

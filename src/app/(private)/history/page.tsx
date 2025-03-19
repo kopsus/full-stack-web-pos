@@ -6,6 +6,9 @@ import prisma from "@/lib/prisma";
 
 const page = async () => {
   const transactions = await prisma.transaksi.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
     include: {
       user: true,
       payment: true,

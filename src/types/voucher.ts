@@ -16,6 +16,10 @@ export type TypeVoucher = {
   id: string;
   discount: number;
   name: string;
+  minimum_price: number;
+  maximum_price: number;
+  max_usage: number;
+  voucher_end: Date;
   createdAt: Date;
   updatedAt: Date;
 };

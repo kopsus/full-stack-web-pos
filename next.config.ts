@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
       {
         hostname: "asset.kompas.com",
       },
+      {
+        hostname: "img-global.cpcdn.com",
+      },
     ],
   },
 };
