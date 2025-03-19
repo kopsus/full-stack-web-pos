@@ -104,13 +104,13 @@ model Product {
 }
 
 model Voucher {
-  id            String    @id @default(cuid())
+  id            String  @id @default(cuid())
   discount      Int
   name          String
-  minimum_price Int       @default(0)
-  maximum_price Int       @default(0)
-  max_usage     Int       @default(0)
-  voucher_end   DateTime  
+  minimum_price Int     @default(0)
+  maximum_price Int     @default(0)
+  max_usage     Int     @default(0)
+  voucher_end   DateTime  @default(now())
 
   transaksi     Transaksi[]
 
