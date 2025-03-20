@@ -67,7 +67,7 @@ CREATE TABLE `Product` (
     `name` VARCHAR(191) NOT NULL,
     `price` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
-    `image` VARCHAR(191) NULL,
+    `image` VARCHAR(191) NOT NULL,
     `category_id` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
