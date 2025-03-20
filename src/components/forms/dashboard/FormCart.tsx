@@ -223,7 +223,7 @@ const FormCart = ({
                   <div className="flex items-center gap-3">
                     <div className="w-20 h-20 rounded-lg overflow-hidden">
                       <Image
-                        src={item.image}
+                        src={`/uploads/${item.image}`}
                         alt={item.name}
                         width={0}
                         height={0}

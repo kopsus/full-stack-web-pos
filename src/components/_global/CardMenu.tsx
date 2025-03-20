@@ -14,8 +14,6 @@ interface ICardMenu {
 }
 
 const CardMenu = ({ id, name, price, image, addToCart }: ICardMenu) => {
-  console.log("Data image", image);
-
   return (
     <Card className="rounded-xl overflow-hidden">
       <div className="w-full h-36 lg:h-40 overflow-hidden">
