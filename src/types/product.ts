@@ -15,7 +15,7 @@ export const storeDialogProduct = atom<IDialog>({
 
 export type TypeProduct = {
   id: string;
-  image: string | null;
+  image: string;
   name: string;
   price: number;
   quantity?: number;
