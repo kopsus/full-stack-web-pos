@@ -28,7 +28,7 @@ async function main() {
   );
 
   // Seed Categories
-  const categories = await Promise.all(
+  await Promise.all(
     ["Makanan", "Minuman", "Snack"].map((name) =>
       prisma.category.create({ data: { name } })
     )

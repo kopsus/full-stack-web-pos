@@ -67,7 +67,7 @@ CREATE TABLE `Product` (
     `name` VARCHAR(191) NOT NULL,
     `price` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
-    `image` VARCHAR(191) NOT NULL,
+    `image` VARCHAR(191) NULL,
     `category_id` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE `Voucher` (
     `minimum_price` INTEGER NOT NULL DEFAULT 0,
     `maximum_price` INTEGER NOT NULL DEFAULT 0,
     `max_usage` INTEGER NOT NULL DEFAULT 0,
-    `voucher_end` DATETIME(3) NOT NULL,
+    `voucher_end` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
