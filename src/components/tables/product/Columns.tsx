@@ -12,22 +12,34 @@ export const ColumnsProduct: ColumnDef<TypeProduct>[] = [
     header: "Nama",
   },
   {
+    header: "Category",
+    cell: ({ row }) => {
+      const category = row.original.category?.name;
+      return <p>{category}</p>;
+    },
+  },
+  {
     accessorKey: "image",
     header: "Image",
     cell: ({ row }) => {
+      const imageSrc = row.getValue("image");
+
       return (
-        <div className="w-20 h-20 rounded overflow-hidden">
-          <Image
-            src={row.getValue("image")}
-            alt="image"
-            width={0}
-            height={0}
-            sizes="100vw"
-          />
+        <div className="w-20 h-20 rounded overflow-hidden bg-white">
+          {imageSrc ? (
+            <Image
+              src={`/uploads/${imageSrc}`}
+              alt="image"
+              width={80}
+              height={80}
+              className="object-cover"
+            />
+          ) : null}
         </div>
       );
     },
   },
+
   {
     accessorKey: "price",
     header: "Price",

@@ -11,5 +11,5 @@ export const routeAccessMap: RouteAccessMap = {
   "/shift": ["cashier"],
   "/topping": ["admin", "cashier"],
   "/user": ["admin"],
-  "/voucher": ["admin"],
+  "/voucher": ["admin", "cashier"],
 };

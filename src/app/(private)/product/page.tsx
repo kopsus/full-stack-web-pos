@@ -6,13 +6,18 @@ import { DataTable } from "@/components/tables/product/DataTable";
 import prisma from "@/lib/prisma";
 
 const page = async () => {
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    include: {
+      category: true,
+    },
+  });
+  const category = await prisma.category.findMany();
 
   return (
     <>
       <PageHeader title="Products" />
       <DataTable title="Product" data={products} columns={ColumnsProduct} />
-      <DialogMutation />
+      <DialogMutation dataCategory={category} />
       <DialogDelete />
     </>
   );

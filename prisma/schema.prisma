@@ -92,7 +92,7 @@ model Product {
   name        String  @unique
   price       Int
   quantity    Int
-  image       String
+  image       String?
 
   category_id String
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)

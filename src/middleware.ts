@@ -26,12 +26,6 @@ export async function middleware(request: NextRequest) {
 
   const role = session.role as string;
 
-  const pageRole =
-    {
-      admin: "admin",
-      cashier: "cashier",
-    }[role] || "cashier";
-
   // Redirect to role-specific page if on homepage
   if (request.nextUrl.pathname === "/") {
     return NextResponse.redirect(new URL(`/dashboard`, request.url));

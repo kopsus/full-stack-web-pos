@@ -49,7 +49,7 @@ const items = [
     title: "Voucher",
     url: "/voucher",
     icon: TicketPercent,
-    visible: ["admin"],
+    visible: ["admin", "cashier"],
   },
   {
     title: "Category",
