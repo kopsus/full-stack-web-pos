@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Cek versi Node.js
+        run: node -v
+
       - name: Deploy ke VPS
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
