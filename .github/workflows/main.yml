@@ -37,9 +37,12 @@ jobs:
           # Jalankan perintah di VPS untuk update aplikasi
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
             cd full-stack-web-pos
+            echo "Cek Node.js di VPS:"
+            node -v
             git pull origin main
+            rm -rf .next  # Hapus hasil build lama
             npm install --force
             npm run build
-            pm2 restart 0 --update-env
+            pm2 restart web-school --update-env
             echo "Deployment sukses!"
           EOF
