@@ -13,6 +13,12 @@ jobs:
       - name: Checkout kode dari GitHub
         uses: actions/checkout@v4
 
+      # set up node js supaya sesuai dengan versi kita
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
       - name: Deploy ke VPS
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -29,7 +35,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
             cd full-stack-web-pos
             git pull origin main
-            npm install
+            npm install --force
             npm run build
             pm2 restart 0
             echo "Deployment sukses!"
