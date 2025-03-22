@@ -34,33 +34,33 @@ const DialogMutation = () => {
   const form = useForm<VoucherSchema>({
     resolver: zodResolver(voucherSchema),
     defaultValues: {
+      name: "",
       discount: 0,
-      // percentage: 0,
-      // max_usage: 0,
-      // minimum_price: 0,
-      // maximum_price: 0,
-      // voucher_end: null,
+      max_usage: 0,
+      minimum_price: 0,
+      maximum_price: 0,
+      voucher_end: undefined,
     },
   });
 
   React.useEffect(() => {
     if (dialog.type === "CREATE") {
       form.reset({
+        name: "",
         discount: 0,
-        // percentage: 0,
-        // max_usage: 0,
-        // minimum_price: 0,
-        // maximum_price: 0,
-        // voucher_end: null,
+        max_usage: 0,
+        minimum_price: 0,
+        maximum_price: 0,
+        voucher_end: undefined,
       });
     } else if (dialog.type === "UPDATE" && dialog.data) {
       form.reset({
+        name: dialog.data.name,
         discount: dialog.data.discount,
-        // percentage: dialog.data.percentage,
-        // minimum_price: dialog.data.minimum_price,
-        // maximum_price: dialog.data.maximum_price,
-        // max_usage: dialog.data.max_usage,
-        // voucher_end: dialog.data.voucher_end,
+        minimum_price: dialog.data.minimum_price,
+        maximum_price: dialog.data.maximum_price,
+        max_usage: dialog.data.max_usage,
+        voucher_end: dialog.data.voucher_end,
       });
     }
   }, [dialog.type, dialog.data, form]);
@@ -104,29 +104,28 @@ const DialogMutation = () => {
             name="discount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Jumlah Discount</FormLabel>
+                <FormLabel>Jumlah Discount Persen</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     required
-                    placeholder="Masukan Jumlah Discount"
+                    placeholder="Masukan Jumlah Discount Persen"
                   />
                 </FormControl>
               </FormItem>
             )}
           />
-          {/* <FormField
+          <FormField
             control={form.control}
-            name="percentage"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Percentage</FormLabel>
+                <FormLabel>Nama Vocuher</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    type="number"
                     required
-                    placeholder="Masukan percentage"
+                    placeholder="Masukan nama voucher"
                   />
                 </FormControl>
                 <FormMessage />
@@ -206,7 +205,7 @@ const DialogMutation = () => {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
           <Button disabled={isSubmitting}>
             {isSubmitting ? "Menyimpan..." : "Simpan"}
           </Button>

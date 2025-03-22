@@ -105,15 +105,17 @@ const DetailHistory = ({ history }: { history: TypeTransaksi }) => {
         <div className="flex justify-between">
           <span>Subtotal Produk:</span>
           {history.transaksi_product.map((item) => (
-            <span key={item.id}>{item.subtotal}</span>
+            <span key={item.id}>{formatIDR(item.subtotal)}</span>
           ))}
         </div>
-        <div className="flex justify-between">
-          <span>Subtotal Topping:</span>
-          {history.transaksi_topping.map((item) => (
-            <span key={item.id}>{item.subtotal}</span>
-          ))}
-        </div>
+        {history.transaksi_topping.length > 0 && (
+          <div className="flex justify-between">
+            <span>Subtotal Topping:</span>
+            {history.transaksi_topping.map((item) => (
+              <span key={item.id}>{formatIDR(item.subtotal)}</span>
+            ))}
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <p>Tax</p>
           <p>+ 10 %</p>
