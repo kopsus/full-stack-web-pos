@@ -220,8 +220,8 @@ const FormCart = ({
                   key={item.id}
                   className="flex items-center justify-between"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-20 h-20 rounded-lg overflow-hidden">
+                  <div className="flex gap-3">
+                    <div className="w-20 h-20 rounded-lg overflow-hidden border">
                       <Image
                         src={`/uploads/${item.image}`}
                         alt={item.name}
@@ -230,17 +230,19 @@ const FormCart = ({
                         sizes="100vw"
                       />
                     </div>
-                    <div className="text-sm flex flex-col gap-3">
+                    <div className="text-sm flex flex-col justify-between gap-1">
                       <p className="line-clamp-1 font-bold">{item.name}</p>
-                      <p>{formatIDR(item.price * (item.quantity || 1))}</p>
+                      <p className="text-xs">
+                        {formatIDR(item.price * (item.quantity || 1))}
+                      </p>
                       <div className="flex items-center gap-2">
                         <MinusCircle
-                          className="cursor-pointer"
+                          className="cursor-pointer size-5"
                           onClick={() => updateQuantity(item.id, -1)}
                         />
                         <p>{item.quantity}</p>
                         <PlusCircle
-                          className="cursor-pointer"
+                          className="cursor-pointer size-5"
                           onClick={() => updateQuantity(item.id, 1)}
                         />
                       </div>
@@ -377,7 +379,9 @@ const FormCart = ({
                           >
                             <p className="font-medium">Nama: {voucher.name}</p>
                             <p>Diskon: {voucher.discount}%</p>
-                            <p>Min. Belanja: {voucher.minimum_price}</p>
+                            <p>
+                              Min. Belanja: {formatIDR(voucher.minimum_price)}
+                            </p>
                           </Card>
                         );
                       })}

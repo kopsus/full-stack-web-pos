@@ -16,7 +16,7 @@ interface ICardMenu {
 const CardMenu = ({ id, name, price, image, addToCart }: ICardMenu) => {
   return (
     <Card className="rounded-xl overflow-hidden">
-      <div className="w-full h-36 lg:h-40 overflow-hidden">
+      <div className="w-full h-14 lg:h-28 overflow-hidden border">
         <Image
           src={`/uploads/${image}`}
           alt={name}
@@ -26,11 +26,12 @@ const CardMenu = ({ id, name, price, image, addToCart }: ICardMenu) => {
           className="hover:scale-105 transition-all"
         />
       </div>
-      <div className="flex flex-col m-3">
+      <div className="flex flex-col m-2 text-xs">
         <p className="font-bold">{name}</p>
-        <p className="text-slate-500 text-sm">{formatIDR(price)}</p>
+        <p className="text-slate-500">{formatIDR(price)}</p>
         <Button
-          className="mt-2"
+          className="mt-1"
+          size={"sm"}
           onClick={() => addToCart({ id, name, price, image })}
         >
           Add To Cart

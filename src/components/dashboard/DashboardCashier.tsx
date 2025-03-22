@@ -59,13 +59,13 @@ const Dashboard = ({
   return (
     <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="col-span-1 lg:col-span-2 flex flex-col gap-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:items-center gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:items-center gap-4">
           <CardState
             dataTransaction={dataTransaction}
             dataProduct={dataProduct}
           />
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6 gap-2 2xl:gap-4">
           {dataProduct.map((item, index) => (
             <CardMenu key={index} {...item} addToCart={addToCart} />
           ))}
