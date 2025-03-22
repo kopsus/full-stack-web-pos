@@ -13,7 +13,7 @@ jobs:
       - name: Checkout kode dari GitHub
         uses: actions/checkout@v4
 
-      # set up node js supaya sesuai dengan versi kita
+      # Set up Node.js agar sesuai dengan versi yang digunakan di proyek
       - name: Use Node.js 20
         uses: actions/setup-node@v3
         with:
@@ -36,11 +36,21 @@ jobs:
 
           # Jalankan perintah di VPS untuk update aplikasi
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+            export PATH="$NVM_DIR/versions/node/v22.14.0/bin:$PATH"
+
             cd full-stack-web-pos
             git pull origin main
             rm -rf .next  # Hapus hasil build lama
+
+            # Pastikan Node.js dan NPM dikenali
+            node -v
+            npm -v
+
             npm install --force
             npm run build
-            pm2 restart web-school --update-env
+            pm2 restart web-school --update-env --watch --silent
             echo "Deployment sukses!"
           EOF
