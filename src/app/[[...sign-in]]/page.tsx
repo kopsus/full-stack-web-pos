@@ -54,7 +54,7 @@ export default function Home() {
     <div className="flex h-screen w-full items-center justify-center bg-neutral-100 dark:bg-neutral-800 px-4">
       <Card className="mx-auto max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">TEST</CardTitle>
+          <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
             Masukkan username dan password Anda untuk masuk ke akun Anda
           </CardDescription>
