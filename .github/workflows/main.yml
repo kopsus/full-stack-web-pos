@@ -33,7 +33,6 @@ jobs:
             export PATH="$NVM_DIR/versions/node/v22.14.0/bin:$PATH"
             
             cd full-stack-web-pos
-            git config --global pull.rebase true
             git pull origin main
             rm -rf .next
 
