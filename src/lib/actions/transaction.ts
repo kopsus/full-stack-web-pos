@@ -83,12 +83,23 @@ export const createTransaction = async (data: TransactionSchema) => {
         throw new Error("Total amount tidak valid!");
       }
 
+      // Validasi bahwa jumlah yang dibayar cukup
+      if (data.paid_amount) {
+        if (data.paid_amount < data.total_amount) {
+          throw new Error("Jumlah yang dibayarkan kurang!");
+        }
+      }
+
+      const change = data.paid_amount - data.total_amount;
+
       // Simpan transaksi ke database dengan total amount dari frontend
       const newTransaction = await tx.transaksi.create({
         data: {
           customer_name: data.customer_name,
           total_amount: data.total_amount, // Pakai total dari frontend
           user_id: data.user_id,
+          paid_amount: data.paid_amount, // Simpan total cash yang dibayar
+          change: change, // Simpan kembalian
           payment_id: data.payment_id,
           voucher_id: data.voucher_id,
           sales_type: data.sales_type,

@@ -100,35 +100,61 @@ const DetailHistory = ({ history }: { history: TypeTransaksi }) => {
       </div>
 
       {/* Ringkasan Pembayaran */}
+      {/* Ringkasan Pembayaran */}
       <div className="mt-6 p-4 bg-gray-100 rounded-lg">
         <p className="font-semibold">💰 Ringkasan Pembayaran</p>
+
         <div className="flex justify-between">
           <span>Subtotal Produk:</span>
-          {history.transaksi_product.map((item) => (
-            <span key={item.id}>{formatIDR(item.subtotal)}</span>
-          ))}
+          <span>
+            {formatIDR(
+              history.transaksi_product.reduce(
+                (acc, item) => acc + item.subtotal,
+                0
+              )
+            )}
+          </span>
         </div>
+
         {history.transaksi_topping.length > 0 && (
           <div className="flex justify-between">
             <span>Subtotal Topping:</span>
-            {history.transaksi_topping.map((item) => (
-              <span key={item.id}>{formatIDR(item.subtotal)}</span>
-            ))}
+            <span>
+              {formatIDR(
+                history.transaksi_topping.reduce(
+                  (acc, item) => acc + item.subtotal,
+                  0
+                )
+              )}
+            </span>
           </div>
         )}
-        {/* <div className="flex items-center justify-between">
-          <p>Tax</p>
-          <p>+ 10 %</p>
-        </div> */}
+
         {history.voucher && (
           <div className="flex justify-between">
-            <span>Diskon:</span>
-            <span>- {formatIDR(history.voucher.discount)} %</span>
+            <span>Diskon ({history.voucher.discount}%):</span>
+            <span>
+              -{" "}
+              {formatIDR(
+                (history.voucher.discount / 100) * history.total_amount
+              )}
+            </span>
           </div>
         )}
+
         <div className="flex justify-between font-bold text-lg mt-2">
-          <span>✅ Total:</span>
+          <span>✅ Total Pembayaran:</span>
           <span>{formatIDR(history.total_amount)}</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span>💵 Jumlah Dibayar:</span>
+          <span>{formatIDR(Number(history.paid_amount))}</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span>💰 Kembalian:</span>
+          <span>{formatIDR(Number(history.change))}</span>
         </div>
       </div>
     </div>

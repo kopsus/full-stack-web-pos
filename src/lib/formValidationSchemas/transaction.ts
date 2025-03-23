@@ -31,6 +31,8 @@ export const transactionSchema = z.object({
     )
     .optional()
     .default([]),
+  change: z.coerce.number().default(0),
+  paid_amount: z.coerce.number().default(0),
 });
 
 export type TransactionSchema = z.infer<typeof transactionSchema>;

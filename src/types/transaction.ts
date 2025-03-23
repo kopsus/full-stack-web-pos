@@ -37,6 +37,8 @@ export type TypeTransaksi = {
   user_id: string;
   payment_id: string;
   voucher_id: string | null;
+  paid_amount: string | null;
+  change: string | null;
   createdAt: Date;
   updatedAt: Date;
   user: TypeUser;

@@ -54,6 +54,8 @@ model Transaksi {
   customer_name     String
   total_amount      Int
   sales_type        EnumSalesType @default(DO)
+  paid_amount       Int?  @default(0)
+  change            Int?  @default(0)
 
   user_id           String
   user              User  @relation(fields: [user_id], references: [id], onDelete: Cascade)

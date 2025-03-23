@@ -70,6 +70,7 @@ const FormCart = ({
   const [selectedToppings, setSelectedToppings] = React.useState<TypeTopping[]>(
     []
   );
+  const [paidAmount, setPaidAmount] = React.useState<number | "">("");
 
   // Hitung subtotal
   const subtotal = cartItems.reduce(
@@ -90,6 +91,9 @@ const FormCart = ({
     : 0;
   const total = subtotalBeforeTax - discount;
 
+  // Hitung total kembalian
+  const changeAmount = paidAmount ? Math.max(paidAmount - total, 0) : 0;
+
   // Setup form
   const form = useForm<TransactionSchema>({
     resolver: zodResolver(transactionSchema),
@@ -99,6 +103,8 @@ const FormCart = ({
       user_id: dataUser.id,
       payment_id: "",
       voucher_id: null,
+      change: changeAmount,
+      paid_amount: Number(paidAmount),
       transaksi_product: cartItems.map((item) => ({
         product_id: item.id,
         quantity: item.quantity || 1,
@@ -112,16 +118,35 @@ const FormCart = ({
     mode: "onSubmit",
   });
 
-  const [paidAmount, setPaidAmount] = React.useState<number | "">("");
   const selectedPayment = form.watch("payment_id");
 
-  // Ambil data payment method yang dipilih
+  // Ambil data metode pembayaran yang dipilih
   const selectedPaymentMethod = dataPayment.find(
     (item) => item.id === selectedPayment
   );
 
-  // Hitung total kembalian
-  const changeAmount = paidAmount ? Math.max(paidAmount - total, 0) : 0;
+  // Efek untuk memperbarui paid_amount berdasarkan metode pembayaran
+  React.useEffect(() => {
+    if (selectedPaymentMethod?.name.toLowerCase() === "cash") {
+      form.setValue("paid_amount", paidAmount ? Number(paidAmount) : 0);
+    } else {
+      form.setValue("paid_amount", total); // Jika bukan cash, paid_amount = total
+    }
+  }, [selectedPaymentMethod, paidAmount, total, form]);
+
+  // Efek untuk memperbarui change
+  React.useEffect(() => {
+    const updatedChange =
+      selectedPaymentMethod?.name.toLowerCase() === "cash"
+        ? Math.max((paidAmount ? Number(paidAmount) : 0) - total, 0)
+        : 0;
+    form.setValue("change", updatedChange);
+  }, [paidAmount, total, selectedPaymentMethod, form]);
+
+  // Saat mengisi input paid amount
+  const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPaidAmount(e.target.value ? Number(e.target.value) : "");
+  };
 
   React.useEffect(() => {
     form.setValue(
@@ -180,6 +205,7 @@ const FormCart = ({
 
   async function onSubmit() {
     const values = form.getValues();
+    console.log("data yang dikirim", values);
 
     try {
       const result = await createTransaction(values);
@@ -512,25 +538,28 @@ const FormCart = ({
 
               {selectedPaymentMethod?.name.toLowerCase() === "cash" && (
                 <>
-                  <FormItem>
-                    <FormLabel>Total Dibayar</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Masukkan jumlah yang dibayar"
-                        value={paidAmount}
-                        onChange={(e) =>
-                          setPaidAmount(
-                            e.target.value ? Number(e.target.value) : ""
-                          )
-                        }
-                      />
-                    </FormControl>
-                  </FormItem>
-
+                  <FormField
+                    control={form.control}
+                    name="paid_amount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Total Dibayar</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            value={paidAmount}
+                            type="number"
+                            placeholder="Masukkan jumlah yang dibayar"
+                            onChange={handlePaidAmountChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   {/* Tampilkan Total Kembalian */}
                   <div className="text-lg font-semibold">
-                    Kembalian: {formatIDR(changeAmount)}
+                    Kembalian: {formatIDR(form.watch("change"))}
                   </div>
                 </>
               )}
