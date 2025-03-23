@@ -26,19 +26,21 @@ export const createTransaction = async (data: TransactionSchema) => {
         select: { id: true, price: true },
       });
 
-      // Mapping harga produk
       const productPriceMap = new Map(
         productPrices.map((p) => [p.id, p.price])
       );
 
-      // Hitung subtotal produk
-      let subtotal = data.transaksi_product.reduce((total, item) => {
-        return (
-          total + (productPriceMap.get(item.product_id) || 0) * item.quantity
-        );
-      }, 0);
+      // Validasi subtotal produk
+      const calculatedSubtotal = data.transaksi_product.reduce(
+        (total, item) => {
+          return (
+            total + (productPriceMap.get(item.product_id) || 0) * item.quantity
+          );
+        },
+        0
+      );
 
-      // Hitung subtotal topping
+      // Ambil harga topping dari database (jika ada)
       let toppingSubtotal = 0;
       let toppingPrices: { id: string; price: number }[] = [];
 
@@ -61,30 +63,31 @@ export const createTransaction = async (data: TransactionSchema) => {
         }, 0);
       }
 
-      // Hitung total sebelum pajak (setelah dikurangi voucher)
-      const subtotalBeforeTax = subtotal + toppingSubtotal;
+      // Hitung subtotalBeforeTax
+      const subtotalBeforeTax = calculatedSubtotal + toppingSubtotal;
 
-      // Hitung voucher sebagai persentase dari subtotal
-      const discountPercentage = data.voucher_id
-        ? await getVoucherDiscount(tx, data.voucher_id) // Mengambil diskon dalam bentuk %
-        : 0;
+      // Validasi voucher jika ada
+      let discountAmount = 0;
+      if (data.voucher_id) {
+        const discountPercentage = await getVoucherDiscount(
+          tx,
+          data.voucher_id
+        );
+        discountAmount = (subtotalBeforeTax * discountPercentage) / 100;
+      }
 
-      const discountAmount = (subtotalBeforeTax * discountPercentage) / 100;
+      // Validasi total amount yang dikirim dari frontend
+      const expectedTotalAmount = subtotalBeforeTax - discountAmount;
 
-      // Hitung total setelah dikurangi voucher
-      const subtotalAfterDiscount = subtotalBeforeTax - discountAmount;
+      if (data.total_amount !== expectedTotalAmount) {
+        throw new Error("Total amount tidak valid!");
+      }
 
-      // Hitung tax 10%
-      const tax = subtotalAfterDiscount * 0.1;
-
-      // Hitung total akhir
-      const totalAmount = subtotalAfterDiscount + tax;
-
-      // Simpan transaksi ke database
+      // Simpan transaksi ke database dengan total amount dari frontend
       const newTransaction = await tx.transaksi.create({
         data: {
           customer_name: data.customer_name,
-          total_amount: totalAmount,
+          total_amount: data.total_amount, // Pakai total dari frontend
           user_id: data.user_id,
           payment_id: data.payment_id,
           voucher_id: data.voucher_id,
@@ -103,7 +106,7 @@ export const createTransaction = async (data: TransactionSchema) => {
         })),
       });
 
-      // Simpan topping yang dibeli dalam transaksi (jika ada)
+      // Simpan topping jika ada
       if (data.transaksi_topping && data.transaksi_topping.length > 0) {
         await tx.transaksiTopping.createMany({
           data: data.transaksi_topping.map((topping) => ({
@@ -122,7 +125,7 @@ export const createTransaction = async (data: TransactionSchema) => {
 
       return responServerAction({
         statusSuccess: true,
-        messageSuccess: "Berhasil membuat Transaksi",
+        messageSuccess: "Berhasil membuat transaksi",
       });
     });
   } catch (error) {

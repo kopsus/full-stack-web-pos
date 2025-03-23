@@ -71,11 +71,11 @@ const FormCart = ({
     []
   );
 
+  // Hitung subtotal
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * (item.quantity || 0),
     0
   );
-
   const toppingSubtotal = selectedToppings.reduce((acc, topping) => {
     const toppingData = dataTopping.find((t) => t.id === topping.id);
     return toppingData
@@ -83,18 +83,12 @@ const FormCart = ({
       : acc;
   }, 0);
 
-  // Hitung diskon berdasarkan (Subtotal Produk + Subtotal Topping)
+  // Hitung total setelah diskon
   const subtotalBeforeTax = subtotal + toppingSubtotal;
   const discount = selectedVoucher
     ? (subtotalBeforeTax * selectedVoucher.discount) / 100
     : 0;
-
-  // Pajak 10% setelah dikurangi diskon
-  const subtotalAfterDiscount = subtotalBeforeTax - discount;
-  const tax = subtotalAfterDiscount * 0.1;
-
-  // Total akhir
-  const total = subtotalAfterDiscount + tax;
+  const total = subtotalBeforeTax - discount;
 
   // Setup form
   const form = useForm<TransactionSchema>({
@@ -117,6 +111,17 @@ const FormCart = ({
     },
     mode: "onSubmit",
   });
+
+  const [paidAmount, setPaidAmount] = React.useState<number | "">("");
+  const selectedPayment = form.watch("payment_id");
+
+  // Ambil data payment method yang dipilih
+  const selectedPaymentMethod = dataPayment.find(
+    (item) => item.id === selectedPayment
+  );
+
+  // Hitung total kembalian
+  const changeAmount = paidAmount ? Math.max(paidAmount - total, 0) : 0;
 
   React.useEffect(() => {
     form.setValue(
@@ -203,6 +208,12 @@ const FormCart = ({
     }
   }
 
+  const now = new Date(); // Ambil waktu saat ini
+
+  const validVouchers = dataVoucher.filter(
+    (voucher) => new Date(voucher.voucher_end) > now
+  );
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -258,6 +269,7 @@ const FormCart = ({
             </div>
 
             <div className="space-y-3">
+              {/* topping */}
               <div className="flex flex-col gap-2">
                 <Dialog>
                   <DialogTrigger
@@ -341,6 +353,7 @@ const FormCart = ({
                 )}
               </div>
 
+              {/* voucher */}
               <div className="flex flex-col gap-2">
                 <Dialog>
                   <DialogTrigger
@@ -355,7 +368,7 @@ const FormCart = ({
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogTitle>Pilih Voucher</DialogTitle>
                     <div className="space-y-4">
-                      {dataVoucher.map((voucher) => {
+                      {validVouchers.map((voucher) => {
                         const isValid = subtotal >= voucher.minimum_price;
                         const isSelected = selectedVoucher?.id === voucher.id;
 
@@ -415,16 +428,17 @@ const FormCart = ({
                   <p className="font-semibold">{formatIDR(toppingSubtotal)}</p>
                 </div>
               )}
-              <div className="flex items-center justify-between text-sm">
+              {/* <div className="flex items-center justify-between text-sm">
                 <p>Tax (10%)</p>
                 <p className="font-semibold">{formatIDR(tax)}</p>
-              </div>
+              </div> */}
               <div className="flex items-center justify-between text-sm">
                 <p>Total</p>
                 <p className="font-semibold text-red-600">{formatIDR(total)}</p>
               </div>
             </div>
 
+            {/* data customer */}
             <div className="flex flex-col gap-2">
               {/* Customer Name */}
               <FormField
@@ -495,6 +509,31 @@ const FormCart = ({
                   </FormItem>
                 )}
               />
+
+              {selectedPaymentMethod?.name.toLowerCase() === "cash" && (
+                <>
+                  <FormItem>
+                    <FormLabel>Total Dibayar</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Masukkan jumlah yang dibayar"
+                        value={paidAmount}
+                        onChange={(e) =>
+                          setPaidAmount(
+                            e.target.value ? Number(e.target.value) : ""
+                          )
+                        }
+                      />
+                    </FormControl>
+                  </FormItem>
+
+                  {/* Tampilkan Total Kembalian */}
+                  <div className="text-lg font-semibold">
+                    Kembalian: {formatIDR(changeAmount)}
+                  </div>
+                </>
+              )}
             </div>
 
             <Button type="submit" disabled={isSubmitting}>

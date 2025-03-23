@@ -116,10 +116,10 @@ const DetailHistory = ({ history }: { history: TypeTransaksi }) => {
             ))}
           </div>
         )}
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <p>Tax</p>
           <p>+ 10 %</p>
-        </div>
+        </div> */}
         {history.voucher && (
           <div className="flex justify-between">
             <span>Diskon:</span>
