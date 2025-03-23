@@ -34,7 +34,7 @@ jobs:
             
             cd full-stack-web-pos
             git pull origin main
-            rm -rf .next
+            rm -rf .next node_modules package-lock.json
 
             npm install --force
             npm run build
