@@ -10,6 +10,9 @@ import { TypeTransaction } from "@/types/transaction";
 import { TypeUser } from "@/types/user";
 import { TypeVoucher } from "@/types/voucher";
 import { TypeTopping } from "@/types/topping";
+import { Card } from "../ui/card";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import { TypeCategory } from "@/types/category";
 
 interface IDashboard {
   dataProduct: TypeProduct[];
@@ -18,6 +21,7 @@ interface IDashboard {
   dataUser: TypeUser;
   dataVoucher: TypeVoucher[];
   dataTopping: TypeTopping[];
+  dataCategory: TypeCategory[];
 }
 
 const Dashboard = ({
@@ -27,6 +31,7 @@ const Dashboard = ({
   dataUser,
   dataVoucher,
   dataTopping,
+  dataCategory,
 }: IDashboard) => {
   const [cartItems, setCartItems] = React.useState<TypeProduct[]>([]);
 
@@ -56,6 +61,16 @@ const Dashboard = ({
     );
   };
 
+  const [activeTab, setActiveTab] = React.useState(dataCategory[0].id);
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
+
+  const filteredProducts = dataProduct.filter(
+    (item) => item.category_id === activeTab
+  );
+
   return (
     <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="col-span-1 lg:col-span-2 flex flex-col gap-10">
@@ -65,11 +80,26 @@ const Dashboard = ({
             dataProduct={dataProduct}
           />
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6 gap-2 2xl:gap-4">
-          {dataProduct.map((item, index) => (
-            <CardMenu key={index} {...item} addToCart={addToCart} />
-          ))}
-        </div>
+        <Card className="p-4 space-y-4">
+          <Tabs
+            defaultValue={dataCategory[0].id}
+            onValueChange={handleTabChange}
+            className="space-y-4"
+          >
+            <TabsList>
+              {dataCategory.map((item) => (
+                <TabsTrigger key={item.id} value={item.id}>
+                  {item.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+          <div className="grid grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6 gap-2 2xl:gap-4">
+            {filteredProducts.map((item, index) => (
+              <CardMenu key={index} {...item} addToCart={addToCart} />
+            ))}
+          </div>
+        </Card>
       </div>
       <div className="col-span-1">
         <FormCart

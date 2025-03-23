@@ -12,6 +12,7 @@ const page = async () => {
   const transactions = await prisma.transaksi.findMany();
   const voucher = await prisma.voucher.findMany();
   const topping = await prisma.topping.findMany();
+  const category = await prisma.category.findMany();
 
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
@@ -35,6 +36,7 @@ const page = async () => {
           dataUser={user!}
           dataVoucher={voucher}
           dataTopping={topping}
+          dataCategory={category}
         />
       )}
     </>
