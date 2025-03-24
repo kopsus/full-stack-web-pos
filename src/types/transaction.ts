@@ -29,8 +29,8 @@ export type TypeTransaction = {
   voucher_id: string | null;
   createdAt: Date;
   updatedAt: Date;
-  transaksi_product: TypeTransaksiProduct[];
-  transaksi_topping: TypeTransaksiTopping[];
+  transaksi_product?: TypeTransaksiProduct[];
+  transaksi_topping?: TypeTransaksiTopping[];
 };
 
 export type TypeTransaksi = {
