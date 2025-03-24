@@ -38,6 +38,11 @@ jobs:
 
             npm install --force
             npm run build
-            pm2 restart 0 --update-env
+            
+            pm2 stop all
+            pm2 delete all
+            pm2 start npm --name "web-pos" -- start --watch
+            pm2 save
+
             echo "Deployment sukses!"
           EOF
