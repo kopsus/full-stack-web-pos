@@ -1,25 +1,35 @@
-"use client";
-
+import Receipt from "@/components/_global/Receipt";
 import PageHeader from "@/components/page-header";
-import { Button } from "@/components/ui/button";
+import Logout from "@/components/shift/Logout";
+import Print from "@/components/shift/Print";
 import { Card } from "@/components/ui/card";
-import logout from "@/lib/actions/logout";
+import prisma from "@/lib/prisma";
 import React from "react";
 
-const page = () => {
-  const handleLogout = async () => {
-    await logout();
-  };
+const page = async () => {
+  const history = await prisma.transaksi.findMany({
+    include: {
+      transaksi_product: {
+        include: {
+          product: true,
+        },
+      },
+      transaksi_topping: {
+        include: {
+          topping: true,
+        },
+      },
+    },
+  });
 
   return (
     <>
       <PageHeader title="Shift" />
       <Card className="m-4 p-5 h-full flex justify-center items-center gap-10">
-        <Button size={"lg"} variant={"destructive"} onClick={handleLogout}>
-          Akhiri Shift
-        </Button>
-        <Button size={"lg"}>Print Riwayat</Button>
+        <Logout />
+        <Print />
       </Card>
+      <Receipt history={history} />
     </>
   );
 };

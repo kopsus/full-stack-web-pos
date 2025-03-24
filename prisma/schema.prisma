@@ -105,33 +105,6 @@ model Product {
   updatedAt   DateTime  @updatedAt
 }
 
-model Voucher {
-  id            String  @id @default(cuid())
-  discount      Int
-  name          String
-  minimum_price Int     @default(0)
-  maximum_price Int     @default(0)
-  max_usage     Int     @default(0)
-  voucher_end   DateTime  @default(now())
-
-  transaksi     Transaksi[]
-
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-}
-
-model Topping {
-  id          String  @id @default(cuid())
-  name        String  @unique
-  price       Int
-
-  // Relasi many-to-many ke transaksi
-  transaksi_topping TransaksiTopping[]
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
-}
-
 model TransaksiTopping {
   id           String  @id @default(cuid())
 
@@ -147,3 +120,31 @@ model TransaksiTopping {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
+
+model Topping {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  price       Int
+
+  // Relasi many-to-many ke transaksi
+  transaksi_topping TransaksiTopping[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}
+
+model Voucher {
+  id            String  @id @default(cuid())
+  discount      Int
+  name          String
+  minimum_price Int     @default(0)
+  maximum_price Int     @default(0)
+  max_usage     Int     @default(0)
+  voucher_end   DateTime  @default(now())
+
+  transaksi     Transaksi[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+

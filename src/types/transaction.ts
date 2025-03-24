@@ -23,10 +23,14 @@ export type TypeTransaction = {
   total_amount: number;
   sales_type: "DO" | "DineIn";
   user_id: string;
+  paid_amount: number | null;
+  change: number | null;
   payment_id: string;
   voucher_id: string | null;
   createdAt: Date;
   updatedAt: Date;
+  transaksi_product: TypeTransaksiProduct[];
+  transaksi_topping: TypeTransaksiTopping[];
 };
 
 export type TypeTransaksi = {
