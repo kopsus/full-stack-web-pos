@@ -39,7 +39,7 @@ jobs:
             npm install --force
             NODE_OPTIONS="--max_old_space_size=1024" npm run build
             sleep 5
-            pm2 restart web-pos --update-env
+            pm2 restart web-pos
             
             echo "Deployment sukses!"
           EOF

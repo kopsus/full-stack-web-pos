@@ -14,7 +14,7 @@ const Receipt = ({ history }: IReceipt) => {
   const totalKembalian = totalDibayar - totalPendapatan;
 
   return (
-    <div className="p-4 text-sm font-mono border w-72 bg-white mx-auto">
+    <div className="text-start p-4 text-sm font-mono border w-72 bg-white mx-auto">
       <h2 className="text-center font-bold text-lg">Loempia BOM</h2>
       <p className="text-center">Jl. Sudirman No. 123, Jakarta</p>
       <hr className="my-2" />
@@ -32,20 +32,15 @@ const Receipt = ({ history }: IReceipt) => {
 
           <div className="ml-2">
             {trx.transaksi_product?.map((item, index) => (
-              <div key={index} className="mb-2">
-                <p>
-                  {item.product.name} x {item.quantity} -{" "}
-                  {formatIDR(item.product.price)}
-                </p>
-              </div>
+              <p key={index}>
+                {item.product.name} x {item.quantity} -{" "}
+                {formatIDR(item.product.price)}
+              </p>
             ))}
             {trx.transaksi_topping?.map((item, index) => (
-              <ul key={index} className="ml-4 text-xs">
-                <li>
-                  + {item.topping.name} -{" "}
-                  {formatIDR(Number(item.topping.price))}
-                </li>
-              </ul>
+              <p key={index} className="ml-4 text-xs">
+                + {item.topping.name} - {formatIDR(Number(item.topping.price))}
+              </p>
             ))}
           </div>
 

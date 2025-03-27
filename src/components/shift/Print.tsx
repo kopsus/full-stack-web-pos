@@ -1,30 +1,38 @@
 "use client";
-
-import React, { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { TypeTransaction } from "@/types/transaction";
-import Receipt from "../_global/Receipt";
-import { Button } from "../ui/button";
 
-interface IPrint {
-  history: TypeTransaction[];
-}
+const Print = ({ history }: { history: TypeTransaction[] }) => {
+  const [isPrinting, setIsPrinting] = useState(false);
 
-const Print = ({ history }: IPrint) => {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const handlePrint = useReactToPrint({ contentRef });
+  const handlePrint = async () => {
+    setIsPrinting(true);
+    try {
+      const response = await fetch("/api/print", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ history }),
+      });
+
+      const result = await response.json();
+      if (!result.success) {
+        alert(`Gagal mencetak: ${result.message}`);
+      } else {
+        alert("Struk berhasil dicetak ke printer thermal!");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan saat mencetak");
+    } finally {
+      setIsPrinting(false);
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <Button onClick={() => handlePrint()} size="lg">
-        Print Receipt
-      </Button>
-      <div style={{ display: "none" }}>
-        <div ref={contentRef}>
-          <Receipt history={history} />
-        </div>
-      </div>
-    </div>
+    <Button onClick={handlePrint} disabled={isPrinting}>
+      {isPrinting ? "Mencetak..." : "Print Receipt"}
+    </Button>
   );
 };
 
