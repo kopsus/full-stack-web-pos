@@ -31,17 +31,20 @@ import { TableToolbar } from "./TableToolbar";
 
 import { useSetAtom } from "jotai";
 import { storeDialogProduct } from "@/types/product";
+import { TypeUser } from "@/types/user";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   title: string;
+  user: TypeUser;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   title,
+  user,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -70,18 +73,20 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4 overflow-x-auto p-4">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-4xl font-bold">{title}</h2>
-        <Button
-          className="text-white"
-          onClick={() => {
-            setDialog({
-              type: "CREATE",
-              show: true,
-              data: null,
-            });
-          }}
-        >
-          Tambah {title}
-        </Button>
+        {user.role === "admin" && (
+          <Button
+            className="text-white"
+            onClick={() => {
+              setDialog({
+                type: "CREATE",
+                show: true,
+                data: null,
+              });
+            }}
+          >
+            Tambah {title}
+          </Button>
+        )}
       </div>
       <Card className="p-5 space-y-4">
         <TableToolbar table={table} />

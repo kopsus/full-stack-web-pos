@@ -39,7 +39,6 @@ export const ColumnsProduct: ColumnDef<TypeProduct>[] = [
       );
     },
   },
-
   {
     accessorKey: "price",
     header: "Price",

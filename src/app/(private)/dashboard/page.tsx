@@ -5,11 +5,32 @@ import prisma from "@/lib/prisma";
 import { DashboardAdmin } from "@/components/dashboard/DashboardAdmin";
 import { cookies } from "next/headers";
 import { decrypt } from "@/lib/actions/session";
+import { getActiveShift } from "@/utils/getActiveShift";
 
 const page = async () => {
   const products = await prisma.product.findMany();
   const payments = await prisma.payment.findMany();
-  const transactions = await prisma.transaksi.findMany();
+  const transactions = await prisma.transaksi.findMany({
+    include: {
+      shift: {
+        include: {
+          user: true,
+        },
+      },
+      payment: true,
+      voucher: true,
+      transaksi_product: {
+        include: {
+          product: true,
+        },
+      },
+      transaksi_topping: {
+        include: {
+          topping: true,
+        },
+      },
+    },
+  });
   const voucher = await prisma.voucher.findMany();
   const topping = await prisma.topping.findMany();
   const category = await prisma.category.findMany();
@@ -23,6 +44,8 @@ const page = async () => {
     },
   });
 
+  const activeShift = await getActiveShift(user?.id || "");
+
   return (
     <>
       <PageHeader title="Dashboard" />
@@ -33,10 +56,10 @@ const page = async () => {
           dataProduct={products}
           dataPayment={payments}
           dataTransaction={transactions}
-          dataUser={user!}
           dataVoucher={voucher}
           dataTopping={topping}
           dataCategory={category}
+          activeShift={activeShift}
         />
       )}
     </>

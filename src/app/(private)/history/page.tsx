@@ -10,7 +10,11 @@ const page = async () => {
       createdAt: "desc",
     },
     include: {
-      user: true,
+      shift: {
+        include: {
+          user: true,
+        },
+      },
       payment: true,
       voucher: true,
       transaksi_product: {

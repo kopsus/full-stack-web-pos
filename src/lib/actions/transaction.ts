@@ -9,65 +9,62 @@ import { getVoucherDiscount } from "./voucher";
 export const createTransaction = async (data: TransactionSchema) => {
   try {
     return await prisma.$transaction(async (tx) => {
-      // Cek apakah user dan metode pembayaran valid
-      const user = await tx.user.findUnique({ where: { id: data.user_id } });
-      if (!user) throw new Error("User tidak ditemukan!");
+      // 1. Validasi shift aktif
+      const shift = await tx.shift.findUnique({ where: { id: data.shift_id } });
+      if (!shift || shift.end_time !== null) {
+        throw new Error("Shift belum aktif");
+      }
 
-      const payment = await tx.payment.findUnique({
-        where: { id: data.payment_id },
-      });
-      if (!payment) throw new Error("Metode pembayaran tidak valid!");
-
-      // Ambil harga produk dari database
-      const productPrices = await tx.product.findMany({
-        where: {
-          id: { in: data.transaksi_product.map((p) => p.product_id) },
-        },
-        select: { id: true, price: true },
+      // 2. Ambil harga & stok produk
+      const products = await tx.product.findMany({
+        where: { id: { in: data.transaksi_product.map((p) => p.product_id) } },
+        select: { id: true, price: true, quantity: true },
       });
 
-      const productPriceMap = new Map(
-        productPrices.map((p) => [p.id, p.price])
-      );
+      const productMap = new Map(products.map((p) => [p.id, p]));
 
-      // Validasi subtotal produk
-      const calculatedSubtotal = data.transaksi_product.reduce(
-        (total, item) => {
-          return (
-            total + (productPriceMap.get(item.product_id) || 0) * item.quantity
-          );
-        },
-        0
-      );
+      // 3. Validasi stok & hitung subtotal produk
+      let calculatedSubtotal = 0;
+      for (const item of data.transaksi_product) {
+        const product = productMap.get(item.product_id);
+        if (!product)
+          throw new Error(`Produk ${item.product_id} tidak ditemukan`);
+        if (product.quantity < item.quantity)
+          throw new Error(`Stok produk ${item.product_id} tidak cukup`);
 
-      // Ambil harga topping dari database (jika ada)
+        calculatedSubtotal += item.quantity * product.price;
+      }
+
+      // 4. Ambil harga & stok topping jika ada
       let toppingSubtotal = 0;
-      let toppingPrices: { id: string; price: number }[] = [];
+      let toppingMap = new Map<string, { price: number; quantity: number }>();
 
       if (data.transaksi_topping && data.transaksi_topping.length > 0) {
-        toppingPrices = await tx.topping.findMany({
+        const toppings = await tx.topping.findMany({
           where: {
             id: { in: data.transaksi_topping.map((t) => t.topping_id) },
           },
-          select: { id: true, price: true },
+          select: { id: true, price: true, quantity: true },
         });
 
-        const toppingPriceMap = new Map(
-          toppingPrices.map((t) => [t.id, t.price])
-        );
+        toppingMap = new Map(toppings.map((t) => [t.id, t]));
 
-        toppingSubtotal = data.transaksi_topping.reduce((total, item) => {
-          return (
-            total + (toppingPriceMap.get(item.topping_id) || 0) * item.quantity
-          );
-        }, 0);
+        // Validasi stok topping & hitung subtotal
+        for (const item of data.transaksi_topping) {
+          const topping = toppingMap.get(item.topping_id);
+          if (!topping)
+            throw new Error(`Topping ${item.topping_id} tidak ditemukan`);
+          if (topping.quantity < item.quantity)
+            throw new Error(`Stok topping ${item.topping_id} tidak cukup`);
+
+          toppingSubtotal += item.quantity * topping.price;
+        }
       }
 
-      // Hitung subtotalBeforeTax
+      // 5. Hitung diskon dan total amount
       const subtotalBeforeTax = calculatedSubtotal + toppingSubtotal;
-
-      // Validasi voucher jika ada
       let discountAmount = 0;
+
       if (data.voucher_id) {
         const discountPercentage = await getVoucherDiscount(
           tx,
@@ -76,67 +73,85 @@ export const createTransaction = async (data: TransactionSchema) => {
         discountAmount = (subtotalBeforeTax * discountPercentage) / 100;
       }
 
-      // Validasi total amount yang dikirim dari frontend
       const expectedTotalAmount = subtotalBeforeTax - discountAmount;
-
       if (data.total_amount !== expectedTotalAmount) {
         throw new Error("Total amount tidak valid!");
       }
 
-      // Validasi bahwa jumlah yang dibayar cukup
-      if (data.paid_amount) {
-        if (data.paid_amount < data.total_amount) {
-          throw new Error("Jumlah yang dibayarkan kurang!");
-        }
+      // 6. Validasi pembayaran
+      if (data.paid_amount && data.paid_amount < data.total_amount) {
+        throw new Error("Jumlah yang dibayarkan kurang!");
       }
 
       const change = data.paid_amount - data.total_amount;
 
-      // Simpan transaksi ke database dengan total amount dari frontend
+      // 7. Simpan transaksi
       const newTransaction = await tx.transaksi.create({
         data: {
           customer_name: data.customer_name,
-          total_amount: data.total_amount, // Pakai total dari frontend
-          user_id: data.user_id,
-          paid_amount: data.paid_amount, // Simpan total cash yang dibayar
-          change: change, // Simpan kembalian
+          total_amount: data.total_amount,
+          shift_id: data.shift_id,
+          paid_amount: data.paid_amount,
+          change: change,
           payment_id: data.payment_id,
           voucher_id: data.voucher_id,
           sales_type: data.sales_type,
         },
       });
 
-      // Simpan produk yang dibeli dalam transaksi
+      // 8. Simpan transaksi produk
       await tx.transaksiProduct.createMany({
-        data: data.transaksi_product.map((product) => ({
+        data: data.transaksi_product.map((item) => ({
           transaksi_id: newTransaction.id,
-          product_id: product.product_id,
-          quantity: product.quantity,
+          product_id: item.product_id,
+          quantity: item.quantity,
           subtotal:
-            product.quantity * (productPriceMap.get(product.product_id) || 0),
+            item.quantity * (productMap.get(item.product_id)?.price || 0),
         })),
       });
 
-      // Simpan topping jika ada
+      // 9. Simpan transaksi topping jika ada
       if (data.transaksi_topping && data.transaksi_topping.length > 0) {
         await tx.transaksiTopping.createMany({
-          data: data.transaksi_topping.map((topping) => ({
+          data: data.transaksi_topping.map((item) => ({
             transaksi_id: newTransaction.id,
-            topping_id: topping.topping_id,
-            quantity: topping.quantity,
+            topping_id: item.topping_id,
+            quantity: item.quantity,
             subtotal:
-              topping.quantity *
-              (toppingPrices.find((tp) => tp.id === topping.topping_id)
-                ?.price || 0),
+              item.quantity * (toppingMap.get(item.topping_id)?.price || 0),
           })),
         });
       }
 
+      // 10. Kurangi stok produk
+      for (const item of data.transaksi_product) {
+        await tx.product.update({
+          where: { id: item.product_id },
+          data: {
+            quantity: { decrement: item.quantity },
+          },
+        });
+      }
+
+      // 11. Kurangi stok topping
+      if (data.transaksi_topping && data.transaksi_topping.length > 0) {
+        for (const item of data.transaksi_topping) {
+          await tx.topping.update({
+            where: { id: item.topping_id },
+            data: {
+              quantity: { decrement: item.quantity },
+            },
+          });
+        }
+      }
+
+      // 12. Revalidate halaman history
       revalidatePath("/history");
 
       return responServerAction({
         statusSuccess: true,
         messageSuccess: "Berhasil membuat transaksi",
+        data: { transaksiId: newTransaction.id },
       });
     });
   } catch (error) {
@@ -144,55 +159,6 @@ export const createTransaction = async (data: TransactionSchema) => {
       statusError: true,
       messageError:
         error instanceof Error ? error.message : "Terjadi kesalahan",
-    });
-  }
-};
-
-export const updateTransaction = async (
-  data: TransactionSchema & { id: string }
-) => {
-  try {
-    await prisma.transaksi.update({
-      where: { id: data.id },
-      data: {
-        customer_name: data.customer_name,
-        total_amount: data.total_amount,
-        user_id: data.user_id,
-        payment_id: data.payment_id,
-        voucher_id: data.voucher_id,
-      },
-    });
-
-    revalidatePath("/history");
-    return responServerAction({
-      statusSuccess: true,
-      messageSuccess: "Berhasil mengupdate Transaksi",
-    });
-  } catch (error) {
-    console.error(error);
-    return responServerAction({
-      statusError: true,
-      messageError: "Gagal mengupdate Transaksi",
-    });
-  }
-};
-
-export const deleteTransaction = async (id: string) => {
-  try {
-    await prisma.transaksi.delete({
-      where: { id },
-    });
-
-    revalidatePath("/history");
-    return responServerAction({
-      statusSuccess: true,
-      messageSuccess: "Berhasil menghapus Transaksi",
-    });
-  } catch (error) {
-    console.error(error);
-    return responServerAction({
-      statusError: true,
-      messageError: "Gagal menghapus Transaksi",
     });
   }
 };

@@ -25,6 +25,7 @@ export const createTopping = async (data: ToppingSchema) => {
       data: {
         name: data.name,
         price: data.price,
+        quantity: data.quantity,
       },
     });
 
@@ -64,6 +65,7 @@ export const updateTopping = async (data: ToppingSchema & { id: string }) => {
       data: {
         name: data.name,
         price: data.price,
+        quantity: data.quantity,
       },
     });
 

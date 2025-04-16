@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { TypeShift } from "./shift";
 
 export type IDialog = {
   show: boolean;
@@ -19,6 +20,7 @@ export type TypeUser = {
   username: string;
   password?: string;
   role: TypeRole;
+  shift?: TypeShift[];
   createdAt?: Date;
   updatedAt?: Date;
 };

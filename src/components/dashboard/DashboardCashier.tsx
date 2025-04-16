@@ -6,32 +6,34 @@ import CardMenu from "@/components/_global/CardMenu";
 import CardState from "@/components/_global/CardState";
 import FormCart from "@/components/forms/dashboard/FormCart";
 import { TypePayment } from "@/types/payment";
-import { TypeTransaction } from "@/types/transaction";
-import { TypeUser } from "@/types/user";
 import { TypeVoucher } from "@/types/voucher";
 import { TypeTopping } from "@/types/topping";
 import { Card } from "../ui/card";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { TypeCategory } from "@/types/category";
+import { TypeTransaksi } from "@/types/transaction";
 
 interface IDashboard {
   dataProduct: TypeProduct[];
   dataPayment: TypePayment[];
-  dataTransaction: TypeTransaction[];
-  dataUser: TypeUser;
+  dataTransaction: TypeTransaksi[];
   dataVoucher: TypeVoucher[];
   dataTopping: TypeTopping[];
   dataCategory: TypeCategory[];
+  activeShift?: {
+    id: string;
+    start_time: Date;
+  } | null;
 }
 
 const Dashboard = ({
   dataProduct,
   dataPayment,
   dataTransaction,
-  dataUser,
   dataVoucher,
   dataTopping,
   dataCategory,
+  activeShift,
 }: IDashboard) => {
   const [cartItems, setCartItems] = React.useState<TypeProduct[]>([]);
 
@@ -107,9 +109,9 @@ const Dashboard = ({
           updateQuantity={updateQuantity}
           dataPayment={dataPayment}
           setCartItems={setCartItems}
-          dataUser={dataUser}
           dataVoucher={dataVoucher}
           dataTopping={dataTopping}
+          activeShift={activeShift}
         />
       </div>
     </div>

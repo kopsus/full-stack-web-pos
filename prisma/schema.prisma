@@ -18,10 +18,24 @@ model User {
   password  String
   role      EnumRole
 
-  transaksi Transaksi[]
+  shift     Shift[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
+}
+
+model Shift {
+  id         String   @id @default(cuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  start_time DateTime @default(now())
+  end_time   DateTime?
+
+  transaksi  Transaksi[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Category {
@@ -57,8 +71,8 @@ model Transaksi {
   paid_amount       Int?  @default(0)
   change            Int?  @default(0)
 
-  user_id           String
-  user              User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  shift_id          String
+  shift             Shift @relation(fields: [shift_id], references: [id], onDelete: Cascade)
 
   payment_id        String
   payment           Payment @relation(fields: [payment_id], references: [id], onDelete: Cascade)
@@ -125,6 +139,7 @@ model Topping {
   id          String  @id @default(cuid())
   name        String  @unique
   price       Int
+  quantity    Int     @default(0)
 
   // Relasi many-to-many ke transaksi
   transaksi_topping TransaksiTopping[]

@@ -25,7 +25,7 @@ const DetailHistory = ({ history }: { history: TypeTransaksi }) => {
         </div>
         <div>
           <p className="font-semibold">👨‍💼 Kasir:</p>
-          <p>{history.user.username}</p>
+          <p>{history.shift.user.username}</p>
         </div>
         <div>
           <p className="font-semibold">💳 Pembayaran:</p>
@@ -100,7 +100,6 @@ const DetailHistory = ({ history }: { history: TypeTransaksi }) => {
       </div>
 
       {/* Ringkasan Pembayaran */}
-      {/* Ringkasan Pembayaran */}
       <div className="mt-6 p-4 bg-gray-100 rounded-lg">
         <p className="font-semibold">💰 Ringkasan Pembayaran</p>
 
@@ -131,14 +130,14 @@ const DetailHistory = ({ history }: { history: TypeTransaksi }) => {
         )}
 
         {history.voucher && (
-          <div className="flex justify-between">
-            <span>Diskon ({history.voucher.discount}%):</span>
-            <span>
+          <div className="flex justify-end">
+            <span>Diskon ({history.voucher.discount}%)</span>
+            {/* <span>
               -{" "}
               {formatIDR(
-                (history.voucher.discount / 100) * history.total_amount
+                (history.voucher.discount / 100) * history.paid_amount!
               )}
-            </span>
+            </span> */}
           </div>
         )}
 

@@ -11,7 +11,7 @@ export const transactionSchema = z.object({
   total_amount: z.coerce
     .number()
     .min(1, "Total amount must be greater than zero!"),
-  user_id: z.string().min(1, "User ID is required!"),
+  shift_id: z.string().min(1, "Shift ID is required!"),
   payment_id: z.string().min(1, "Payment ID is required!"),
   voucher_id: z.string().optional().nullable(),
   transaksi_product: z

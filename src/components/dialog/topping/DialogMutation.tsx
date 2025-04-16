@@ -8,6 +8,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createTopping, updateTopping } from "@/lib/actions/topping";
@@ -16,13 +17,18 @@ import {
   ToppingSchema,
 } from "@/lib/formValidationSchemas/topping";
 import { storeDialogTopping } from "@/types/topping";
+import { TypeUser } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-const DialogMutation = () => {
+interface IDialogMutation {
+  user: TypeUser;
+}
+
+const DialogMutation = ({ user }: IDialogMutation) => {
   const [dialog, setDialog] = useAtom(storeDialogTopping);
 
   const closeDialog = () => {
@@ -31,7 +37,7 @@ const DialogMutation = () => {
 
   const form = useForm<ToppingSchema>({
     resolver: zodResolver(toppingSchema),
-    defaultValues: { name: "", price: 0 },
+    defaultValues: { name: "", price: 0, quantity: 0 },
   });
 
   React.useEffect(() => {
@@ -41,6 +47,7 @@ const DialogMutation = () => {
       form.reset({
         name: dialog.data.name,
         price: dialog.data.price,
+        quantity: dialog.data.quantity,
       });
     }
   }, [dialog.type, dialog.data, form]);
@@ -79,36 +86,59 @@ const DialogMutation = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-5 flex flex-col"
         >
+          {user.role === "admin" && (
+            <>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nama Topping</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        required
+                        placeholder="Masukan nama Topping"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Harga Topping</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        required
+                        type="number"
+                        placeholder="Masukan harga Topping"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
+
           <FormField
             control={form.control}
-            name="name"
+            name="quantity"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nama Topping</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    required
-                    placeholder="Masukan nama Topping"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Harga Topping</FormLabel>
+                <FormLabel>Quantity</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     required
                     type="number"
-                    placeholder="Masukan harga Topping"
+                    placeholder="Masukkan quantity"
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

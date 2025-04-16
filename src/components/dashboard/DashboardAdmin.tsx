@@ -1,6 +1,6 @@
 "use client";
 
-import { TypeTransaction } from "@/types/transaction";
+import { TypeTransaksi } from "@/types/transaction";
 import {
   Bar,
   BarChart,
@@ -13,7 +13,7 @@ import CardState from "../_global/CardState";
 import { TypeProduct } from "@/types/product";
 
 interface IDashboardAdmin {
-  dataTransaction: TypeTransaction[];
+  dataTransaction: TypeTransaksi[];
   dataProduct: TypeProduct[];
 }
 

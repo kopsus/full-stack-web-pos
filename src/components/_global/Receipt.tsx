@@ -1,8 +1,8 @@
 import { formatIDR } from "@/lib/format";
-import { TypeTransaction } from "@/types/transaction";
+import { TypeTransaksi } from "@/types/transaction";
 
 interface IReceipt {
-  history: TypeTransaction[];
+  history: TypeTransaksi[];
 }
 
 const Receipt = ({ history }: IReceipt) => {

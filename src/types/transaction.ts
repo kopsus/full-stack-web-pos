@@ -1,9 +1,9 @@
 import { atom } from "jotai";
-import { TypeUser } from "./user";
 import { TypePayment } from "./payment";
 import { TypeVoucher } from "./voucher";
 import { TypeProduct } from "./product";
 import { TypeTopping } from "./topping";
+import { TypeShift } from "./shift";
 
 export type IDialog = {
   show: boolean;
@@ -17,35 +17,19 @@ export const storeDialogHistory = atom<IDialog>({
   data: null,
 });
 
-export type TypeTransaction = {
-  id: string;
-  customer_name: string;
-  total_amount: number;
-  sales_type: "DO" | "DineIn";
-  user_id: string;
-  paid_amount: number | null;
-  change: number | null;
-  payment_id: string;
-  voucher_id: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  transaksi_product?: TypeTransaksiProduct[];
-  transaksi_topping?: TypeTransaksiTopping[];
-};
-
 export type TypeTransaksi = {
   id: string;
   customer_name: string;
   total_amount: number;
   sales_type: "DO" | "DineIn";
-  user_id: string;
+  change: number | null;
+  paid_amount: number | null;
+  shift_id: string;
   payment_id: string;
   voucher_id: string | null;
-  paid_amount: number | null;
-  change: number | null;
   createdAt: Date;
   updatedAt: Date;
-  user: TypeUser;
+  shift: TypeShift;
   payment: TypePayment;
   voucher: TypeVoucher | null;
   transaksi_product: TypeTransaksiProduct[];

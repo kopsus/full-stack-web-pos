@@ -81,11 +81,13 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, idx) => {
                   return (
                     <TableHead
                       key={header.id}
-                      className="bg-primary text-white"
+                      className={`${
+                        idx === headerGroup.headers.length - 1 && "text-right"
+                      } bg-primary text-white`}
                     >
                       {header.isPlaceholder
                         ? null

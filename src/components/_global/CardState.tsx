@@ -1,11 +1,11 @@
 import React from "react";
 import { Card } from "../ui/card";
-import { ArrowUp, Boxes, Repeat, ShoppingCart } from "lucide-react";
-import { TypeTransaction } from "@/types/transaction";
+import { ArrowUp, Boxes, Repeat } from "lucide-react";
+import { TypeTransaksi } from "@/types/transaction";
 import { TypeProduct } from "@/types/product";
 
 interface ICardState {
-  dataTransaction: TypeTransaction[];
+  dataTransaction: TypeTransaksi[];
   dataProduct: TypeProduct[];
 }
 

@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE `Transaksi` ADD COLUMN `change` INTEGER NULL DEFAULT 0,
-    ADD COLUMN `paid_amount` INTEGER NULL DEFAULT 0;

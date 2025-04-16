@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { TypeTransaction } from "@/types/transaction";
+import { TypeTransaksi } from "@/types/transaction";
 
-const Print = ({ history }: { history: TypeTransaction[] }) => {
+const Print = ({ history }: { history: TypeTransaksi[] }) => {
   const [isPrinting, setIsPrinting] = useState(false);
 
   const handlePrint = async () => {

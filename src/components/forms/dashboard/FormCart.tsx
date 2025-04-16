@@ -36,7 +36,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTransaction } from "@/lib/actions/transaction";
 import { toast } from "react-toastify";
-import { TypeUser } from "@/types/user";
 import {
   Dialog,
   DialogContent,
@@ -51,9 +50,12 @@ interface IFormCart {
   updateQuantity: (id: string, amount: number) => void;
   dataPayment: TypePayment[];
   setCartItems: React.Dispatch<React.SetStateAction<TypeProduct[]>>;
-  dataUser: TypeUser;
   dataVoucher: TypeVoucher[];
   dataTopping: TypeTopping[];
+  activeShift?: {
+    id: string;
+    start_time: Date;
+  } | null;
 }
 
 const FormCart = ({
@@ -61,9 +63,9 @@ const FormCart = ({
   updateQuantity,
   dataPayment,
   setCartItems,
-  dataUser,
   dataVoucher,
   dataTopping,
+  activeShift,
 }: IFormCart) => {
   const [selectedVoucher, setSelectedVoucher] =
     React.useState<TypeVoucher | null>(null);
@@ -100,7 +102,7 @@ const FormCart = ({
     defaultValues: {
       customer_name: "",
       sales_type: "DO",
-      user_id: dataUser.id,
+      shift_id: activeShift?.id,
       payment_id: "",
       voucher_id: null,
       change: changeAmount,
@@ -205,7 +207,6 @@ const FormCart = ({
 
   async function onSubmit() {
     const values = form.getValues();
-    console.log("data yang dikirim", values);
 
     try {
       const result = await createTransaction(values);
@@ -217,13 +218,19 @@ const FormCart = ({
         form.reset({
           customer_name: "",
           sales_type: "DO",
-          user_id: "",
+          shift_id: "",
           payment_id: "",
           voucher_id: "",
           transaksi_product: [],
           transaksi_topping: [],
           total_amount: 0,
         });
+
+        // const transaksiId = result.data.transaksiId;
+
+        // await fetch(`/api/print/${transaksiId}`, {
+        //   method: "GET",
+        // });
 
         clearCart();
       } else if (result.error) {
@@ -454,10 +461,6 @@ const FormCart = ({
                   <p className="font-semibold">{formatIDR(toppingSubtotal)}</p>
                 </div>
               )}
-              {/* <div className="flex items-center justify-between text-sm">
-                <p>Tax (10%)</p>
-                <p className="font-semibold">{formatIDR(tax)}</p>
-              </div> */}
               <div className="flex items-center justify-between text-sm">
                 <p>Total</p>
                 <p className="font-semibold text-red-600">{formatIDR(total)}</p>
@@ -565,9 +568,15 @@ const FormCart = ({
               )}
             </div>
 
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Loading..." : "Simpan"}
-            </Button>
+            {activeShift ? (
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Loading..." : "Simpan"}
+              </Button>
+            ) : (
+              <p className="text-red-500 text-sm mb-2">
+                Anda belum memulai shift. Silakan mulai shift terlebih dahulu!
+              </p>
+            )}
           </form>
         </Form>
       </CardContent>

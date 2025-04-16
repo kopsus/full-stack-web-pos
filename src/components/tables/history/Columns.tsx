@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { TypeTransaksi } from "@/types/transaction";
 import { formatDate, formatIDR } from "@/lib/format";
+import { Printer } from "lucide-react";
 
 export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
   {
@@ -12,7 +13,7 @@ export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
   {
     header: "Cashier",
     cell: ({ row }) => {
-      const cashier = row.original.user.username;
+      const cashier = row.original.shift.user?.username;
       return <p>{cashier}</p>;
     },
   },
@@ -44,4 +45,25 @@ export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
       return <p>{formatDate(row.getValue("updatedAt"))}</p>;
     },
   },
+  {
+    accessorKey: "Action",
+    header: "Action",
+    cell: ({ row }: { row: { original: TypeTransaksi } }) => {
+      const item = row.original;
+      return (
+        <div className="flex justify-end w-full">
+          <Printer
+            // onClick={() => printHistory(item.id)}
+            className="cursor-pointer"
+          />
+        </div>
+      );
+    },
+  },
 ];
+
+const printHistory = async (transaksiId: string) => {
+  await fetch(`/api/print/${transaksiId}`, {
+    method: "GET",
+  });
+};

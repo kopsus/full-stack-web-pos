@@ -18,6 +18,10 @@ export const ColumnsTopping: ColumnDef<TypeTopping>[] = [
     },
   },
   {
+    accessorKey: "quantity",
+    header: "Stock",
+  },
+  {
     accessorKey: "Action",
     header: "Action",
     cell: ({ row }: { row: { original: TypeTopping } }) => {
