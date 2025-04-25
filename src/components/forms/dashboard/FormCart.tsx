@@ -72,7 +72,7 @@ const FormCart = ({
   const [selectedToppings, setSelectedToppings] = React.useState<TypeTopping[]>(
     []
   );
-  const [paidAmount, setPaidAmount] = React.useState<number | "">("");
+  const [paidAmount, setPaidAmount] = React.useState<number | 0>(0);
 
   // Hitung subtotal
   const subtotal = cartItems.reduce(
@@ -91,12 +91,9 @@ const FormCart = ({
   const discount = selectedVoucher
     ? (subtotalBeforeTax * selectedVoucher.discount) / 100
     : 0;
-  const total = subtotalBeforeTax - discount;
+  const baseTotal = subtotalBeforeTax - discount;
 
-  // Hitung total kembalian
-  const changeAmount = paidAmount ? Math.max(paidAmount - total, 0) : 0;
-
-  // Setup form
+  // Setup form dulu!
   const form = useForm<TransactionSchema>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -105,8 +102,8 @@ const FormCart = ({
       shift_id: activeShift?.id,
       payment_id: "",
       voucher_id: null,
-      change: changeAmount,
-      paid_amount: Number(paidAmount),
+      change: 0,
+      paid_amount: 0,
       transaksi_product: cartItems.map((item) => ({
         product_id: item.id,
         quantity: item.quantity || 1,
@@ -115,39 +112,59 @@ const FormCart = ({
         topping_id: t.id,
         quantity: t.quantity,
       })),
-      total_amount: total,
+      total_amount: 0,
     },
     mode: "onSubmit",
   });
 
+  // ⬇️ Setelah form dibuat, baru kita bisa pakai form.watch
   const selectedPayment = form.watch("payment_id");
-
-  // Ambil data metode pembayaran yang dipilih
   const selectedPaymentMethod = dataPayment.find(
     (item) => item.id === selectedPayment
   );
 
+  // Hitung final total (dengan service fee)
+  const isGoFoodOrShopeeFood =
+    selectedPaymentMethod?.name.toLowerCase() === "gofood" ||
+    selectedPaymentMethod?.name.toLowerCase() === "shopeefood";
+
+  const serviceFee = isGoFoodOrShopeeFood ? 4000 : 0;
+  const finalTotal = baseTotal + serviceFee;
+
+  // Hitung kembalian
+  const changeAmount = paidAmount
+    ? Math.max(Number(paidAmount) - finalTotal, 0)
+    : 0;
+
   // Efek untuk memperbarui paid_amount berdasarkan metode pembayaran
   React.useEffect(() => {
-    if (selectedPaymentMethod?.name.toLowerCase() === "cash") {
+    const lowerCaseName = selectedPaymentMethod?.name.toLowerCase();
+
+    if (lowerCaseName === "cash") {
       form.setValue("paid_amount", paidAmount ? Number(paidAmount) : 0);
+    } else if (lowerCaseName === "gofood" || lowerCaseName === "shopeefood") {
+      form.setValue("paid_amount", finalTotal); // Sudah termasuk service fee
     } else {
-      form.setValue("paid_amount", total); // Jika bukan cash, paid_amount = total
+      form.setValue("paid_amount", finalTotal);
     }
-  }, [selectedPaymentMethod, paidAmount, total, form]);
+  }, [selectedPaymentMethod, paidAmount, finalTotal, form]);
+
+  React.useEffect(() => {
+    form.setValue("change", changeAmount);
+  }, [changeAmount, form]);
 
   // Efek untuk memperbarui change
   React.useEffect(() => {
     const updatedChange =
       selectedPaymentMethod?.name.toLowerCase() === "cash"
-        ? Math.max((paidAmount ? Number(paidAmount) : 0) - total, 0)
+        ? Math.max((paidAmount ? Number(paidAmount) : 0) - finalTotal, 0)
         : 0;
     form.setValue("change", updatedChange);
-  }, [paidAmount, total, selectedPaymentMethod, form]);
+  }, [paidAmount, finalTotal, selectedPaymentMethod, form]);
 
   // Saat mengisi input paid amount
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPaidAmount(e.target.value ? Number(e.target.value) : "");
+    setPaidAmount(e.target.value ? Number(e.target.value) : 0);
   };
 
   React.useEffect(() => {
@@ -161,8 +178,8 @@ const FormCart = ({
   }, [cartItems, form]);
 
   React.useEffect(() => {
-    form.setValue("total_amount", total);
-  }, [form, total]);
+    form.setValue("total_amount", finalTotal);
+  }, [form, finalTotal]);
 
   const handleToppingChange = (toppingId: string, action: "add" | "remove") => {
     setSelectedToppings((prev) => {
@@ -207,6 +224,7 @@ const FormCart = ({
 
   async function onSubmit() {
     const values = form.getValues();
+    console.log("data value", form.formState.errors);
 
     try {
       const result = await createTransaction(values);
@@ -237,7 +255,8 @@ const FormCart = ({
         toast.error(result.error.message);
       }
     } catch (error) {
-      console.error("Error saat membuat transaksi:", error);
+      console.error("SUBMIT ERROR:", error);
+      toast.error("Gagal menyimpan transaksi");
     }
   }
 
@@ -463,7 +482,9 @@ const FormCart = ({
               )}
               <div className="flex items-center justify-between text-sm">
                 <p>Total</p>
-                <p className="font-semibold text-red-600">{formatIDR(total)}</p>
+                <p className="font-semibold text-red-600">
+                  {formatIDR(finalTotal)}
+                </p>
               </div>
             </div>
 

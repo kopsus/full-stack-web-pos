@@ -27,10 +27,6 @@ jobs:
 
           # Jalankan perintah di VPS untuk update aplikasi
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
-            # export NVM_DIR="$HOME/.nvm"
-            # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            # export PATH="$NVM_DIR/versions/node/v22.14.0/bin:$PATH"
             
             cd full-stack-web-pos
             git pull origin main

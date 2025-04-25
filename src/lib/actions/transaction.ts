@@ -61,23 +61,6 @@ export const createTransaction = async (data: TransactionSchema) => {
         }
       }
 
-      // 5. Hitung diskon dan total amount
-      const subtotalBeforeTax = calculatedSubtotal + toppingSubtotal;
-      let discountAmount = 0;
-
-      if (data.voucher_id) {
-        const discountPercentage = await getVoucherDiscount(
-          tx,
-          data.voucher_id
-        );
-        discountAmount = (subtotalBeforeTax * discountPercentage) / 100;
-      }
-
-      const expectedTotalAmount = subtotalBeforeTax - discountAmount;
-      if (data.total_amount !== expectedTotalAmount) {
-        throw new Error("Total amount tidak valid!");
-      }
-
       // 6. Validasi pembayaran
       if (data.paid_amount && data.paid_amount < data.total_amount) {
         throw new Error("Jumlah yang dibayarkan kurang!");
