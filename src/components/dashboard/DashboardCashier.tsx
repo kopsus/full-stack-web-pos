@@ -80,6 +80,7 @@ const Dashboard = ({
           <CardState
             dataTransaction={dataTransaction}
             dataProduct={dataProduct}
+            activeShift={activeShift}
           />
         </div>
         <Card className="p-4 space-y-4">

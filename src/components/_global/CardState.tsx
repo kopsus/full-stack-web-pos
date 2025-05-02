@@ -3,13 +3,24 @@ import { Card } from "../ui/card";
 import { ArrowUp, Boxes, Repeat } from "lucide-react";
 import { TypeTransaksi } from "@/types/transaction";
 import { TypeProduct } from "@/types/product";
+import { filterTransactionsByShift } from "@/utils/filterTransactionByShift";
 
 interface ICardState {
   dataTransaction: TypeTransaksi[];
   dataProduct: TypeProduct[];
+  activeShift: any;
 }
 
-const CardState = ({ dataTransaction, dataProduct }: ICardState) => {
+const CardState = ({
+  dataTransaction,
+  dataProduct,
+  activeShift,
+}: ICardState) => {
+  const filteredTransaction = filterTransactionsByShift(
+    dataTransaction,
+    activeShift
+  );
+
   return (
     <>
       <Card className="p-5 w-full flex flex-col gap-5">
@@ -34,7 +45,7 @@ const CardState = ({ dataTransaction, dataProduct }: ICardState) => {
         <div className="flex justify-between items-center">
           <div>
             <p className="text-slate-500 text-sm">Total Transaksi</p>
-            <p className="text-2xl font-bold">{dataTransaction.length}</p>
+            <p className="text-2xl font-bold">{filteredTransaction.length}</p>
           </div>
           <div className="w-10 h-10 rounded-full bg-green-200 text-green-600 flex justify-center items-center">
             <Repeat />
@@ -43,7 +54,7 @@ const CardState = ({ dataTransaction, dataProduct }: ICardState) => {
         <div className="flex items-center gap-2 text-xs">
           <span className="flex items-center gap-1 text-green-600">
             <ArrowUp size={16} />
-            {dataTransaction.length}
+            {filteredTransaction.length}
           </span>
           <p className="text-slate-500 text-wrap">Transaksi dilakukan</p>
         </div>
