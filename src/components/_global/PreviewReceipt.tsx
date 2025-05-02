@@ -10,16 +10,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { filterTransactionsByShift } from "@/utils/filterTransactionByShift";
 
 interface IPreviewReceipt {
-  activeShift?: {
-    id: string;
-    start_time: Date;
-  } | null;
+  activeShift: any;
   history: TypeTransaksi[];
 }
 
-const PreviewReceipt = ({ history }: IPreviewReceipt) => {
+const PreviewReceipt = ({ history, activeShift }: IPreviewReceipt) => {
+  const updatedShift = {
+    ...activeShift,
+    end_time: new Date(), // karena kamu tahu waktu end-nya adalah sekarang
+  };
+
+  const filteredHistory = filterTransactionsByShift(history, updatedShift);
+
   return (
     <div className="text-center">
       <Dialog>
@@ -29,7 +34,7 @@ const PreviewReceipt = ({ history }: IPreviewReceipt) => {
         <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-screen">
           <DialogTitle>Preview Receipt</DialogTitle>
           <DialogDescription></DialogDescription>
-          <Receipt history={history} />
+          <Receipt history={filteredHistory} />
         </DialogContent>
       </Dialog>
     </div>

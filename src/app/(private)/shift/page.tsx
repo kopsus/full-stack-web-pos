@@ -1,5 +1,4 @@
 import PreviewReceipt from "@/components/_global/PreviewReceipt";
-// import Print from "@/components/shift/Print";
 import EndShift from "@/components/shift/EndShift";
 import StartShift from "@/components/shift/StartShift";
 import { ColumnsShift } from "@/components/tables/shift/Columns";
@@ -59,6 +58,7 @@ const page = async () => {
       <Card className="m-4 p-5 flex justify-center items-center gap-10">
         <StartShift user={user} activeShift={activeShift} />
         <EndShift history={history} activeShift={activeShift} />
+        <PreviewReceipt history={history} activeShift={activeShift} />
       </Card>
       <DataTable data={shift} columns={ColumnsShift} />
     </>

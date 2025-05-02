@@ -20,7 +20,14 @@ const Receipt = ({ history }: IReceipt) => {
       <hr className="my-2" />
 
       <p>Kasir: Tegar</p>
-      <p>Shift: 24 Maret 2025 08:00 - 16:00</p>
+      <p>
+        Start Shift:{" "}
+        {history
+          .slice(0, 1)
+          .map((item) => item.shift.createdAt)
+          .toLocaleString()}
+      </p>
+      <p>End Shift: {new Date().toLocaleString()}</p>
       <hr className="my-2" />
       <p className="font-bold">Detail Transaksi:</p>
       <hr className="my-2" />
