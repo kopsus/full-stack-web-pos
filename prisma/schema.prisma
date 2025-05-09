@@ -59,10 +59,10 @@ model Payment {
 }
 
 enum EnumSalesType {
+  TakeAway
   DO
   DineIn
   Gojek
-  TakeAway
 }
 
 model Transaksi {

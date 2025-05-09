@@ -25,6 +25,14 @@ const PreviewReceipt = ({ history, activeShift }: IPreviewReceipt) => {
 
   const filteredHistory = filterTransactionsByShift(history, updatedShift);
 
+  const printeReceipt = async () => {
+    await fetch("http://localhost:1818/print/shift", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(filteredHistory),
+    });
+  };
+
   return (
     <div className="text-center">
       <Dialog>
@@ -35,6 +43,9 @@ const PreviewReceipt = ({ history, activeShift }: IPreviewReceipt) => {
           <DialogTitle>Preview Receipt</DialogTitle>
           <DialogDescription></DialogDescription>
           <Receipt history={filteredHistory} />
+          <Button onClick={() => printeReceipt()} className="w-72 mx-auto">
+            Print Preview
+          </Button>
         </DialogContent>
       </Dialog>
     </div>
