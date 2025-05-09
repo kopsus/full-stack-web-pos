@@ -21,7 +21,7 @@ export type TypeTransaksi = {
   id: string;
   customer_name: string;
   total_amount: number;
-  sales_type: "DO" | "DineIn";
+  sales_type: "DO" | "DineIn" | "Gojek" | "TakeAway";
   change: number | null;
   paid_amount: number | null;
   shift_id: string;

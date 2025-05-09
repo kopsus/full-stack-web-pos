@@ -45,10 +45,9 @@ const page = async () => {
 
   const activeShift = await getActiveShift(user?.id || "");
 
-  const filteredTransaction = filterTransactionsByShift(
-    transactions,
-    activeShift as any
-  );
+  const filteredTransaction = activeShift
+    ? filterTransactionsByShift(transactions, activeShift as any)
+    : [];
 
   return (
     <>

@@ -20,7 +20,7 @@ interface IPreviewReceipt {
 const PreviewReceipt = ({ history, activeShift }: IPreviewReceipt) => {
   const updatedShift = {
     ...activeShift,
-    end_time: new Date(), // karena kamu tahu waktu end-nya adalah sekarang
+    end_time: new Date(),
   };
 
   const filteredHistory = filterTransactionsByShift(history, updatedShift);

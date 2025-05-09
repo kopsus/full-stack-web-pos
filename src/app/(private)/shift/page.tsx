@@ -14,6 +14,21 @@ const page = async () => {
   const shift = await prisma.shift.findMany({
     include: {
       user: true,
+      transaksi: {
+        include: {
+          payment: true,
+          transaksi_product: {
+            include: {
+              product: true,
+            },
+          },
+          transaksi_topping: {
+            include: {
+              topping: true,
+            },
+          },
+        },
+      },
     },
   });
   const history = await prisma.transaksi.findMany({

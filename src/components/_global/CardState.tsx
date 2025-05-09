@@ -16,10 +16,9 @@ const CardState = ({
   dataProduct,
   activeShift,
 }: ICardState) => {
-  const filteredTransaction = filterTransactionsByShift(
-    dataTransaction,
-    activeShift
-  );
+  const filteredTransaction = activeShift
+    ? filterTransactionsByShift(dataTransaction, activeShift)
+    : [];
 
   return (
     <>

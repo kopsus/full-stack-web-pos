@@ -12,41 +12,26 @@ interface IEndShift {
   history: TypeTransaksi[];
 }
 
-type PrintType = "thermal" | "non-thermal";
-
 const EndShift = ({ history, activeShift }: IEndShift) => {
   const [isPrinting, setIsPrinting] = useState(false);
 
-  const handleEndShift = async (type: PrintType) => {
+  const handleEndShift = async () => {
     setIsPrinting(true);
     try {
       await endShift({ id: activeShift.id });
 
-      // const updatedShift = {
-      //   ...activeShift,
-      //   end_time: new Date(), // karena kamu tahu waktu end-nya adalah sekarang
-      // };
+      const updatedShift = {
+        ...activeShift,
+        end_time: new Date(), // karena kamu tahu waktu end-nya adalah sekarang
+      };
 
-      // const filteredHistory = filterTransactionsByShift(history, updatedShift);
+      const filteredHistory = filterTransactionsByShift(history, updatedShift);
 
-      // const response = await fetch("/api/print", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({
-      //     history: filteredHistory,
-      //     shift: updatedShift,
-      //     type,
-      //   }),
-      // });
-
-      // const result = await response.json();
-      // if (!result.success) {
-      //   alert(`Gagal mencetak: ${result.message}`);
-      // } else {
-      //   alert("Struk berhasil dicetak ke printer thermal!");
-      // }
-
-      await logout();
+      await fetch("http://localhost:1818/print/shift", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(filteredHistory),
+      });
     } catch (error) {
       console.error("Error:", error);
       alert("Terjadi kesalahan saat mencetak");
@@ -60,19 +45,11 @@ const EndShift = ({ history, activeShift }: IEndShift) => {
       <Button
         size={"lg"}
         variant={"destructive"}
-        onClick={() => handleEndShift("non-thermal")}
+        onClick={() => handleEndShift()}
         disabled={isPrinting}
       >
         {isPrinting ? "Mencetak..." : "Akhiri Shift"}
       </Button>
-      {/* <Button
-        size={"lg"}
-        variant={"destructive"}
-        onClick={() => handleEndShift("thermal")}
-        disabled={isPrinting}
-      >
-        {isPrinting ? "Mencetak..." : "Print Non Thermal"}
-      </Button> */}
     </div>
   );
 };

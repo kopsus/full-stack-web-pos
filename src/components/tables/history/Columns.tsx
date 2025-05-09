@@ -53,7 +53,7 @@ export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
       return (
         <div className="flex justify-end w-full">
           <Printer
-            // onClick={() => printHistory(item.id)}
+            onClick={() => printHistory(item)}
             className="cursor-pointer"
           />
         </div>
@@ -62,8 +62,10 @@ export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
   },
 ];
 
-const printHistory = async (transaksiId: string) => {
-  await fetch(`/api/print/${transaksiId}`, {
-    method: "GET",
+const printHistory = async (item: TypeTransaksi) => {
+  await fetch("http://localhost:1818/print/history", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(item),
   });
 };

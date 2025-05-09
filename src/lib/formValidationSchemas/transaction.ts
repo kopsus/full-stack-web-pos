@@ -4,7 +4,7 @@ export const transactionSchema = z.object({
   id: z.coerce.string().optional(),
   customer_name: z.string().min(1, "Customer name is required!"),
   sales_type: z
-    .enum(["DO", "DineIn"], {
+    .enum(["DO", "DineIn", "Gojek", "TakeAway"], {
       errorMap: () => ({ message: "Tipe penjualan harus dipilih!" }),
     })
     .default("DO"),

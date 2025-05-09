@@ -1,10 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TableAction } from "./TableActions";
-import { TypeShift } from "@/types/shift";
+import { Printer } from "lucide-react";
 
-export const ColumnsShift: ColumnDef<TypeShift>[] = [
+export const ColumnsShift: ColumnDef<any>[] = [
   {
     header: "User",
     cell: ({ row }) => {
@@ -38,9 +37,25 @@ export const ColumnsShift: ColumnDef<TypeShift>[] = [
   {
     accessorKey: "Action",
     header: "Action",
-    //   cell: ({ row }: { row: { original: TypeShift } }) => {
-    //     const item = row.original;
-    //     return <TableAction item={item} />;
-    //   },
+    cell: ({ row }) => {
+      const item = row.original;
+
+      return (
+        <div className="flex justify-end w-full">
+          <Printer
+            onClick={() => printShift(item)}
+            className="cursor-pointer"
+          />
+        </div>
+      );
+    },
   },
 ];
+
+const printShift = async (item: any) => {
+  await fetch("http://localhost:1818/print/history-shift", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(item),
+  });
+};

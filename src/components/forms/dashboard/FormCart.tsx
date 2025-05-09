@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/dialog";
 import { TypeVoucher } from "@/types/voucher";
 import { TypeTopping } from "@/types/topping";
+import { EnumSalesType } from "@prisma/client";
 
 interface IFormCart {
   cartItems: TypeProduct[];
@@ -117,6 +118,8 @@ const FormCart = ({
     mode: "onSubmit",
   });
 
+  const selectedSalesType = form.watch("sales_type");
+
   // ⬇️ Setelah form dibuat, baru kita bisa pakai form.watch
   const selectedPayment = form.watch("payment_id");
   const selectedPaymentMethod = dataPayment.find(
@@ -124,12 +127,9 @@ const FormCart = ({
   );
 
   // Hitung final total (dengan service fee)
-  const isGoFoodOrShopeeFood =
-    selectedPaymentMethod?.name.toLowerCase() === "gofood" ||
-    selectedPaymentMethod?.name.toLowerCase() === "shopeefood";
+  const gojekFee = selectedSalesType === "Gojek" ? baseTotal * 0.35 : 0;
 
-  const serviceFee = isGoFoodOrShopeeFood ? 4000 : 0;
-  const finalTotal = baseTotal + serviceFee;
+  const finalTotal = baseTotal + gojekFee;
 
   // Hitung kembalian
   const changeAmount = paidAmount
@@ -142,12 +142,10 @@ const FormCart = ({
 
     if (lowerCaseName === "cash") {
       form.setValue("paid_amount", paidAmount ? Number(paidAmount) : 0);
-    } else if (lowerCaseName === "gofood" || lowerCaseName === "shopeefood") {
-      form.setValue("paid_amount", finalTotal); // Sudah termasuk service fee
     } else {
       form.setValue("paid_amount", finalTotal);
     }
-  }, [selectedPaymentMethod, paidAmount, finalTotal, form]);
+  }, [selectedPaymentMethod, paidAmount, finalTotal, form, selectedSalesType]);
 
   React.useEffect(() => {
     form.setValue("change", changeAmount);
@@ -216,15 +214,29 @@ const FormCart = ({
 
   const isSubmitting = form.formState.isSubmitting;
 
-  const clearCart = () => {
-    setCartItems([]);
+  // Fungsi untuk reset seluruh state dan form
+  const resetTransactionForm = () => {
+    form.reset({
+      customer_name: "",
+      sales_type: "DO",
+      shift_id: activeShift?.id || "",
+      payment_id: "",
+      voucher_id: null,
+      transaksi_product: [],
+      transaksi_topping: [],
+      total_amount: 0,
+      change: 0,
+      paid_amount: 0,
+    });
+
+    setCartItems([]); // Jika Anda pakai state cartItems
     setSelectedVoucher(null);
     setSelectedToppings([]);
+    setPaidAmount(0);
   };
 
   async function onSubmit() {
     const values = form.getValues();
-    console.log("data value", form.formState.errors);
 
     try {
       const result = await createTransaction(values);
@@ -232,25 +244,14 @@ const FormCart = ({
       if (result.success.status) {
         toast.success(result.success.message);
 
-        // Reset form
-        form.reset({
-          customer_name: "",
-          sales_type: "DO",
-          shift_id: "",
-          payment_id: "",
-          voucher_id: "",
-          transaksi_product: [],
-          transaksi_topping: [],
-          total_amount: 0,
+        // Kirim ke printer
+        await fetch("http://localhost:1818/print/transaction", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result.data.transaksi),
         });
 
-        // const transaksiId = result.data.transaksiId;
-
-        // await fetch(`/api/print/${transaksiId}`, {
-        //   method: "GET",
-        // });
-
-        clearCart();
+        resetTransactionForm(); // Reset form dan semua state
       } else if (result.error) {
         toast.error(result.error.message);
       }
@@ -522,8 +523,11 @@ const FormCart = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="DO">DO</SelectItem>
-                        <SelectItem value="DineIn">Dine In</SelectItem>
+                        {Object.values(EnumSalesType).map((salesType) => (
+                          <SelectItem key={salesType} value={salesType}>
+                            {salesType}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />

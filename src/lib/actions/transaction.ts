@@ -18,7 +18,7 @@ export const createTransaction = async (data: TransactionSchema) => {
       // 2. Ambil harga & stok produk
       const products = await tx.product.findMany({
         where: { id: { in: data.transaksi_product.map((p) => p.product_id) } },
-        select: { id: true, price: true, quantity: true },
+        select: { id: true, price: true, quantity: true, name: true },
       });
 
       const productMap = new Map(products.map((p) => [p.id, p]));
@@ -37,14 +37,17 @@ export const createTransaction = async (data: TransactionSchema) => {
 
       // 4. Ambil harga & stok topping jika ada
       let toppingSubtotal = 0;
-      let toppingMap = new Map<string, { price: number; quantity: number }>();
+      let toppingMap = new Map<
+        string,
+        { price: number; quantity: number; name: string }
+      >();
 
       if (data.transaksi_topping && data.transaksi_topping.length > 0) {
         const toppings = await tx.topping.findMany({
           where: {
             id: { in: data.transaksi_topping.map((t) => t.topping_id) },
           },
-          select: { id: true, price: true, quantity: true },
+          select: { id: true, price: true, quantity: true, name: true },
         });
 
         toppingMap = new Map(toppings.map((t) => [t.id, t]));
@@ -134,7 +137,30 @@ export const createTransaction = async (data: TransactionSchema) => {
       return responServerAction({
         statusSuccess: true,
         messageSuccess: "Berhasil membuat transaksi",
-        data: { transaksiId: newTransaction.id },
+        data: {
+          transaksi: {
+            ...data,
+            transaksi_product: data.transaksi_product.map((item) => {
+              const p = productMap.get(item.product_id);
+              return {
+                ...item,
+                name: p?.name || "Unknown Product",
+                price: p?.price || 0,
+                subtotal: item.quantity * (p?.price || 0),
+              };
+            }),
+            transaksi_topping:
+              data.transaksi_topping?.map((item) => {
+                const t = toppingMap.get(item.topping_id);
+                return {
+                  ...item,
+                  name: t?.name || "Unknown Topping",
+                  price: t?.price || 0,
+                  subtotal: item.quantity * (t?.price || 0),
+                };
+              }) || [],
+          },
+        },
       });
     });
   } catch (error) {
