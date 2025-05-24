@@ -50,7 +50,11 @@ const page = async () => {
     <>
       <PageHeader title="Dashboard" />
       {user?.role === "admin" ? (
-        <DashboardAdmin dataTransaction={transactions} dataProduct={products} />
+        <DashboardAdmin
+          dataTransaction={transactions}
+          dataProduct={products}
+          activeShift={activeShift}
+        />
       ) : (
         <DashboardCashier
           dataProduct={products}

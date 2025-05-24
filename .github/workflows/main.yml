@@ -30,11 +30,12 @@ jobs:
             
             cd full-stack-web-pos
             git pull origin main
-            rm -rf .next
+            # rm -rf .next
 
             npm install
             npm run build
-            pm2 restart web-pos
+            pm2 start --name "pos-loempia-bom" npm -- run start
+            pm2 restart pos-loempia-bom
             
             echo "Deployment sukses!"
           EOF

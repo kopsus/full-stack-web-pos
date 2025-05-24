@@ -45,6 +45,7 @@ import {
 import { TypeVoucher } from "@/types/voucher";
 import { TypeTopping } from "@/types/topping";
 import { EnumSalesType } from "@prisma/client";
+import { baseIMAGEURL } from "@/lib/utils";
 
 interface IFormCart {
   cartItems: TypeProduct[];
@@ -245,11 +246,11 @@ const FormCart = ({
         toast.success(result.success.message);
 
         // Kirim ke printer
-        await fetch("http://localhost:1818/print/transaction", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(result.data.transaksi),
-        });
+        // await fetch("http://localhost:1818/print/transaction", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify(result.data.transaksi),
+        // });
 
         resetTransactionForm(); // Reset form dan semua state
       } else if (result.error) {
@@ -287,7 +288,7 @@ const FormCart = ({
                   <div className="flex gap-3">
                     <div className="w-20 h-20 rounded-lg overflow-hidden border">
                       <Image
-                        src={`/uploads/${item.image}`}
+                        src={`${baseIMAGEURL}/${item.image}`}
                         alt={item.name}
                         width={0}
                         height={0}

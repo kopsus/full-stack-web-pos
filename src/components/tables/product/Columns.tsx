@@ -5,6 +5,7 @@ import { TypeProduct } from "@/types/product";
 import { TableAction } from "./TableActions";
 import { formatIDR } from "@/lib/format";
 import Image from "next/image";
+import { baseIMAGEURL } from "@/lib/utils";
 
 export const ColumnsProduct: ColumnDef<TypeProduct>[] = [
   {
@@ -28,7 +29,7 @@ export const ColumnsProduct: ColumnDef<TypeProduct>[] = [
         <div className="w-20 h-20 rounded overflow-hidden bg-white">
           {imageSrc ? (
             <Image
-              src={`/uploads/${imageSrc}`}
+              src={`${baseIMAGEURL}/${imageSrc}`}
               alt="image"
               width={80}
               height={80}

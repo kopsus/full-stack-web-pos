@@ -23,6 +23,7 @@ import {
   productSchema,
   ProductSchema,
 } from "@/lib/formValidationSchemas/product";
+import { baseIMAGEURL } from "@/lib/utils";
 import { TypeCategory } from "@/types/category";
 import { storeDialogProduct } from "@/types/product";
 import { TypeUser } from "@/types/user";
@@ -72,7 +73,7 @@ const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
   React.useEffect(() => {
     if (dialog.type === "UPDATE" && dialog.data) {
       const imageUrl = dialog.data.image;
-      setPreviewUrl(imageUrl ? `/uploads/${imageUrl}` : null);
+      setPreviewUrl(imageUrl ? `${baseIMAGEURL}/${imageUrl}` : null);
       form.reset({
         name: dialog.data.name,
         price: dialog.data.price,
@@ -119,7 +120,11 @@ const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
                 <div className="w-40 h-40 mx-auto rounded-xl border bg-white shadow-1 overflow-hidden">
                   {previewUrl ? (
                     <Image
-                      src={previewUrl ? previewUrl : `/uploads/${previewUrl}`}
+                      src={
+                        previewUrl
+                          ? previewUrl
+                          : `${baseIMAGEURL}/${previewUrl}`
+                      }
                       alt="Preview"
                       width={160}
                       height={160}

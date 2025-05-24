@@ -15,11 +15,13 @@ import { TypeProduct } from "@/types/product";
 interface IDashboardAdmin {
   dataTransaction: TypeTransaksi[];
   dataProduct: TypeProduct[];
+  activeShift: any;
 }
 
 export function DashboardAdmin({
   dataTransaction,
   dataProduct,
+  activeShift,
 }: IDashboardAdmin) {
   // 1. Buat mapping nama bulan
   const months = [
@@ -69,6 +71,7 @@ export function DashboardAdmin({
         <CardState
           dataTransaction={dataTransaction}
           dataProduct={dataProduct}
+          activeShift={activeShift}
         />
       </div>
       <ResponsiveContainer width="100%" height={350}>

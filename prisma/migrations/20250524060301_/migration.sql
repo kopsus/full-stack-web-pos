@@ -50,7 +50,7 @@ CREATE TABLE `Transaksi` (
     `id` VARCHAR(191) NOT NULL,
     `customer_name` VARCHAR(191) NOT NULL,
     `total_amount` INTEGER NOT NULL,
-    `sales_type` ENUM('DO', 'DineIn') NOT NULL DEFAULT 'DO',
+    `sales_type` ENUM('TakeAway', 'DO', 'DineIn', 'Gojek') NOT NULL DEFAULT 'TakeAway',
     `paid_amount` INTEGER NULL DEFAULT 0,
     `change` INTEGER NULL DEFAULT 0,
     `shift_id` VARCHAR(191) NOT NULL,

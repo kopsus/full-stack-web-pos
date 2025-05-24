@@ -45,27 +45,27 @@ export const ColumnsHistory: ColumnDef<TypeTransaksi>[] = [
       return <p>{formatDate(row.getValue("updatedAt"))}</p>;
     },
   },
-  {
-    accessorKey: "Action",
-    header: "Action",
-    cell: ({ row }: { row: { original: TypeTransaksi } }) => {
-      const item = row.original;
-      return (
-        <div className="flex justify-end w-full">
-          <Printer
-            onClick={() => printHistory(item)}
-            className="cursor-pointer"
-          />
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "Action",
+  //   header: "Action",
+  //   cell: ({ row }: { row: { original: TypeTransaksi } }) => {
+  //     const item = row.original;
+  //     return (
+  //       <div className="flex justify-end w-full">
+  //         <Printer
+  //           onClick={() => printHistory(item)}
+  //           className="cursor-pointer"
+  //         />
+  //       </div>
+  //     );
+  //   },
+  // },
 ];
 
-const printHistory = async (item: TypeTransaksi) => {
-  await fetch("http://localhost:1818/print/history", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(item),
-  });
-};
+// const printHistory = async (item: TypeTransaksi) => {
+//   await fetch("http://localhost:1818/print/history", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(item),
+//   });
+// };

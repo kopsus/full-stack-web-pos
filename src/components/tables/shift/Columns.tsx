@@ -34,28 +34,28 @@ export const ColumnsShift: ColumnDef<any>[] = [
       );
     },
   },
-  {
-    accessorKey: "Action",
-    header: "Action",
-    cell: ({ row }) => {
-      const item = row.original;
+  // {
+  //   accessorKey: "Action",
+  //   header: "Action",
+  //   cell: ({ row }) => {
+  //     const item = row.original;
 
-      return (
-        <div className="flex justify-end w-full">
-          <Printer
-            onClick={() => printShift(item)}
-            className="cursor-pointer"
-          />
-        </div>
-      );
-    },
-  },
+  //     return (
+  //       <div className="flex justify-end w-full">
+  //         <Printer
+  //           onClick={() => printShift(item)}
+  //           className="cursor-pointer"
+  //         />
+  //       </div>
+  //     );
+  //   },
+  // },
 ];
 
-const printShift = async (item: any) => {
-  await fetch("http://localhost:1818/print/history-shift", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(item),
-  });
-};
+// const printShift = async (item: any) => {
+//   await fetch("http://localhost:1818/print/history-shift", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(item),
+//   });
+// };
