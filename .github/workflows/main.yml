@@ -27,6 +27,10 @@ jobs:
 
           # Jalankan perintah di VPS untuk update aplikasi
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
+
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
             
             cd full-stack-web-pos
             git pull origin main
@@ -34,7 +38,6 @@ jobs:
 
             npm install
             npm run build
-            pm2 start --name "pos-loempia-bom" npm -- run start
             pm2 restart pos-loempia-bom
             
             echo "Deployment sukses!"

@@ -2,7 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [],
+    remotePatterns: [
+      {
+        hostname: "loempia-bom.putra-tunggal.my.id",
+      },
+    ],
   },
   experimental: {
     serverActions: {
