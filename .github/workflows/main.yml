@@ -18,7 +18,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
-          PROJECT_DIR: "anjani-salon" # Sesuaikan dengan path proyek di VPS
+          PROJECT_DIR: "full-stack-web-pos" # Sesuaikan dengan path proyek di VPS
         run: |
           # Setup SSH agar bisa login ke VPS
           mkdir -p ~/.ssh
@@ -27,14 +27,16 @@ jobs:
 
           # Jalankan perintah di VPS untuk update aplikasi
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
-           export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
-            cd anjani-salon
-            git pull origin main
-            rm -rf .next
 
-            npm install --force
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+            
+            cd full-stack-web-pos
+            git pull origin main
+            # rm -rf .next
+
+            npm install
             npm run build
             pm2 restart 0
             
