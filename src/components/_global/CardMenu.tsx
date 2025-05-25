@@ -4,6 +4,7 @@ import Image from "next/image";
 import { formatIDR } from "@/lib/format";
 import { Button } from "../ui/button";
 import { TypeProduct } from "@/types/product";
+import { baseIMAGEURL } from "@/lib/utils";
 
 interface ICardMenu {
   id: string;
@@ -18,7 +19,7 @@ const CardMenu = ({ id, name, price, image, addToCart }: ICardMenu) => {
     <Card className="rounded-xl overflow-hidden">
       <div className="w-full h-14 lg:h-28 overflow-hidden border">
         <Image
-          src={`/uploads/${image}`}
+          src={`${baseIMAGEURL}/${image}`}
           alt={name}
           width={0}
           height={0}
