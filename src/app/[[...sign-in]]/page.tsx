@@ -51,7 +51,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-neutral-100 dark:bg-neutral-800 px-4">
+    <div className="relative flex h-screen w-full items-center justify-center bg-neutral-100 dark:bg-neutral-800 px-4">
       <Card className="mx-auto max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -102,6 +102,10 @@ export default function Home() {
             </form>
           </Form>
         </CardContent>
+      </Card>
+      <Card className="absolute bottom-0 right-0 space-y-2 bg-white p-5 shadow-md rounded-xl">
+        <p>username : admin</p>
+        <p>password : user123</p>
       </Card>
     </div>
   );
