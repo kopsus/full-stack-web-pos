@@ -246,11 +246,11 @@ const FormCart = ({
         toast.success(result.success.message);
 
         // Kirim ke printer
-        // await fetch("http://localhost:1818/print/transaction", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(result.data.transaksi),
-        // });
+        await fetch("http://localhost:1818/print/transaction", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result.data.transaksi),
+        });
 
         resetTransactionForm(); // Reset form dan semua state
       } else if (result.error) {

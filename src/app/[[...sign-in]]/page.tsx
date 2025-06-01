@@ -103,10 +103,10 @@ export default function Home() {
           </Form>
         </CardContent>
       </Card>
-      <Card className="absolute bottom-0 right-0 space-y-2 bg-white p-5 shadow-md rounded-xl">
+      {/* <Card className="absolute bottom-0 right-0 space-y-2 bg-white p-5 shadow-md rounded-xl">
         <p>username : admin</p>
         <p>password : user123</p>
-      </Card>
+      </Card> */}
     </div>
   );
 }
