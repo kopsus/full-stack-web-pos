@@ -576,7 +576,7 @@ const FormCart = ({
                         <FormControl>
                           <Input
                             {...field}
-                            value={paidAmount}
+                            value={paidAmount ? paidAmount : ""}
                             type="number"
                             placeholder="Masukkan jumlah yang dibayar"
                             onChange={handlePaidAmountChange}

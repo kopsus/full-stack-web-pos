@@ -84,6 +84,28 @@ const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
     }
   }, [dialog.type, dialog.data, form]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setImageProduct(null);
+      setPreviewUrl(null);
+      form.setValue("image", undefined); // Beri tahu form bahwa image kosong
+      return;
+    }
+    const MAX_FILE_SIZE = 1 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("Ukuran gambar terlalu besar, maksimal 1MB");
+      e.target.value = "";
+      setImageProduct(null);
+      setPreviewUrl(null);
+      form.setValue("image", undefined);
+      return;
+    }
+    setImageProduct(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    form.setValue("image", file.name); // Simpan nama file ke form state
+  };
+
   const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(values: z.infer<typeof productSchema>) {
@@ -145,13 +167,7 @@ const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
                             type="file"
                             accept="image/*"
                             className="pl-12"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              setImageProduct(file || null);
-                              if (file) {
-                                setPreviewUrl(URL.createObjectURL(file));
-                              }
-                            }}
+                            onChange={handleImageChange}
                           />
                           <Upload className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500" />
                         </div>
@@ -214,6 +230,7 @@ const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
                         required
                         type="number"
                         placeholder="Masukkan harga"
+                        value={field.value === 0 ? "" : field.value}
                       />
                     </FormControl>
                     <FormMessage />
@@ -235,6 +252,7 @@ const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
                     required
                     type="number"
                     placeholder="Masukkan quantity"
+                    value={field.value === 0 ? "" : field.value}
                   />
                 </FormControl>
                 <FormMessage />

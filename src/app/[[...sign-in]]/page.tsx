@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { login } from "@/lib/actions/login";
 import { LoginSchema, loginSchema } from "@/lib/formValidationSchemas/login";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -53,6 +54,14 @@ export default function Home() {
   return (
     <div className="relative flex h-screen w-full items-center justify-center bg-neutral-100 dark:bg-neutral-800 px-4">
       <Card className="mx-auto max-w-sm">
+        <Image
+          src={"/logo.svg"}
+          alt="logo"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="w-3/5 mx-auto mt-5"
+        />
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>

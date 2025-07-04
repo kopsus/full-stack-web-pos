@@ -4,10 +4,11 @@ import { TypeTransaksi } from "@/types/transaction";
 import {
   Bar,
   BarChart,
-  Cell,
   ResponsiveContainer,
   XAxis,
   YAxis,
+  Tooltip, // Tambahkan ini
+  Legend, // Tambahkan ini
 } from "recharts";
 import CardState from "../_global/CardState";
 import { TypeProduct } from "@/types/product";
@@ -39,31 +40,32 @@ export function DashboardAdmin({
     "Dec",
   ];
 
-  // 2. Inisialisasi objek untuk menyimpan total transaksi per bulan
-  const monthlyTotals: Record<string, number> = months.reduce(
-    (acc, month) => ({ ...acc, [month]: 0 }),
-    {}
-  );
+  // 2. Inisialisasi objek untuk menyimpan data agregat per bulan
+  //    Sekarang kita simpan omset (revenue) dan jumlah pembeli (transactions)
+  const monthlyData: Record<string, { omset: number; jumlahPembeli: number }> =
+    months.reduce((acc, month) => {
+      acc[month] = { omset: 0, jumlahPembeli: 0 };
+      return acc;
+    }, {} as Record<string, { omset: number; jumlahPembeli: number }>);
 
   // 3. Proses data transaksi
   dataTransaction.forEach((transaction) => {
     if (transaction.createdAt) {
-      const monthIndex = new Date(transaction.createdAt).getMonth(); // Ambil index bulan
-      const monthName = months[monthIndex]; // Konversi ke nama bulan
-      monthlyTotals[monthName] += transaction.total_amount; // Tambahkan total_amount
+      const monthIndex = new Date(transaction.createdAt).getMonth();
+      const monthName = months[monthIndex];
+      // Tambahkan total omset
+      monthlyData[monthName].omset += transaction.total_amount;
+      // Tambahkan jumlah transaksi (sebagai jumlah pembeli)
+      monthlyData[monthName].jumlahPembeli += 1;
     }
   });
 
-  // 4. Konversi ke array untuk chart & tentukan warna berdasarkan perbedaan bulan sebelumnya
-  const data = months.map((month, index) => {
-    const total = monthlyTotals[month];
-    const prevTotal = index > 0 ? monthlyTotals[months[index - 1]] : 0;
-    return {
-      name: month,
-      total,
-      color: total >= prevTotal ? "#22c55e" : "#ef4444", // Hijau jika naik, merah jika turun
-    };
-  });
+  // 4. Konversi ke array yang akan digunakan oleh chart
+  const chartData = months.map((month) => ({
+    name: month,
+    "Total Omset": monthlyData[month].omset,
+    "Jumlah Pembeli": monthlyData[month].jumlahPembeli,
+  }));
 
   return (
     <div className="p-4 space-y-20">
@@ -75,7 +77,7 @@ export function DashboardAdmin({
         />
       </div>
       <ResponsiveContainer width="100%" height={350}>
-        <BarChart data={data}>
+        <BarChart data={chartData}>
           <XAxis
             dataKey="name"
             stroke="#888888"
@@ -84,23 +86,50 @@ export function DashboardAdmin({
             axisLine={false}
           />
           <YAxis
+            yAxisId="left" // Memberi ID untuk sumbu Y kiri (Omset)
             stroke="#888888"
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `$${value}`}
+            tickFormatter={(value) =>
+              `IDR ${new Intl.NumberFormat("id-ID").format(value)}`
+            }
+          />
+          <YAxis
+            yAxisId="right" // Memberi ID untuk sumbu Y kanan (Jumlah Pembeli)
+            orientation="right"
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+          />
+          <Tooltip
+            formatter={(value, name) => {
+              if (name === "Total Omset") {
+                // Format sebagai mata uang Rupiah
+                return `IDR ${new Intl.NumberFormat("id-ID").format(
+                  Number(value)
+                )}`;
+              }
+              // Untuk "Jumlah Pembeli", tampilkan nilai apa adanya
+              return value;
+            }}
+          />
+          <Legend />
+          <Bar
+            yAxisId="left" // Kaitkan bar ini dengan sumbu Y kiri
+            dataKey="Total Omset"
+            fill="#22c55e" // Warna hijau untuk omset
+            radius={[4, 4, 0, 0]}
+            barSize={25}
           />
           <Bar
-            dataKey="total"
+            yAxisId="right" // Kaitkan bar ini dengan sumbu Y kanan
+            dataKey="Jumlah Pembeli"
+            fill="#3b82f6" // Warna biru untuk jumlah pembeli
             radius={[4, 4, 0, 0]}
-            barSize={30}
-            fill="currentColor"
-            className="transition-all duration-300"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Bar>
+            barSize={25}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

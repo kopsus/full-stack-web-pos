@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
       {
         hostname: "loempia-bom.putra-tunggal.my.id",
       },
+      {
+        hostname: "localhost",
+      },
     ],
   },
   experimental: {
