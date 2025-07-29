@@ -122,7 +122,7 @@ const DialogMutation = () => {
               </FormItem>
             )}
           />
-          {/* <FormField
+          <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
@@ -138,7 +138,7 @@ const DialogMutation = () => {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
           <Button disabled={isSubmitting}>
             {isSubmitting ? "Menyimpan..." : "Simpan"}
           </Button>
