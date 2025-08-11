@@ -5,6 +5,20 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { responServerAction } from "./responseServerAction";
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
+import { decrypt } from "./session";
+
+export const profile = async () => {
+  const cookie = (await cookies()).get("session")?.value;
+  const session = await decrypt(cookie);
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session?.id as string,
+    },
+  });
+
+  return user;
+};
 
 export const createUser = async (data: UserSchema) => {
   try {

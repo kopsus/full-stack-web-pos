@@ -4,8 +4,7 @@ import DialogMutation from "@/components/dialog/product/DialogMutation";
 import { ColumnsProduct } from "@/components/tables/product/Columns";
 import { DataTable } from "@/components/tables/product/DataTable";
 import prisma from "@/lib/prisma";
-import { cookies } from "next/headers";
-import { decrypt } from "@/lib/actions/session";
+import { profile } from "@/lib/actions/user";
 
 const page = async () => {
   const products = await prisma.product.findMany({
@@ -14,14 +13,11 @@ const page = async () => {
     },
   });
   const category = await prisma.category.findMany();
-  const cookie = (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
+  const user = await profile();
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session?.id as string,
-    },
-  });
+  if (!user) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <>

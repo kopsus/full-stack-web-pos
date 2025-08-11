@@ -4,19 +4,15 @@ import DialogMutation from "@/components/dialog/topping/DialogMutation";
 import { ColumnsTopping } from "@/components/tables/topping/Columns";
 import { DataTable } from "@/components/tables/topping/DataTable";
 import prisma from "@/lib/prisma";
-import { cookies } from "next/headers";
-import { decrypt } from "@/lib/actions/session";
+import { profile } from "@/lib/actions/user";
 
 const page = async () => {
   const topping = await prisma.topping.findMany();
-  const cookie = (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
+  const user = await profile();
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session?.id as string,
-    },
-  });
+  if (!user) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <>
@@ -25,9 +21,9 @@ const page = async () => {
         title="Topping"
         data={topping}
         columns={ColumnsTopping}
-        user={user!}
+        user={user}
       />
-      <DialogMutation user={user!} />
+      <DialogMutation user={user} />
       <DialogDelete />
     </>
   );

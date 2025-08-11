@@ -5,14 +5,25 @@ import { ColumnsCategory } from "@/components/tables/category/Columns";
 import { DataTable } from "@/components/tables/category/DataTable";
 import React from "react";
 import prisma from "@/lib/prisma";
+import { profile } from "@/lib/actions/user";
 
 const page = async () => {
   const categories = await prisma.category.findMany();
+  const user = await profile();
+
+  if (!user) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <>
       <PageHeader title="Category" />
-      <DataTable title="Category" data={categories} columns={ColumnsCategory} />
+      <DataTable
+        title="Category"
+        data={categories}
+        columns={ColumnsCategory}
+        user={user}
+      />
       <DialogMutation />
       <DialogDelete />
     </>

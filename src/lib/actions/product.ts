@@ -99,7 +99,7 @@ export const updateProduct = async (
     let imagePath = oldProduct.image; // Default tetap pakai gambar lama
 
     // Jika ada image baru yang diunggah
-    if (image) {
+    if (image && image.has("image")) {
       const result = await uploadImage(image);
       if (result.error.status) {
         return responServerAction({
