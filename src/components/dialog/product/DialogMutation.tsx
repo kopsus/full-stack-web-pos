@@ -26,7 +26,6 @@ import {
 import { baseIMAGEURL } from "@/lib/utils";
 import { TypeCategory } from "@/types/category";
 import { storeDialogProduct } from "@/types/product";
-import { TypeUser } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
 import { Upload } from "lucide-react";
@@ -38,7 +37,7 @@ import { z } from "zod";
 
 interface IDialogMutation {
   dataCategory: TypeCategory[];
-  user: TypeUser;
+  user: string;
 }
 
 const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
@@ -136,7 +135,7 @@ const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          {user.role === "admin" && (
+          {user === "admin" && (
             <>
               <div className="grid gap-2">
                 <div className="w-40 h-40 mx-auto rounded-xl border bg-white shadow-1 overflow-hidden">

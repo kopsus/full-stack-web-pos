@@ -12,9 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSetAtom } from "jotai";
 import { storeDialogProduct, TypeProduct } from "@/types/product";
-import { profile } from "@/lib/actions/user";
-import { TypeUser } from "@/types/user";
-import { useEffect, useState } from "react";
 
 interface ITableRowActions {
   item: TypeProduct;
@@ -22,16 +19,6 @@ interface ITableRowActions {
 
 export function TableAction({ item }: ITableRowActions) {
   const setDialog = useSetAtom(storeDialogProduct);
-  const [user, setUser] = useState<TypeUser | null>(null);
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const userData = await profile();
-      setUser(userData);
-    };
-
-    fetchUserProfile();
-  }, []);
 
   const handleDelete = () => {
     setDialog({
@@ -68,14 +55,12 @@ export function TableAction({ item }: ITableRowActions) {
             <Edit size={16} />
           </DropdownMenuShortcut>
         </DropdownMenuItem>
-        {user?.role === "admin" && (
-          <DropdownMenuItem onClick={handleDelete}>
-            Delete
-            <DropdownMenuShortcut>
-              <Trash size={16} color="red" />
-            </DropdownMenuShortcut>
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem onClick={handleDelete}>
+          Delete
+          <DropdownMenuShortcut>
+            <Trash size={16} color="red" />
+          </DropdownMenuShortcut>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

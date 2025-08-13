@@ -25,7 +25,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 interface IDialogMutation {
-  user: TypeUser;
+  user: string;
 }
 
 const DialogMutation = ({ user }: IDialogMutation) => {
@@ -86,7 +86,7 @@ const DialogMutation = ({ user }: IDialogMutation) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-5 flex flex-col"
         >
-          {user.role === "admin" && (
+          {user === "admin" && (
             <>
               <FormField
                 control={form.control}

@@ -28,16 +28,14 @@ import { Pagination } from "../pagination";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TableToolbar } from "./TableToolbar";
-
 import { useSetAtom } from "jotai";
 import { storeDialogCategory } from "@/types/category";
-import { TypeUser } from "@/types/user";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   title: string;
-  user: TypeUser;
+  user: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -73,7 +71,7 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4 overflow-x-auto p-4">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-4xl font-bold">{title}</h2>
-        {user.role === "admin" && (
+        {user === "admin" && (
           <Button
             className="text-white"
             onClick={() => {
@@ -99,7 +97,9 @@ export function DataTable<TData, TValue>({
                     <TableHead
                       key={header.id}
                       className={`${
-                        idx === headerGroup.headers.length - 1 && "text-right"
+                        user === "admin" &&
+                        idx === headerGroup.headers.length - 1 &&
+                        "text-right"
                       } bg-primary text-white`}
                     >
                       {header.isPlaceholder
