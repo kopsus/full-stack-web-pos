@@ -62,7 +62,6 @@ enum EnumSalesType {
   TakeAway
   DO
   DineIn
-  Gojek
 }
 
 model Transaksi {

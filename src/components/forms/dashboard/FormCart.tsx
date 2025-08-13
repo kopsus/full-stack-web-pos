@@ -127,14 +127,9 @@ const FormCart = ({
     (item) => item.id === selectedPayment
   );
 
-  // Hitung final total (dengan service fee)
-  const gojekFee = selectedSalesType === "Gojek" ? baseTotal * 0.35 : 0;
-
-  const finalTotal = baseTotal + gojekFee;
-
   // Hitung kembalian
   const changeAmount = paidAmount
-    ? Math.max(Number(paidAmount) - finalTotal, 0)
+    ? Math.max(Number(paidAmount) - baseTotal, 0)
     : 0;
 
   // Efek untuk memperbarui paid_amount berdasarkan metode pembayaran
@@ -144,9 +139,9 @@ const FormCart = ({
     if (lowerCaseName === "cash") {
       form.setValue("paid_amount", paidAmount ? Number(paidAmount) : 0);
     } else {
-      form.setValue("paid_amount", finalTotal);
+      form.setValue("paid_amount", baseTotal);
     }
-  }, [selectedPaymentMethod, paidAmount, finalTotal, form, selectedSalesType]);
+  }, [selectedPaymentMethod, paidAmount, baseTotal, form, selectedSalesType]);
 
   React.useEffect(() => {
     form.setValue("change", changeAmount);
@@ -156,10 +151,10 @@ const FormCart = ({
   React.useEffect(() => {
     const updatedChange =
       selectedPaymentMethod?.name.toLowerCase() === "cash"
-        ? Math.max((paidAmount ? Number(paidAmount) : 0) - finalTotal, 0)
+        ? Math.max((paidAmount ? Number(paidAmount) : 0) - baseTotal, 0)
         : 0;
     form.setValue("change", updatedChange);
-  }, [paidAmount, finalTotal, selectedPaymentMethod, form]);
+  }, [paidAmount, baseTotal, selectedPaymentMethod, form]);
 
   // Saat mengisi input paid amount
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,8 +172,8 @@ const FormCart = ({
   }, [cartItems, form]);
 
   React.useEffect(() => {
-    form.setValue("total_amount", finalTotal);
-  }, [form, finalTotal]);
+    form.setValue("total_amount", baseTotal);
+  }, [form, baseTotal]);
 
   const handleToppingChange = (toppingId: string, action: "add" | "remove") => {
     setSelectedToppings((prev) => {
@@ -485,7 +480,7 @@ const FormCart = ({
               <div className="flex items-center justify-between text-sm">
                 <p>Total</p>
                 <p className="font-semibold text-red-600">
-                  {formatIDR(finalTotal)}
+                  {formatIDR(baseTotal)}
                 </p>
               </div>
             </div>
