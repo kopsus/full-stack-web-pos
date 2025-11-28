@@ -4,7 +4,6 @@ import { TransactionSchema } from "@/lib/formValidationSchemas/transaction";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { responServerAction } from "./responseServerAction";
-import { getVoucherDiscount } from "./voucher";
 
 export const createTransaction = async (data: TransactionSchema) => {
   try {
