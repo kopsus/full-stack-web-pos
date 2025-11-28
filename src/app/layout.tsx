@@ -10,12 +10,14 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://loempia-bom.putra-tunggal.my.id"),
+
   title: "LOEMPIA BOOM",
   description: "Management Kasir Loempia Boom",
   openGraph: {
     title: "LOEMPIA BOOM",
     description: "Management Kasir Loempia Boom",
-    url: "https://loempia-bom.putra-tunggal.my.id",
+    url: "/",
     siteName: "LOEMPIA BOOM",
     images: [
       {
