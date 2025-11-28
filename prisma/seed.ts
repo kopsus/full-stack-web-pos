@@ -132,8 +132,6 @@ async function main() {
         },
       },
     });
-
-    console.log("Contoh transaksi berhasil dibuat:", transaksi.id);
   }
 
   console.log("Seeding data berhasil.");
