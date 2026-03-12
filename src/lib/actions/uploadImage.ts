@@ -39,7 +39,7 @@ export async function uploadImage(image: FormData) {
     const bytes = await imageFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadDir = process.env.NEXT_PUBLIC_IMAGE_URL!;
+    const uploadDir = process.env.UPLOAD_PATH!;
     await mkdir(uploadDir, { recursive: true });
 
     const ext = extname(imageFile.name).toLowerCase();
