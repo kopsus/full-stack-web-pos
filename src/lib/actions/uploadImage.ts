@@ -17,7 +17,16 @@ export async function uploadImage(image: FormData) {
     });
   }
 
-  const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+  if (!allowedTypes.includes(imageFile.type)) {
+    return responServerAction({
+      statusError: true,
+      messageError: "File harus berupa gambar (jpg, jpeg, png, webp)",
+      data: null,
+    });
+  }
+
+  const MAX_FILE_SIZE = 1 * 1024 * 1024;
   if (imageFile.size > MAX_FILE_SIZE) {
     return responServerAction({
       statusError: true,
@@ -30,20 +39,16 @@ export async function uploadImage(image: FormData) {
     const bytes = await imageFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadDir = "/var/www/uploads";
-    // const uploadDir = join(process.cwd(), "public", "uploads");
+    const uploadDir = process.env.NEXT_PUBLIC_IMAGE_URL!;
     await mkdir(uploadDir, { recursive: true });
 
-    // Ekstensi file (misalnya .jpg, .png)
     const ext = extname(imageFile.name).toLowerCase();
-    // Nama unik menggunakan UUID
     const uniqueFileName = `${uuidv4()}${ext}`;
     const uploadPath = join(uploadDir, uniqueFileName);
 
-    // Menggunakan sharp untuk mengompres gambar sebelum menyimpan
     const compressedBuffer = await sharp(buffer)
-      .resize({ width: 800 }) // Resize agar lebih kecil (opsional)
-      .jpeg({ quality: 80 }) // Kurangi kualitas untuk menghemat ukuran
+      .resize({ width: 800 })
+      .jpeg({ quality: 80 })
       .toBuffer();
 
     await writeFile(uploadPath, compressedBuffer);

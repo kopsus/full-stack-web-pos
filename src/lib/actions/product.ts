@@ -65,7 +65,7 @@ export const createProduct = async (data: ProductSchema, image?: FormData) => {
 export const updateProduct = async (
   id: string,
   data: ProductSchema,
-  image?: FormData
+  image?: FormData,
 ) => {
   try {
     // Cek apakah ada produk lain dengan nama yang sama, kecuali produk yang sedang diupdate
@@ -112,8 +112,8 @@ export const updateProduct = async (
       if (oldProduct.image) {
         const oldImagePath = path.join(
           process.cwd(),
-          "/var/www/uploads",
-          oldProduct.image
+          process.env.NEXT_PUBLIC_IMAGE_URL!,
+          oldProduct.image,
         );
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
@@ -171,8 +171,8 @@ export const deleteProduct = async (id: string) => {
     if (product.image) {
       const imagePath = path.join(
         process.cwd(),
-        "/var/www/uploads",
-        product.image
+        process.env.NEXT_PUBLIC_IMAGE_URL!,
+        product.image,
       );
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
