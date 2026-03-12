@@ -4,10 +4,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: "loempia-bom.putra-tunggal.my.id",
-      },
-      {
-        hostname: "localhost",
+        protocol: "https",
+        hostname: "loempia.rayaku.com",
+        pathname: "/uploads/**",
       },
     ],
   },
