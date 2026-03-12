@@ -48,6 +48,7 @@ export default function ProductTable({
                 alt="image"
                 width={80}
                 height={80}
+                unoptimized
                 className="object-cover"
               />
             ) : null}

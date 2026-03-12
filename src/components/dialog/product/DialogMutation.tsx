@@ -149,6 +149,7 @@ const DialogMutation = ({ dataCategory, user }: IDialogMutation) => {
                       alt="Preview"
                       width={160}
                       height={160}
+                      unoptimized
                     />
                   ) : null}
                 </div>
