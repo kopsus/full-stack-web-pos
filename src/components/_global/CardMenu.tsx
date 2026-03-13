@@ -24,6 +24,7 @@ const CardMenu = ({ id, name, price, image, addToCart }: ICardMenu) => {
           width={0}
           height={0}
           sizes="100vw"
+          unoptimized
           className="hover:scale-105 transition-all"
         />
       </div>
